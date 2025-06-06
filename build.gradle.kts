@@ -1,18 +1,12 @@
 plugins {
-    `kotlin-dsl` apply false
-    alias(libs.plugins.kotlin.jvm)
+    id("jenkins-convention-common") apply false
 }
 
-group = "io.jenkins.gradle"
-version = "1.0-SNAPSHOT"
-
-dependencies {
-    testImplementation(kotlin("test"))
+allprojects {
+    group = "io.jenkins.gradle"
+    version = "1.0-SNAPSHOT"
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
+subprojects {
+    apply(plugin = "jenkins-convention-common")
 }

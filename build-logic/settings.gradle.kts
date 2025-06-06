@@ -1,5 +1,3 @@
-include("all", "core", "quality", "publishing", "integration-tests", "examples")
-
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -10,7 +8,12 @@ dependencyResolutionManagement {
         }
         maven("https://repo.jenkins-ci.org/public/")
     }
+    versionCatalogs{
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }
-includeBuild("build-logic")
 
-rootProject.name = "jenkins-gradle-convention-plugin"
+rootProject.name = "build-logic"
+include("convention")

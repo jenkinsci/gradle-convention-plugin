@@ -1,18 +1,24 @@
 plugins {
-    kotlin("jvm")
+    id("jenkins-convention-common")
 }
-
-group = "io.jenkins.gradle"
-version = "1.0-SNAPSHOT"
-
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(project(":core"))
+    implementation(project(":quality"))
+    implementation(project(":publishing"))
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
+gradlePlugin {
+
+    plugins {
+        create("jenkinsConventionSuite") {
+            id = "io.jenkins.gradle.jenkins-gradle-convention"
+            displayName = "Jenkins Gradle Convention Plugin"
+            description =
+                "A Gradle plugin suite for modern Jenkins plugin development, providing standardized build, quality, and publishing conventions."
+            implementationClass = "io.jenkins.gradle.JenkinsGradleConvention"
+            tags = setOf("jenkins", "gradle", "plugin", "convention", "jpi", "build", "quality", "publishing")
+        }
+    }
+
 }
