@@ -1,18 +1,20 @@
 plugins {
-    kotlin("jvm")
+    id("jenkins-convention-common")
 }
-
-group = "io.jenkins.gradle"
-version = "1.0-SNAPSHOT"
-
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(libs.gradle.jpi)
+    compileOnly(libs.jenkins.core)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
+gradlePlugin {
+    plugins {
+        create("jenkinsCoreConvention") {
+            id = "io.jenkins.gradle.jenkins-core-convention"
+            implementationClass = "io.jenkins.gradle.core.JenkinsCoreConventionPlugin"
+            displayName = "Jenkins Gradle Core Convention Plugin"
+            description =
+                "Core Gradle conventions for Jenkins plugin development, including build configuration and JPI integration."
+        }
+    }
 }

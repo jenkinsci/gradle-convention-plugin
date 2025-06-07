@@ -1,8 +1,12 @@
 [versions]
 kotlin = "2.1.20"
+gradle-jpi = "0.54.0-rc.5"
+jenkins-lts = "2.504.2"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-lts" }
+gradle-jpi = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "gradle-jpi" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

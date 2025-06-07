@@ -8,7 +8,7 @@ dependencyResolutionManagement {
                 includeModule("org.gradle.toolchains", "foojay-resolver")
             }
         }
-        maven("https://repo.jenkins-ci.org/public/")
+        maven(url = "https://repo.jenkins-ci.org/public/")
     }
 }
 includeBuild("build-logic")

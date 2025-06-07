@@ -11,3 +11,8 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget.set(JvmTarget.JVM_17)
     }
 }
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    maven(url = "https://repo.jenkins-ci.org/public/")
+}
