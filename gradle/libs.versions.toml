@@ -13,7 +13,7 @@ jenkins-plugin-bom = "2.513"
 # Kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 
 # Gradle
 gradle-api = { module = "org.gradle:gradle-core-api", version.ref = "gradle-api" }
@@ -32,5 +32,5 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "gradle-api" }
 
 [bundles]
-kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlin-stdlib-jdk8"]
+kotlin = ["kotlin-stdlib", "kotlin-reflect"]
 gradle = ["gradle-api", "gradle-kotlin-dsl", "gradle-kotlin-dsl-plugins"]
