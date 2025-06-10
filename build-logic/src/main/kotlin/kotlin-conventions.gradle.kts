@@ -1,22 +1,17 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+    kotlin("jvm")
 }
 
-internal val Project.libs: VersionCatalog get() =
-    project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+internal val Project.libs: VersionCatalog get() = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-configure<KotlinJvmProjectExtension> {
+kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
-
     explicitApi()
-}
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
         apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
@@ -36,6 +31,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 project.dependencies {
     add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-    add("implementation", platform(libs.findLibrary("kotlin-stdlib").get()))
-    add("implementation", platform(libs.findLibrary("kotlin-reflect").get()))
+    add("implementation", libs.findLibrary("kotlin-stdlib").get())
+    add("implementation", libs.findLibrary("kotlin-reflect").get())
 }

@@ -1,8 +1,5 @@
 plugins {
-    base
-    alias(libs.plugins.kotlin.jvm) apply false
-    java
-    `java-gradle-plugin`
+    id("kotlin-conventions")
 }
 
 subprojects {
