@@ -1,12 +1,11 @@
 plugins {
-    id("jenkins-convention-common") apply false
-}
-
-allprojects {
-    group = "io.jenkins.gradle"
-    version = "1.0-SNAPSHOT"
+    base
+    alias(libs.plugins.kotlin.jvm) apply false
+    java
+    `java-gradle-plugin`
 }
 
 subprojects {
-    apply(plugin = "jenkins-convention-common")
+    group = "io.jenkins.gradle"
+    version = providers.gradleProperty("jenkins.convention.version").getOrElse("1.0.0-SNAPSHOT")
 }

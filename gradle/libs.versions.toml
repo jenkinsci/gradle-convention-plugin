@@ -1,12 +1,36 @@
 [versions]
-kotlin = "2.1.20"
-gradle-jpi = "0.54.0-rc.5"
-jenkins-lts = "2.504.2"
+# Kotlin and Gradle
+kotlin = "2.1.21"
+gradle-api = "8.14.0"
+
+# Jenkins
+jenkins-core = "2.513"
+jenkins-gradle-jpi = "0.54.0-rc.8"
+jenkins-plugin-bom = "2.513"
+
 
 [libraries]
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-lts" }
-gradle-jpi = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "gradle-jpi" }
+# Kotlin
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+
+# Gradle
+gradle-api = { module = "org.gradle:gradle-core-api", version.ref = "gradle-api" }
+gradle-kotlin-dsl = { module = "org.gradle.kotlin:gradle-kotlin-dsl", version.ref = "gradle-api" }
+gradle-kotlin-dsl-plugins = { module = "org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin", version.ref = "gradle-api" }
+
+# Jenkins
+jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
+jenkins-gradle-jpi = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "jenkins-gradle-jpi" }
+jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "gradle-api" }
+
+[bundles]
+kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlin-stdlib-jdk8"]
+gradle = ["gradle-api", "gradle-kotlin-dsl", "gradle-kotlin-dsl-plugins"]
