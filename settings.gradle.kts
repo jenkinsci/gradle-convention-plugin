@@ -29,7 +29,7 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":all", ":core", ":quality", ":publishing", ":integration-tests", ":examples")
+include(":all", ":api", ":core", ":quality", ":publishing", ":integration-tests", ":examples")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
