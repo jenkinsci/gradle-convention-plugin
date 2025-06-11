@@ -1,48 +1,51 @@
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+
 public interface JenkinsPluginExtension {
 
     // Jenkins core version to depend on
-    public var jenkinsVersion: String?
+    public val jenkinsVersion: Property<String>
 
     // Plugin metadata
-    public var pluginID: String
-    public var pluginName: String
-    public var description: String?
-    public var url: String?
-    public var issueTrackerUrl: String?
-    public var gitHubUrl: String?
+    public val pluginID: Property<String>
+    public val pluginName: Property<String>
+    public val description: Property<String>
+    public val url: Property<String>
+    public val issueTrackerUrl: Property<String>
+    public val gitHubUrl: Property<String>
 
     // Developer & License metadata
-    public var developers: List<Developer>
-    public var licenses: List<License>
+    public val developers: ListProperty<Developer>
+    public val licenses: ListProperty<License>
 
     // Compatibility Settings
-    public var compatibleSinceVersion: String
-    public var pluginFirstClassLoader: String
-    public var maskClasses: List<String>
+    public val compatibleSinceVersion: Property<String>
+    public val pluginFirstClassLoader: Property<String>
+    public val maskClasses: ListProperty<String>
 
     // Java & Build config
-    public var javaVersion: String
-    public var jvmArgs: String?
+    public val javaVersion: Property<String>
+    public val jvmArgs: Property<String>
 
     // Publishing & Repositories
-    public var repoUrl: String?
-    public var snapshotRepoUrl: String?
-    public var incrementalsRepoUrl: String?
-    public var configureRepositories: Boolean
-    public var configurePublishing: Boolean
+    public val repoUrl: Property<String>
+    public val snapshotRepoUrl: Property<String>
+    public val incrementalsRepoUrl: Property<String>
+    public val configureRepositories: Property<Boolean>
+    public val configurePublishing: Property<Boolean>
 
     // Plugin File Config
-    public var fileExtension: String?
+    public val fileExtension: Property<String>
 
     // Development Server
-    public var workDir: String?
+    public val workDir: Property<String>
 
     // Localizer
-    public var localizerOutputDir: String?
+    public val localizerOutputDir: Property<String>
 
     // SCM tag & Versioning
-    public var scmTag: String?
-    public var gitVersioning: GitVersioning?
+    public val scmTag: Property<String>
+    public val gitVersioning: Property<GitVersioning>
 }
 
 public data class Developer(
