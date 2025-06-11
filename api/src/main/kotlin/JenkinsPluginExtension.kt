@@ -20,7 +20,7 @@ public interface JenkinsPluginExtension {
 
     // Compatibility Settings
     public val compatibleSinceVersion: Property<String>
-    public val pluginFirstClassLoader: Property<String>
+    public val pluginFirstClassLoader: Property<Boolean>
     public val maskClasses: ListProperty<String>
 
     // Java & Build config
@@ -33,6 +33,9 @@ public interface JenkinsPluginExtension {
     public val incrementalsRepoUrl: Property<String>
     public val configureRepositories: Property<Boolean>
     public val configurePublishing: Property<Boolean>
+
+    // Additional Test Injection
+    public val disabledTestInjection: Property<Boolean>
 
     // Plugin File Config
     public val fileExtension: Property<String>
@@ -48,24 +51,24 @@ public interface JenkinsPluginExtension {
     public val gitVersioning: Property<GitVersioning>
 }
 
-public data class Developer(
-    val name: String,
-    val id: String,
-    val email: String,
-    val organization: String?
-)
+public interface Developer {
+    public val name: Property<String>
+    public val id: Property<String>
+    public val email: Property<String>
+    public val organization: Property<String>
+}
 
-public data class License(
-    val name: String,
-    val url: String,
-    val distribution: String? = null,
-    val comments: String? = null
-)
+public interface License {
+    public val name: Property<String>
+    public val url: Property<String>
+    public val distribution: Property<String>
+    public val comments: Property<String>
+}
 
-public data class GitVersioning(
-    val allowDirty: Boolean?,
-    val versionFormat: String?,
-    val sanitize: Boolean?,
-    val abbrevLength: Int?,
-    val gitRoot: String?
-)
+public interface GitVersioning {
+    public val allowDirty: Property<Boolean>
+    public val versionFormat: Property<String>
+    public val sanitize: Property<Boolean>
+    public val abbrevLength: Property<Int>
+    public val gitRoot: Property<String>
+}
