@@ -29,8 +29,8 @@ kotlin {
     }
 }
 
-project.dependencies {
-    add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-    add("implementation", libs.findLibrary("kotlin-stdlib").get())
-    add("implementation", libs.findLibrary("kotlin-reflect").get())
+dependencies {
+    implementation(platform(libs.findLibrary("kotlin-bom").get()))
+    implementation(libs.findLibrary("kotlin-stdlib").get())
+    implementation(libs.findLibrary("kotlin-reflect").get())
 }

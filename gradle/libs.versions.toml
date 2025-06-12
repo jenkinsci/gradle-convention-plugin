@@ -5,7 +5,7 @@ gradle-api = "8.14.0"
 
 # Jenkins
 jenkins-core = "2.513"
-jenkins-gradle-jpi = "0.54.0-rc.8"
+jenkins-gradle-jpi = "0.54.0"
 jenkins-plugin-bom = "2.513"
 
 
