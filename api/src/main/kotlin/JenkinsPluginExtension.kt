@@ -7,12 +7,12 @@ public interface JenkinsPluginExtension {
     public val jenkinsVersion: Property<String>
 
     // Plugin metadata
-    public val pluginID: Property<String>
+    public val pluginId: Property<String>
     public val pluginName: Property<String>
     public val description: Property<String>
     public val url: Property<String>
     public val issueTrackerUrl: Property<String>
-    public val gitHubUrl: Property<String>
+    public val githubUrl: Property<String>
 
     // Developer & License metadata
     public val developers: ListProperty<Developer>
@@ -35,7 +35,7 @@ public interface JenkinsPluginExtension {
     public val configurePublishing: Property<Boolean>
 
     // Additional Test Injection
-    public val disabledTestInjection: Property<Boolean>
+    public val enableTestInjection: Property<Boolean>
 
     // Plugin File Config
     public val fileExtension: Property<String>
