@@ -4,7 +4,7 @@ kotlin = "2.1.21"
 gradle-api = "8.14.0"
 
 # Jenkins
-jenkins-core = "2.513"
+jenkins-core = "2.514"
 jenkins-gradle-jpi = "0.54.0"
 jenkins-plugin-bom = "2.513"
 
