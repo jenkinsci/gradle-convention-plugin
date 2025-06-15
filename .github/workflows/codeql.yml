@@ -1,0 +1,55 @@
+name: codeql.yml
+on:
+    push:
+        branches:
+            - 'main'
+    pull_request:
+        branches:
+            - 'main'
+    schedule:
+        -   cron: '0 3 * * SUN'
+
+jobs:
+    analyze:
+        name: Analyze
+        runs-on: ubuntu-latest
+
+        permissions:
+            actions: read
+            contents: read
+            security-events: write
+
+        strategy:
+            fail-fast: false
+            matrix:
+                language: [ 'java' ]
+
+        steps:
+            -   name: Checkout Repository
+                uses: actions/checkout@v4
+
+            -   name: Initialize CodeQL
+                uses: github/codeql-action/init@v3
+                with:
+                    languages: ${{matrix.language}}
+                    build-mode: manual
+                    queries: security-extended
+
+            -   name: Set Up JDK $${matrix.language}}
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'temurin'
+                    java-version: '17'
+                    cache: 'gradle'
+
+            -   name: Grant executable permissions for gradlew
+                run: chmod +x gradlew
+
+            -   name: Build with Gradle
+                run: ./gradlew assemble --no-daemon --console=plain
+
+            -   name: Perform CodeQL Analysis
+                run: github/codeql-action/analyze@v3
+                with:
+                    category: "/language:${{matrix.language}}"
+
