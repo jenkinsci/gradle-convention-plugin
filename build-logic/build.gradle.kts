@@ -3,26 +3,36 @@ plugins {
     `kotlin-dsl-precompiled-script-plugins`
 }
 
+dependencies {
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
+
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.gradlePlugin)
+
+    implementation(libs.spotless.gradlePlugin)
+}
+
+val javaToolchainVersion: Provider<Int> =
+    providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(17)
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain {
+        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
+    }
 
     compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
-        allWarningsAsErrors.set(true)
-        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xjvm-default=all")
-    }
-}
+        apiVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
 
-dependencies {
-    implementation(gradleApi())
-    implementation(gradleKotlinDsl())
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}")
+        freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
 }

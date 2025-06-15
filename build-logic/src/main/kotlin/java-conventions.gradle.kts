@@ -1,10 +1,12 @@
+import common.javaLanguageVersion
+
 plugins {
     `java-library`
 }
 
-configure<JavaPluginExtension> {
+java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion = javaLanguageVersion()
     }
 
     withSourcesJar()
@@ -13,10 +15,17 @@ configure<JavaPluginExtension> {
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
-    options.release.set(17)
-    options.compilerArgs.addAll(listOf(
-        "-Xlint:all",
-        "-Werror",
-        "-parameters"
-    ))
+    options.release.set(javaLanguageVersion().map { it.asInt() })
+    options.compilerArgs.addAll(
+        listOf(
+            "-parameters",
+            "-Xlint:deprecation",
+            "Xlint:unchecked"
+        )
+    )
+}
+
+tasks.withType<AbstractArchiveTask>() {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
 }

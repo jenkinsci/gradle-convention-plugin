@@ -1,36 +1,35 @@
 [versions]
 # Kotlin and Gradle
 kotlin = "2.1.21"
-gradle-api = "8.14.0"
+gradle = "8.14.2"
 
 # Jenkins
 jenkins-core = "2.514"
-jenkins-gradle-jpi = "0.54.0"
 jenkins-plugin-bom = "2.513"
+jenkins-gradle-jpi = "0.54.0"
 
+# Quality
+spotless = "7.0.4"
+ktlint = "1.6.0"
+googleJavaFormat = "1.27.0"
 
 [libraries]
-# Kotlin
+# Kotlin and Gradle
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
-
-# Gradle
-gradle-api = { module = "org.gradle:gradle-core-api", version.ref = "gradle-api" }
-gradle-kotlin-dsl = { module = "org.gradle.kotlin:gradle-kotlin-dsl", version.ref = "gradle-api" }
-gradle-kotlin-dsl-plugins = { module = "org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin", version.ref = "gradle-api" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 # Jenkins
 jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
 jenkins-gradle-jpi = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "jenkins-gradle-jpi" }
 jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
 
+# Quality
+spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "gradle-api" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]
-gradle = ["gradle-api", "gradle-kotlin-dsl", "gradle-kotlin-dsl-plugins"]

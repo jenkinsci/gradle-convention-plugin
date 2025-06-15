@@ -1,8 +1,8 @@
 plugins {
-    id("kotlin-conventions")
+    alias(libs.plugins.kotlin.jvm) apply false
 }
 
-subprojects {
-    group = "io.jenkins.gradle"
-    version = providers.gradleProperty("jenkins.convention.version").getOrElse("1.0.0-SNAPSHOT")
+tasks.named<Wrapper>("wrapper") {
+    gradleVersion = libs.versions.gradle.get()
+    distributionType = Wrapper.DistributionType.ALL
 }
