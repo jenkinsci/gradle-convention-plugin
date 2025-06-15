@@ -1,6 +1,6 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 
-val libs = the<VersionCatalogsExtension>().named("libs")
+private val libs = the<VersionCatalogsExtension>().named("libs")
 
 configure<SpotlessExtension> {
 
@@ -34,4 +34,12 @@ configure<SpotlessExtension> {
         trimTrailingWhitespace()
         endWithNewline()
     }
+}
+
+tasks.named("check") {
+    dependsOn("spotlessCheck")
+}
+
+tasks.named("build") {
+    dependsOn("spotlessApply")
 }

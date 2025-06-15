@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
 }
 
-val libs = the<VersionCatalogsExtension>().named("libs")
+private val libs = the<VersionCatalogsExtension>().named("libs")
 
 kotlin {
     jvmToolchain {
