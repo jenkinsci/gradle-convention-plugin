@@ -32,6 +32,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
     implementation(platform(libs.findLibrary("kotlin-bom").get()))
     implementation(libs.findLibrary("kotlin-reflect").get())
 }

@@ -1,9 +1,5 @@
 plugins {
-    id("kotlin-conventions")
+    id("base-conventions")
 }
 
 description = "API definitions & extension points"
-
-dependencies {
-    compileOnly(gradleApi())
-}

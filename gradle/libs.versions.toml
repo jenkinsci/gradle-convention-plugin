@@ -2,11 +2,12 @@
 # Kotlin and Gradle
 kotlin = "2.1.21"
 gradle = "8.14.2"
+jenkins-stapler = "1990.v99d303a_82457"
 
 # Jenkins
 jenkins-core = "2.514"
 jenkins-plugin-bom = "2.513"
-jenkins-gradle-jpi = "0.54.0"
+jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
 spotless = "7.0.4"
@@ -22,7 +23,8 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 
 # Jenkins
 jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
-jenkins-gradle-jpi = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "jenkins-gradle-jpi" }
+jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }
+jenkins-gradle-jpi2 = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "jenkins-gradle-jpi2" }
 jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
 
 # Quality

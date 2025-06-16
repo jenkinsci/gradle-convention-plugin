@@ -46,6 +46,7 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
 
     public abstract val fileExtension: Property<String>
 
+    // methods for Groovy/Java compatibility
     public fun developer(action: Action<JenkinsPluginDeveloper>) {
         val developer = project.objects.newInstance(JenkinsPluginDeveloper::class.java)
         action.execute(developer)
@@ -70,6 +71,6 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
         scm.set(scmConfig)
     }
 
-    private val computed: JenkinsConventionComputed = JenkinsConventionComputed(this)
+    private val computed: JenkinsConventionComputed by lazy { JenkinsConventionComputed(this) }
 
 }

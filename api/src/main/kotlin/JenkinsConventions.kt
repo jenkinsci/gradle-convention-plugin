@@ -1,10 +1,12 @@
-import javax.management.Notification
-
 public object JenkinsConventions {
 
     public const val CURRENT_JENKINS_LTS: String = "2.504.2"
 
     public const val MINIMUM_JENKINS_VERSION: String = "2.504.2"
+
+    public const val CURRENT_JENKINS_BOM_LTS_LINE: String = "2.504.x"
+
+    public const val CURRENT_JENKINS_BOM_VERSION: String = "4924.v6b_eb_a_79a_d9d0"
 
     public const val JAVA_VERSION: String = "2.504.2"
 
@@ -35,46 +37,38 @@ public object JenkinsConventions {
         )
     }
 
-    private object CommonDependencies {
-        val WORKFLOW_STEP_API = DependencyInfo(
+    public object CommonDependencies {
+        public val WORKFLOW_STEP_API: DependencyInfo = DependencyInfo(
             "workflow-step-api",
-            "700.v6e45cb_a_5a_a_21",
             "Pipeline Step API"
         )
-        val WORKFLOW_CPS_API = DependencyInfo(
-            "workflow-cps-plugin",
-            "4106.v7a_8a_8176d450",
+        public val WORKFLOW_CPS_API: DependencyInfo = DependencyInfo(
+            "workflow-cps",
             "Pipeline CPS execution"
         )
-        val CREDENTIALS = DependencyInfo(
+        public val CREDENTIALS: DependencyInfo = DependencyInfo(
             "credentials",
-            "1415.v831096eb_5534",
             "Credentials API"
         )
-        val STRUCTS = DependencyInfo(
+        public val STRUCTS: DependencyInfo = DependencyInfo(
             "structs",
-            "350.v3b_30f09f2363",
             "Data Structure Support"
         )
-        val PLAIN_CREDENTIALS = DependencyInfo(
+        public val PLAIN_CREDENTIALS: DependencyInfo = DependencyInfo(
             "plain-credentials",
-            "195.vb_906e9073dee",
             "Plain text Credentials"
         )
-        val SSH_CREDENTIALS = DependencyInfo(
+        public val SSH_CREDENTIALS: DependencyInfo = DependencyInfo(
             "ssh-credentials",
-            "355.v9b_e5b_cde5003",
             "SSH credentials support"
         )
-        val GIT = DependencyInfo(
+        public val GIT: DependencyInfo = DependencyInfo(
             "git",
-            "5.7.0",
             "Git SCM support"
         )
-        val JENKINS_CORE = DependencyInfo(
-            "jenkins-core",
-            CURRENT_JENKINS_LTS,
-            "Jenkins core"
+
+        public val ALL_PLUGINS: Set<DependencyInfo> = setOf(
+            WORKFLOW_STEP_API, WORKFLOW_CPS_API, CREDENTIALS, STRUCTS, PLAIN_CREDENTIALS, SSH_CREDENTIALS, GIT
         )
     }
 
@@ -109,8 +103,7 @@ public object JenkinsConventions {
     )
 
     public data class DependencyInfo(
-        private val pluginId: String,
-        private val version: String,
+        val pluginId: String,
         private val description: String
     )
 
