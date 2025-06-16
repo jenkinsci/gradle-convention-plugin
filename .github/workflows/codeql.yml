@@ -35,7 +35,7 @@ jobs:
                     build-mode: manual
                     queries: security-extended
 
-            -   name: Set Up JDK $${matrix.language}}
+            -   name: Set Up JDK ${{matrix.language}}
                 uses: actions/setup-java@v4
                 with:
                     distribution: 'temurin'
@@ -49,7 +49,7 @@ jobs:
                 run: ./gradlew assemble --no-daemon --console=plain
 
             -   name: Perform CodeQL Analysis
-                run: github/codeql-action/analyze@v3
+                uses: github/codeql-action/analyze@v3
                 with:
                     category: "/language:${{matrix.language}}"
 
