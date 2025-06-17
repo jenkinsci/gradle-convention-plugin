@@ -33,7 +33,6 @@ jobs:
                 with:
                     languages: ${{matrix.language}}
                     build-mode: manual
-                    queries: security-extended
 
             -   name: Set Up JDK ${{matrix.language}}
                 uses: actions/setup-java@v4
