@@ -1,5 +1,6 @@
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
@@ -10,27 +11,27 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
 
     public abstract val pluginId: Property<String>
 
-    public abstract val displayName: Property<String>
+    public abstract val humanReadableName: Property<String>
 
     public abstract val description: Property<String>
 
-    public abstract val url: Property<URI>
+    public abstract val homePage: Property<URI>
 
     public abstract val sandboxed: Property<Boolean>
 
-    public abstract val pluginFirstClassLoader: Property<Boolean>
+    public abstract val usePluginFirstClassLoader: Property<Boolean>
 
-    public abstract val maskClasses: SetProperty<String>
+    public abstract val maskedClassesFromCore: SetProperty<String>
 
-    public abstract val developers: ListProperty<JenkinsPluginDeveloper>
+    public abstract val pluginDevelopers: ListProperty<JenkinsPluginDeveloper>
 
-    public abstract val licenses: ListProperty<JenkinsPluginLicense>
+    public abstract val pluginLicenses: ListProperty<JenkinsPluginLicense>
 
-    public abstract val dependencies: ListProperty<JenkinsPluginDependency>
+    public abstract val pluginDependencies: ListProperty<JenkinsPluginDependency>
 
-    public abstract val categories: SetProperty<String>
+    public abstract val pluginCategories: SetProperty<String>
 
-    public abstract val labels: SetProperty<String>
+    public abstract val pluginLabels: SetProperty<String>
 
     public abstract val pipelineCompatible: Property<Boolean>
 
@@ -40,35 +41,55 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
 
     public abstract val issueTrackerUrl: Property<URI>
 
-    public abstract val scm: Property<JenkinsPluginScm>
+    public abstract val gitVersion: Property<JenkinsPluginGitVersionExtension>
+
+    public abstract val scmTag: Property<String>
 
     public abstract val minimumJenkinsVersion: Property<String>
 
-    public abstract val fileExtension: Property<String>
+    public abstract val extension: Property<String>
+
+    public abstract val gitHub: Property<URI>
+
+    public abstract val incrementalsRepoUrl: Property<URI>
+
+    public abstract val testJvmArguments: ListProperty<String>
+
+    public abstract val generatedTestClassName: Property<String>
+
+    public abstract val workDir: DirectoryProperty
+
+    public abstract val repoUrl: Property<URI>
+
+    public abstract val snapshotRepoUrl: Property<URI>
+
+    public abstract val configureRepositories: Property<Boolean>
+
+    public abstract val configurePublishing: Property<Boolean>
 
     // methods for Groovy/Java compatibility
-    public fun developer(action: Action<JenkinsPluginDeveloper>) {
+    public fun pluginDeveloper(action: Action<JenkinsPluginDeveloper>) {
         val developer = project.objects.newInstance(JenkinsPluginDeveloper::class.java)
         action.execute(developer)
-        developers.add(developer)
+        pluginDevelopers.add(developer)
     }
 
-    public fun license(action: Action<JenkinsPluginLicense>) {
+    public fun pluginLicense(action: Action<JenkinsPluginLicense>) {
         val license = project.objects.newInstance(JenkinsPluginLicense::class.java)
         action.execute(license)
-        licenses.add(license)
+        pluginLicenses.add(license)
     }
 
-    public fun dependency(action: Action<JenkinsPluginDependency>) {
+    public fun pluginDependency(action: Action<JenkinsPluginDependency>) {
         val dependency = project.objects.newInstance(JenkinsPluginDependency::class.java)
         action.execute(dependency)
-        dependencies.add(dependency)
+        pluginDependencies.add(dependency)
     }
 
-    public fun scm(action: Action<JenkinsPluginScm>) {
-        val scmConfig = project.objects.newInstance(JenkinsPluginScm::class.java)
-        action.execute(scmConfig)
-        scm.set(scmConfig)
+    public fun gitVersion(action: Action<JenkinsPluginGitVersionExtension>) {
+        val gitConfig = project.objects.newInstance(JenkinsPluginGitVersionExtension::class.java)
+        action.execute(gitConfig)
+        gitVersion.set(gitConfig)
     }
 
     private val computed: JenkinsConventionComputed by lazy { JenkinsConventionComputed(this) }
