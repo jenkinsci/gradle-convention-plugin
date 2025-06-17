@@ -1,11 +1,9 @@
 name: codeql.yml
 on:
     push:
-        branches:
-            - 'main'
+        branches: [ "main" ]
     pull_request:
-        branches:
-            - 'main'
+        branches: [ "main" ]
     schedule:
         -   cron: '0 3 * * SUN'
 
@@ -27,13 +25,15 @@ jobs:
         steps:
             -   name: Checkout Repository
                 uses: actions/checkout@v4
+                with:
+                    fetch-depth: '1'
 
             -   name: Initialize CodeQL
                 uses: github/codeql-action/init@v3
                 with:
-                    languages: ${{matrix.language}}
+                    languages: ${{ matrix.language }}
 
-            -   name: Set Up JDK ${{matrix.language}}
+            -   name: Set Up JDK for ${{ matrix.language }}
                 uses: actions/setup-java@v4
                 with:
                     distribution: 'temurin'
@@ -41,10 +41,12 @@ jobs:
                     cache: 'gradle'
 
             -   name: Grant executable permissions for gradlew
-                run: chmod +x gradlew
+                run: chmod +x ./gradlew
 
             -   name: Build with Gradle
                 run: ./gradlew assemble --no-daemon --console=plain
 
             -   name: Perform CodeQL Analysis
                 uses: github/codeql-action/analyze@v3
+                with:
+                    upload: true
