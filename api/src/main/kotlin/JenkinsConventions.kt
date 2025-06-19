@@ -4,11 +4,11 @@ public object JenkinsConventions {
 
     public const val MINIMUM_JENKINS_VERSION: String = "2.504.2"
 
-    public const val CURRENT_JENKINS_BOM_LTS_LINE: String = "2.504.x"
+    public const val CURRENT_JENKINS_BOM_LTS_VERSION: String = "2.504.x"
 
     public const val CURRENT_JENKINS_BOM_VERSION: String = "4924.v6b_eb_a_79a_d9d0"
 
-    public const val JAVA_VERSION: String = "2.504.2"
+    public const val JAVA_VERSION: String = "24"
 
     public const val COMMUNITY_GROUP_ID: String = "org.jenkins-ci.plugin"
 
@@ -75,10 +75,10 @@ public object JenkinsConventions {
     public object Naming {
 
         public fun projectNameToPluginId(projectName: String): String {
-            return if (projectName.endsWith("-plugin")) {
-                projectName.substring(0, projectName.length - 7)
-            } else {
-                projectName
+            return when {
+                projectName.endsWith("-jenkins-plugin") -> projectName.substring(0, projectName.length - 15)
+                projectName.endsWith("-plugin") -> projectName.substring(0, projectName.length - 7)
+                else -> projectName
             }
         }
 
@@ -87,7 +87,7 @@ public object JenkinsConventions {
         }
 
         public fun pluginIdToGitHubRepo(pluginId: String): String {
-            return if (pluginId.endsWith("-")) {
+            return if (pluginId.endsWith("-plugin")) {
                 pluginId
             } else {
                 "$pluginId-plugin"
@@ -106,5 +106,4 @@ public object JenkinsConventions {
         val pluginId: String,
         private val description: String
     )
-
 }

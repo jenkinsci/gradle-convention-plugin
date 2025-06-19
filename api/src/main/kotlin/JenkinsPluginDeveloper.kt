@@ -1,16 +1,17 @@
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import java.net.URI
+import javax.inject.Inject
 
-public interface JenkinsPluginDeveloper {
+public abstract class JenkinsPluginDeveloper @Inject constructor() {
 
-    public val id: Property<String>
-    public val name: Property<String>
-    public val email: Property<String>
-    public val portfolioUrl: Property<URI>
-    public val organization: Property<String>
-    public val organizationUrl: Property<URI>
-    public val roles: SetProperty<String>
-    public val timezone: Property<String>
+    public abstract val id: Property<String>
+    public abstract val name: Property<String>
+    public abstract val email: Property<String>
+    public abstract val portfolioUrl: Property<URI>
+    public abstract val organization: Property<String>
+    public abstract val organizationUrl: Property<URI>
+    public abstract val roles: SetProperty<String>
+    public abstract val timezone: Property<String>
 
 }

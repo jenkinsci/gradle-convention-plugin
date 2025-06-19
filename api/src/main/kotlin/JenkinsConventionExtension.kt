@@ -1,13 +1,18 @@
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import java.net.URI
 import javax.inject.Inject
 
-public abstract class JenkinsConventionExtension @Inject constructor(protected val project: Project) {
+public abstract class JenkinsConventionExtension @Inject constructor(
+    protected val project: Project,
+    protected val objects: ObjectFactory = project.objects
+) {
 
     public abstract val pluginId: Property<String>
 
@@ -39,8 +44,6 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
 
     public abstract val requireEscapeByDefaultInJelly: Property<Boolean>
 
-    public abstract val issueTrackerUrl: Property<URI>
-
     public abstract val gitVersion: Property<JenkinsPluginGitVersionExtension>
 
     public abstract val scmTag: Property<String>
@@ -48,8 +51,6 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
     public abstract val minimumJenkinsVersion: Property<String>
 
     public abstract val extension: Property<String>
-
-    public abstract val gitHub: Property<URI>
 
     public abstract val incrementalsRepoUrl: Property<URI>
 
@@ -67,31 +68,87 @@ public abstract class JenkinsConventionExtension @Inject constructor(protected v
 
     public abstract val configurePublishing: Property<Boolean>
 
+    public open val gitHubUrl: Provider<URI> get() = computed.githubUrl
+    public open val issueTrackerUrl: Provider<URI> get() = computed.computedIssueTrackerUrl
+    public open val documentation: Provider<URI> get() = computed.computedDocumentationUrl
+
     // methods for Groovy/Java compatibility
-    public fun pluginDeveloper(action: Action<JenkinsPluginDeveloper>) {
-        val developer = project.objects.newInstance(JenkinsPluginDeveloper::class.java)
+    public open fun pluginDeveloper(action: Action<JenkinsPluginDeveloper>) {
+        val developer = objects.newInstance(JenkinsPluginDeveloper::class.java)
         action.execute(developer)
         pluginDevelopers.add(developer)
     }
 
-    public fun pluginLicense(action: Action<JenkinsPluginLicense>) {
-        val license = project.objects.newInstance(JenkinsPluginLicense::class.java)
+    public open fun pluginDeveloper(action: JenkinsPluginDeveloper.() -> Unit) {
+        val developer = objects.newInstance(JenkinsPluginDeveloper::class.java)
+        action(developer)
+        pluginDevelopers.add(developer)
+    }
+
+    public open fun pluginLicense(action: Action<JenkinsPluginLicense>) {
+        val license = objects.newInstance(JenkinsPluginLicense::class.java)
         action.execute(license)
         pluginLicenses.add(license)
     }
 
-    public fun pluginDependency(action: Action<JenkinsPluginDependency>) {
-        val dependency = project.objects.newInstance(JenkinsPluginDependency::class.java)
+    public open fun pluginLicense(action: JenkinsPluginLicense.() -> Unit) {
+        val license = objects.newInstance(JenkinsPluginLicense::class.java)
+        action(license)
+        pluginLicenses.add(license)
+    }
+
+    public open fun pluginDependency(action: Action<JenkinsPluginDependency>) {
+        val dependency = objects.newInstance(JenkinsPluginDependency::class.java)
         action.execute(dependency)
         pluginDependencies.add(dependency)
     }
 
-    public fun gitVersion(action: Action<JenkinsPluginGitVersionExtension>) {
-        val gitConfig = project.objects.newInstance(JenkinsPluginGitVersionExtension::class.java)
+    public open fun pluginDependency(action: JenkinsPluginDependency.() -> Unit) {
+        val dependency = objects.newInstance(JenkinsPluginDependency::class.java)
+        action(dependency)
+        pluginDependencies.add(dependency)
+    }
+
+    public open fun dependsOn(pluginId: String, action: Action<JenkinsPluginDependency>) {
+        val dependency = objects.newInstance(JenkinsPluginDependency::class.java).apply {
+            this.pluginId.set(pluginId)
+        }
+        action.execute(dependency)
+        pluginDependencies.add(dependency)
+    }
+
+    public open fun dependsOn(pluginId: String, action: JenkinsPluginDependency.() -> Unit = {}) {
+        val dependency = objects.newInstance(JenkinsPluginDependency::class.java).apply {
+            this.pluginId.set(pluginId)
+        }
+        action(dependency)
+        pluginDependencies.add(dependency)
+    }
+
+    public open fun dependsOn(pluginId: String, version: String = "latest", optional: Boolean = false) {
+        dependsOn(pluginId) {
+            this.version.set(version)
+            this.optional.set(optional)
+        }
+    }
+
+    public open fun gitVersion(action: Action<JenkinsPluginGitVersionExtension>) {
+        val gitConfig = objects.newInstance(JenkinsPluginGitVersionExtension::class.java)
         action.execute(gitConfig)
         gitVersion.set(gitConfig)
     }
 
-    private val computed: JenkinsConventionComputed by lazy { JenkinsConventionComputed(this) }
+    public open fun gitVersion(action: JenkinsPluginGitVersionExtension.() -> Unit) {
+        val gitConfig = objects.newInstance(JenkinsPluginGitVersionExtension::class.java)
+        action(gitConfig)
+        gitVersion.set(gitConfig)
+    }
+
+    public open val computed: JenkinsConventionComputed
+        get() = JenkinsConventionComputed(this)
+
+    public companion object {
+        public const val EXTENSION_NAME: String = "jenkinsPlugin"
+    }
 
 }

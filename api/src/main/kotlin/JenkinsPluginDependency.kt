@@ -1,12 +1,13 @@
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
+import javax.inject.Inject
 
-public interface JenkinsPluginDependency {
+public abstract class JenkinsPluginDependency @Inject constructor() {
 
-    public val pluginId: Property<String>
-    public val version: Property<String>
-    public val optional: Property<Boolean>
-    public val features: SetProperty<String>
-    public val reason: Property<String>
+    public abstract val pluginId: Property<String>
+    public abstract val version: Property<String>
+    public abstract val optional: Property<Boolean>
+    public abstract val features: SetProperty<String>
+    public abstract val reason: Property<String>
 
 }

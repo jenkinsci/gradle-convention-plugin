@@ -1,15 +1,16 @@
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-public interface JenkinsPluginGitVersionExtension {
+public abstract class JenkinsPluginGitVersionExtension @Inject constructor() {
 
-    public val versionFormat: Property<String>
-    public val versionPrefix: Property<String>
-    public val sanitize: Property<Boolean>
-    public val abbrevLength: Property<Int>
-    public val allowDirty: Property<Boolean>
-    public val gitRoot: DirectoryProperty
-    public val outputFile: RegularFileProperty
+    public abstract val versionFormat: Property<String>
+    public abstract val versionPrefix: Property<String>
+    public abstract val sanitize: Property<Boolean>
+    public abstract val abbrevLength: Property<Int>
+    public abstract val allowDirty: Property<Boolean>
+    public abstract val gitRoot: DirectoryProperty
+    public abstract val outputFile: RegularFileProperty
 
 }

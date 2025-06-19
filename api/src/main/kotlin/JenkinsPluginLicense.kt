@@ -1,11 +1,12 @@
 import org.gradle.api.provider.Property
 import java.net.URI
+import javax.inject.Inject
 
-public interface JenkinsPluginLicense {
+public abstract class JenkinsPluginLicense @Inject constructor() {
 
-    public val name: Property<String>
-    public val url: Property<URI>
-    public val distribution: Property<String>
-    public val comments: Property<String>
+    public abstract val name: Property<String>
+    public abstract val url: Property<URI>
+    public abstract val distribution: Property<String>
+    public abstract val comments: Property<String>
 
 }
