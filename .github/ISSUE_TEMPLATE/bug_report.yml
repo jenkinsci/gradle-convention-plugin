@@ -1,0 +1,151 @@
+name: Bug Report
+description: Report a bug in the Jenkins Gradle Convention Plugin
+title: "[Bug]: "
+labels: [ "type: bug", "status: needs-triage" ]
+body:
+    -   type: markdown
+        attributes:
+            value: |
+                Thanks for taking the time to fill out this bug report! Please fill out the form below with as much detail as possible.
+
+                Before submitting, please check if a similar issue already exists.
+
+    -   type: checkboxes
+        id: checks
+        attributes:
+            label: First Check
+            options:
+                -   label: I have searched the existing issues to ensure this is not a duplicate
+                    required: true
+                -   label: I am using the latest version of the plugin
+                    required: false
+                -   label: I can reproduce this issue consistently
+                    required: false
+
+    -   type: dropdown
+        id: gradleVersion
+        attributes:
+            label: Gradle Version
+            description: Which Gradle version are you using?
+            options:
+                - Gradle 9.0+
+                - Gradle 8.10+
+                - Gradle 8.0-8.9
+                - Gradle 7.0
+                - Other (please specify in environment details)
+            multiple: false
+        validations:
+            required: true
+
+    -   type: dropdown
+        id: javaVersion
+        attributes:
+            label: Java Version
+            description: Which Java version are you using?
+            options:
+                - Java 21
+                - Java 17
+                - Java 11
+                - Java 8
+                - Other (please specify in environment details)
+            multiple: false
+        validations:
+            required: true
+
+    -   type: dropdown
+        id: jenkinsVersion
+        attributes:
+            label: Jenkins Version
+            description: Which Jenkins version are you targeting?
+            options:
+                - Latest LTS (2.504.x)
+                - Previous LTS (2.492.x)
+                - Weekly Release (2.514+)
+                - Other (please specify in environment details)
+            multiple: false
+        validations:
+            required: true
+
+    -   type: input
+        id: pluginVersion
+        attributes:
+            label: Plugin Version
+            description: Which version of the Jenkins Gradle Convention Plugin are you using?
+            placeholder: "latest"
+        validations:
+            required: true
+
+    -   type: textarea
+        id: environment
+        attributes:
+            label: Environment Details
+            description: Additional environment information (OS, IDE, other relevant plugins)
+            placeholder: "OS: Windows 11 24H2 or macOS 15.4, IDE: IntelliJ IDEA 2025.2, Additional plugins: kotlin-jvm 2.1.20"
+        validations:
+            required: false
+
+    -   type: textarea
+        id: what-happened
+        attributes:
+            label: What happened?
+            description: Also describe what you expected to happen
+            placeholder: "The plugin failed to apply quality checks when using a multi-module project structure. I expected all modules to have quality checks applied."
+        validations:
+            required: true
+
+    -   type: textarea
+        id: reproduction
+        attributes:
+            label: Reproduction steps
+            description: Minimal steps to reproduce the issue
+            placeholder: |
+                1. Apply the plugin to a Gradle project
+                2. Configure the plugin in build.gradle
+                3. Run './gradlew clean build'
+                4. See error or unexpected behavior
+        validations:
+            required: true
+
+    -   type: textarea
+        id: logs
+        attributes:
+            label: Relevant log output
+            description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+            render: shell
+            placeholder: |
+                > Task :compileJava FAILED
+                FAILURE: Build failed with an exception.
+                * What went wrong:
+                Execution failed for task ':compileJava'.
+                > Could not resolve all files for configuration ':compileClasspath'.
+                  Required dependency 'com.example:library:1.0' not found
+        validations:
+            required: false
+
+    -   type: textarea
+        id: buildScript
+        attributes:
+            label: Build Script
+            description: Please include your build script configuration
+            render: kotlin
+            placeholder: |
+                plugins {
+                    id("io.jenkins.gradle.convention-plugin") version "1.0.0"
+                }
+
+                jenkinsPlugins {
+                    plugin {
+                        pluginId("my-plugin")
+                        // Other configuration
+                    }
+                }
+        validations:
+            required: false
+
+    -   type: textarea
+        id: additional
+        attributes:
+            label: Additional Context
+            description: Any other context or screenshots about the problem
+        validations:
+            required: false
