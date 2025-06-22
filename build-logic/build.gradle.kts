@@ -39,6 +39,7 @@ kotlin {
         jvmTarget = JvmTarget.JVM_17
 
         allWarningsAsErrors.set(true)
+        progressiveMode.set(true)
 
         optIn.add("kotlin.RequiresOptIn")
         freeCompilerArgs.addAll(
