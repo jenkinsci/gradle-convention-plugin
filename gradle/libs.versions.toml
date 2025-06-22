@@ -5,8 +5,8 @@ gradle = "8.14.2"
 jenkins-stapler = "1990.v99d303a_82457"
 
 # Jenkins
-jenkins-core = "2.514"
-jenkins-plugin-bom = "2.513"
+jenkins-core = "2.515"
+jenkins-plugin-bom = "4948.vcf1d17350668"
 jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
