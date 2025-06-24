@@ -16,8 +16,8 @@ kotlin {
 
     compilerOptions {
         apiVersion =
-            org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
-        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+            org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
         jvmTarget = JvmTarget.JVM_17
 
         allWarningsAsErrors.set(true)

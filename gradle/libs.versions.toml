@@ -1,7 +1,7 @@
 [versions]
 # Kotlin and Gradle
-kotlin = "2.1.21"
-gradle = "8.14.2"
+kotlin = "2.2.0"
+gradle = "9.0.0 RC1"
 jenkins-stapler = "1990.v99d303a_82457"
 
 # Jenkins
