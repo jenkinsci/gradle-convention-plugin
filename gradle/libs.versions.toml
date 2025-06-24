@@ -2,7 +2,7 @@
 # Kotlin and Gradle
 kotlin = "2.2.0"
 gradle = "9.0.0 RC1"
-jenkins-stapler = "1990.v99d303a_82457"
+jenkins-stapler = "1994.vd86361073b_15"
 
 # Jenkins
 jenkins-core = "2.515"
