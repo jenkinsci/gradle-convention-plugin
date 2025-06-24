@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.kotlin.jvm)
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
 }
@@ -34,12 +35,12 @@ kotlin {
 
     compilerOptions {
         apiVersion =
-            org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
-        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
+            org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1
         jvmTarget = JvmTarget.JVM_17
 
         allWarningsAsErrors.set(true)
-        progressiveMode.set(true)
+        progressiveMode.set(false)
 
         optIn.add("kotlin.RequiresOptIn")
         freeCompilerArgs.addAll(

@@ -3,13 +3,6 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 rootProject.name = "jenkins-gradle-convention-plugin"
 
 pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.namespace == "org.jetbrains.kotlin" && requested.id.name == "jvm") {
-                useVersion("2.2.0")
-            }
-        }
-    }
     includeBuild("build-logic")
     repositories {
         gradlePluginPortal()
