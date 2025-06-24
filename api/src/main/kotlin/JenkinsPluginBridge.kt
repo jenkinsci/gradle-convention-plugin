@@ -15,10 +15,6 @@ public interface JenkinsPluginBridge {
         }
     }
 
-    public fun isValidJenkinsVersion(version: String): Boolean {
-        return version.matches(Regex("^\\d+\\.\\d{3}\\.\\d+$"))
-    }
-
     public companion object {
         public const val JPI2_PLUGIN_ID: String = "org.jenkins-ci.jpi2"
         public const val JPI_PLUGIN_ID: String = "org.jenkins-ci.jpi"

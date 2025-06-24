@@ -20,19 +20,19 @@ public object JenkinsConventions {
         distribution = "repo"
     )
 
-    private object Categories {
-        const val BUILD = "build"
-        const val SCM = "scm"
-        const val NOTIFICATION = "notification"
-        const val DEPLOYMENT = "deployment"
-        const val SECURITY = "security"
-        const val PIPELINE = "pipeline"
-        const val TESTING = "testing"
-        const val INTEGRATION = "integration"
-        const val ADMINISTRATION = "administration"
-        const val MISC = "misc"
+    public object Categories {
+        public const val BUILD: String = "build"
+        public const val SCM: String = "scm"
+        public const val NOTIFICATION: String = "notification"
+        public const val DEPLOYMENT: String = "deployment"
+        public const val SECURITY: String = "security"
+        public const val PIPELINE: String = "pipeline"
+        public const val TESTING: String = "testing"
+        public const val INTEGRATION: String = "integration"
+        public const val ADMINISTRATION: String = "administration"
+        public const val MISC: String = "misc"
 
-        val ALL = setOf(
+        public val ALL: Set<String> = setOf(
             BUILD, SCM, NOTIFICATION, DEPLOYMENT, SECURITY, PIPELINE, TESTING, INTEGRATION, ADMINISTRATION, MISC
         )
     }

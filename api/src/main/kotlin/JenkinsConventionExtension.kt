@@ -73,37 +73,37 @@ public abstract class JenkinsConventionExtension @Inject constructor(
     public open val documentation: Provider<URI> get() = computed.computedDocumentationUrl
 
     // methods for Groovy/Java compatibility
-    public open fun pluginDeveloper(action: Action<JenkinsPluginDeveloper>) {
+    public open fun addPluginDeveloper(action: Action<JenkinsPluginDeveloper>) {
         val developer = objects.newInstance(JenkinsPluginDeveloper::class.java)
         action.execute(developer)
         pluginDevelopers.add(developer)
     }
 
-    public open fun pluginDeveloper(action: JenkinsPluginDeveloper.() -> Unit) {
+    public open fun addPluginDeveloper(action: JenkinsPluginDeveloper.() -> Unit) {
         val developer = objects.newInstance(JenkinsPluginDeveloper::class.java)
         action(developer)
         pluginDevelopers.add(developer)
     }
 
-    public open fun pluginLicense(action: Action<JenkinsPluginLicense>) {
+    public open fun addPluginLicense(action: Action<JenkinsPluginLicense>) {
         val license = objects.newInstance(JenkinsPluginLicense::class.java)
         action.execute(license)
         pluginLicenses.add(license)
     }
 
-    public open fun pluginLicense(action: JenkinsPluginLicense.() -> Unit) {
+    public open fun addPluginLicense(action: JenkinsPluginLicense.() -> Unit) {
         val license = objects.newInstance(JenkinsPluginLicense::class.java)
         action(license)
         pluginLicenses.add(license)
     }
 
-    public open fun pluginDependency(action: Action<JenkinsPluginDependency>) {
+    public open fun addPluginDependency(action: Action<JenkinsPluginDependency>) {
         val dependency = objects.newInstance(JenkinsPluginDependency::class.java)
         action.execute(dependency)
         pluginDependencies.add(dependency)
     }
 
-    public open fun pluginDependency(action: JenkinsPluginDependency.() -> Unit) {
+    public open fun addPluginDependency(action: JenkinsPluginDependency.() -> Unit) {
         val dependency = objects.newInstance(JenkinsPluginDependency::class.java)
         action(dependency)
         pluginDependencies.add(dependency)
