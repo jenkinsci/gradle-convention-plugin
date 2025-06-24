@@ -54,7 +54,7 @@ public object JenkinsPluginValidation {
         errors: MutableList<String>,
         warnings: MutableList<String>,
     ) {
-        val minJenkinsVersion = extension.minimumJenkinsVersion.get()
+        val minJenkinsVersion = extension.minimumJenkinsVersion.orNull
         if (minJenkinsVersion != null) {
             val version = parseVersion(minJenkinsVersion)
             if (version == null) {
