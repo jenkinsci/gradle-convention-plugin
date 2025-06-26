@@ -33,4 +33,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":all", ":api", ":core", ":quality", ":publishing", ":integration-tests", ":examples")
+include(":api", ":core")
