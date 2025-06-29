@@ -33,4 +33,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":api", ":core")
+include("convention-plugin")

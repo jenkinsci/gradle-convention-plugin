@@ -4,18 +4,18 @@ import java.net.URI
 
 public class JenkinsConventionComputed(private val extension: JenkinsConventionExtension) {
 
-    public val githubUrl: Provider<URI> = extension.gitHubUrl.map { url ->
-        val connection = url.toString()
-
-        val repoPattern = """github\.com[:/]([^/]+/[^/.]+)""".toRegex()
-        val match = repoPattern.find(connection)
-
-        if (match != null) {
-            URI.create("https://github.com/${match.groupValues[1]}")
-        } else {
-            URI.create("https://github.com/jenkinsci/unknown")
-        }
-    }
+//    public val githubUrl: Provider<URI> = extension.gitHubUrl.map { url ->
+//        val connection = url.toString()
+//
+//        val repoPattern = """github\.com[:/]([^/]+/[^/.]+)""".toRegex()
+//        val match = repoPattern.find(connection)
+//
+//        if (match != null) {
+//            URI.create("https://github.com/${match.groupValues[1]}")
+//        } else {
+//            URI.create("https://github.com/jenkinsci/unknown")
+//        }
+//    }
 
     public val computedIssueTrackerUrl: Provider<URI> = githubUrl.map { github ->
         URI.create("${github}/issues")
