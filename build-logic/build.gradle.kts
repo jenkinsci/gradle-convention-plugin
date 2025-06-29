@@ -1,28 +1,20 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
     `kotlin-dsl`
-    `kotlin-dsl-precompiled-script-plugins`
+    `java-gradle-plugin`
+    alias(libs.plugins.kotlin.jvm)
 }
 
-dependencies {
-    implementation(gradleApi())
-    implementation(gradleKotlinDsl())
-
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlin.reflect)
-    implementation(libs.kotlin.gradlePlugin)
-
-    implementation(libs.spotless.gradlePlugin)
-}
+group = "io.jenkins.gradle.conventions"
+version = rootProject.version
 
 val javaToolchainVersion: Provider<Int> =
     providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(17)
 
 java {
     toolchain {
-        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
+        languageVersion = javaToolchainVersion.map( JavaLanguageVersion::of)
     }
 }
 
@@ -49,3 +41,31 @@ kotlin {
         )
     }
 }
+
+gradlePlugin {
+    plugins {
+        create("kotlinConventions") {
+            id = "conventions.kotlin"
+            displayName = "Kotlin Conventions"
+            implementationClass = "conventions.KotlinConventionsPlugin"
+        }
+    }
+    plugins {
+        create("qualityConventions") {
+            id = "conventions.qualtiy"
+            displayName = "Quality Conventions"
+            implementationClass = "conventions.QualityConventionsPlugin"
+        }
+    }
+}
+
+dependencies {
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.spotless.gradle.plugin)
+    implementation(libs.detekt.gradle.plugin)
+}
+

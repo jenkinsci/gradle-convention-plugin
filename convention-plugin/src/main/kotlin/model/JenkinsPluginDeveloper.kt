@@ -1,3 +1,5 @@
+package model
+
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import java.net.URI
@@ -13,5 +15,10 @@ public abstract class JenkinsPluginDeveloper @Inject constructor() {
     public abstract val organizationUrl: Property<URI>
     public abstract val roles: SetProperty<String>
     public abstract val timezone: Property<String>
+
+    init {
+        roles.convention(emptySet())
+        timezone.convention("UTC")
+    }
 
 }

@@ -79,92 +79,92 @@ public class JpiPluginBridge : JenkinsPluginBridge {
         return project.extensions.findByName("jpi") as? JpiExtension
     }
 
-    private fun mapExtensionProperties(convention: JenkinsConventionExtension, jpiExtension: JpiExtension) {
-
-        convention.pluginId.orNull?.let { jpiExtension.shortName = it }
-
-        convention.humanReadableName.orNull?.let { jpiExtension.humanReadableName.set(it) }
-
-        convention.minimumJenkinsVersion.orNull?.let {
-            jpiExtension.jenkinsVersion.set(it)
-            jpiExtension.compatibleSinceVersion = it
-        }
-
-        convention.usePluginFirstClassLoader.orNull?.let { jpiExtension.pluginFirstClassLoader = it }
-
-        convention.sandboxed.orNull?.let { jpiExtension.sandboxed.set(it) }
-
-        convention.maskedClassesFromCore.orNull?.takeIf { it.isNotEmpty() }
-            ?.joinToString(" ")?.also { jpiExtension.maskClasses = it }
-
-        convention.generateTests.orNull?.let { jpiExtension.generateTests.set(it) }
-
-        convention.generatedTestClassName.orNull?.let { jpiExtension.generatedTestClassName.set(it) }
-
-        convention.requireEscapeByDefaultInJelly.orNull?.let { jpiExtension.requireEscapeByDefaultInJelly.set(it) }
-
-        convention.homePage.orNull?.let { jpiExtension.homePage.set(it) }
-
-        convention.extension.orNull?.let { jpiExtension.extension.set(it) }
-
-        convention.gitHubUrl.orNull?.let { jpiExtension.gitHub.set(it) }
-
-        convention.scmTag.orNull?.let { jpiExtension.scmTag.set(it) }
-
-        convention.incrementalsRepoUrl.orNull?.let { jpiExtension.incrementalsRepoUrl.set(it.toString()) }
-
-        convention.testJvmArguments.orNull?.let { jpiExtension.testJvmArguments.set(it) }
-
-        convention.workDir.orNull?.asFile?.let {
-            jpiExtension.workDir = it
-        }
-
-        convention.repoUrl.orNull?.let { jpiExtension.repoUrl = it.toString() }
-
-        convention.snapshotRepoUrl.orNull?.let { jpiExtension.snapshotRepoUrl = it.toString() }
-
-        convention.configurePublishing.orNull?.let { jpiExtension.configurePublishing = it }
-
-        convention.configureRepositories.orNull?.let { jpiExtension.configureRepositories = it }
-
-        convention.pluginDevelopers.orNull?.forEach { dev ->
-            jpiExtension.developers(Action { developers ->
-                developers.developer(Action { developer ->
-                    developer.id.set(dev.id)
-                    developer.name.set(dev.name)
-                    developer.email.set(dev.email)
-                    developer.url.set(dev.portfolioUrl.toString())
-                    developer.organization.set(dev.organization)
-                    developer.organizationUrl.set(dev.organizationUrl.toString())
-                    developer.roles.set(dev.roles)
-                    developer.timezone.set(dev.timezone)
-                })
-            })
-        }
-
-        convention.pluginLicenses.orNull?.forEach { lic ->
-            jpiExtension.licenses(Action { licenses ->
-                licenses.license(Action { license ->
-                    license.name.set(lic.name)
-                    license.url.set(lic.url.toString())
-                    license.distribution.set(lic.distribution)
-                    license.comments.set(lic.comments)
-                })
-            })
-        }
-
-
-        convention.gitVersion.orNull?.let { config ->
-            jpiExtension.gitVersion.apply {
-                versionFormat.set(config.versionFormat)
-                abbrevLength.set(config.abbrevLength)
-                allowDirty.set(config.allowDirty)
-                gitRoot.set(config.gitRoot)
-                sanitize.set(config.sanitize)
-                outputFile.set(config.outputFile)
-                versionPrefix.set(config.versionPrefix)
-            }
-        }
-    }
+//    private fun mapExtensionProperties(convention: JenkinsConventionExtension, jpiExtension: JpiExtension) {
+//
+//        convention.pluginId.orNull?.let { jpiExtension.shortName = it }
+//
+//        convention.humanReadableName.orNull?.let { jpiExtension.humanReadableName.set(it) }
+//
+//        convention.minimumJenkinsVersion.orNull?.let {
+//            jpiExtension.jenkinsVersion.set(it)
+//            jpiExtension.compatibleSinceVersion = it
+//        }
+//
+//        convention.usePluginFirstClassLoader.orNull?.let { jpiExtension.pluginFirstClassLoader = it }
+//
+//        convention.sandboxed.orNull?.let { jpiExtension.sandboxed.set(it) }
+//
+//        convention.maskedClassesFromCore.orNull?.takeIf { it.isNotEmpty() }
+//            ?.joinToString(" ")?.also { jpiExtension.maskClasses = it }
+//
+//        convention.generateTests.orNull?.let { jpiExtension.generateTests.set(it) }
+//
+//        convention.generatedTestClassName.orNull?.let { jpiExtension.generatedTestClassName.set(it) }
+//
+//        convention.requireEscapeByDefaultInJelly.orNull?.let { jpiExtension.requireEscapeByDefaultInJelly.set(it) }
+//
+//        convention.homePage.orNull?.let { jpiExtension.homePage.set(it) }
+//
+//        convention.extension.orNull?.let { jpiExtension.extension.set(it) }
+//
+//        convention.gitHubUrl.orNull?.let { jpiExtension.gitHub.set(it) }
+//
+//        convention.scmTag.orNull?.let { jpiExtension.scmTag.set(it) }
+//
+//        convention.incrementalsRepoUrl.orNull?.let { jpiExtension.incrementalsRepoUrl.set(it.toString()) }
+//
+//        convention.testJvmArguments.orNull?.let { jpiExtension.testJvmArguments.set(it) }
+//
+//        convention.workDir.orNull?.asFile?.let {
+//            jpiExtension.workDir = it
+//        }
+//
+//        convention.repoUrl.orNull?.let { jpiExtension.repoUrl = it.toString() }
+//
+//        convention.snapshotRepoUrl.orNull?.let { jpiExtension.snapshotRepoUrl = it.toString() }
+//
+//        convention.configurePublishing.orNull?.let { jpiExtension.configurePublishing = it }
+//
+//        convention.configureRepositories.orNull?.let { jpiExtension.configureRepositories = it }
+//
+//        convention.pluginDevelopers.orNull?.forEach { dev ->
+//            jpiExtension.developers(Action { developers ->
+//                developers.developer(Action { developer ->
+//                    developer.id.set(dev.id)
+//                    developer.name.set(dev.name)
+//                    developer.email.set(dev.email)
+//                    developer.url.set(dev.portfolioUrl.toString())
+//                    developer.organization.set(dev.organization)
+//                    developer.organizationUrl.set(dev.organizationUrl.toString())
+//                    developer.roles.set(dev.roles)
+//                    developer.timezone.set(dev.timezone)
+//                })
+//            })
+//        }
+//
+//        convention.pluginLicenses.orNull?.forEach { lic ->
+//            jpiExtension.licenses(Action { licenses ->
+//                licenses.license(Action { license ->
+//                    license.name.set(lic.name)
+//                    license.url.set(lic.url.toString())
+//                    license.distribution.set(lic.distribution)
+//                    license.comments.set(lic.comments)
+//                })
+//            })
+//        }
+//
+//
+//        convention.gitVersion.orNull?.let { config ->
+//            jpiExtension.gitVersion.apply {
+//                versionFormat.set(config.versionFormat)
+//                abbrevLength.set(config.abbrevLength)
+//                allowDirty.set(config.allowDirty)
+//                gitRoot.set(config.gitRoot)
+//                sanitize.set(config.sanitize)
+//                outputFile.set(config.outputFile)
+//                versionPrefix.set(config.versionPrefix)
+//            }
+//        }
+//    }
 
 }
