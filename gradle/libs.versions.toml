@@ -3,7 +3,7 @@
 kotlin = "2.1.21"
 gradle = "9.0.0 RC1"
 jetbrains-annotations = "26.0.2"
-jenkins-stapler = "1994.vd86361073b_15"
+jenkins-stapler = "1997.v356365fb_929e"
 
 # Jenkins
 jenkins-core = "2.516"
