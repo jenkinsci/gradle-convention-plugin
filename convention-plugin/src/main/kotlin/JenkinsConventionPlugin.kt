@@ -1,3 +1,5 @@
+package io.jenkins.gradle
+
 import constants.PluginMetadata
 import extensions.JenkinsPluginExtension
 import extensions.PublishingExtension
@@ -17,8 +19,9 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 project
             )
             val publishingExtension = project.extensions.create<PublishingExtension>(
-                "publishing",
-                project
+                "jenkinsPublishing",
+                PublishingExtension::class.java,
+                project.objects
             )
 
             val jpiAdapter = JpiPluginAdapter(project, pluginExtension)

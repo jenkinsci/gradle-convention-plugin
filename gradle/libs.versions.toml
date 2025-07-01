@@ -4,6 +4,8 @@ kotlin = "2.1.21"
 gradle = "9.0-rc-1"
 jetbrains-annotations = "26.0.2"
 jenkins-stapler = "1997.v356365fb_929e"
+jenkins-bom = "4228.v0a_71308d905b_"
+jenkins-plugin-bom = "4228.v0a_71308d905b_"
 jackson-bom = "2.19.1"
 junit-bom = "5.13.2"
 spring-bom = "6.2.8"
@@ -15,7 +17,6 @@ testcontainers-bom = "1.21.3"
 
 # Jenkins
 jenkins-core = "2.516"
-jenkins-plugin-bom = "4948.vcf1d17350668"
 jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
@@ -25,7 +26,7 @@ googleJavaFormat = "1.27.0"
 detekt = "1.23.8"
 spotbugs = "4.9.3"
 jacoco = "0.8.13"
-checkstyle = "10.26.0"
+checkstyle = "10.26.1"
 
 [libraries]
 # Kotlin and Gradle
@@ -46,17 +47,6 @@ detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 spotbugs-gradle-plugin = { group = "com.github.spotbugs", name = "spotbugs", version.ref = "spotbugs" }
 jacoco-gradle-plugin = { group = "org.jacoco", name = "org.jacoco.core", version.ref = "jacoco" }
 checkstyle-gradle-plugin = { group = "com.puppycrawl.tools", name = "checkstyle", version.ref = "checkstyle" }
-
-jenkins-bom = { group = "io.jenkins.tools.bom", name = "bom", version.ref = "jenkins-core" }
-jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
-spring-bom = { group = "org.springframework", name = "spring-framework-bom", version.ref = "spring-bom" }
-jackson-bom = { group = "com.fasterxml.jackson", name = "jackson-bom", version.ref = "jackson-bom" }
-junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit-bom" }
-jetty-bom = { group = "org.eclipse.jetty", name = "jetty-bom", version.ref = "jetty-bom" }
-slf4j-bom = { group = "org.slf4j", name = "slf4j-bom", version.ref = "slf4j-bom" }
-netty-bom = { group = "io.netty", name = "netty-bom", version.ref = "netty-bom" }
-mockito-bom = { group = "org.mockito", name = "mockito-bom", version.ref = "mockito-bom" }
-testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom", version.ref = "testcontainers-bom" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

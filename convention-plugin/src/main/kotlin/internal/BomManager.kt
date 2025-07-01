@@ -13,7 +13,7 @@ public class BomManager(private val project: Project, private val publishingExte
     private val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     public companion object {
-        private const val JENKINS_BOM = "io.jenkins.tools.bom:bom"
+        private const val JENKINS_BOM = "io.jenkins.tools.bom:bom-2.479.x"
         private const val JENKINS_PLUGIN_BOM = "io.jenkins.plugins:plugin-bom"
         private const val SPRING_BOM = "org.springframework:spring-framework-bom"
         private const val JACKSON_BOM = "com.fasterxml.jackson:jackson-bom"
@@ -28,7 +28,7 @@ public class BomManager(private val project: Project, private val publishingExte
     public fun configure() {
         project.dependencies {
             configureCoreBom()
-            configurePluginBom()
+//            configurePluginBom()
             configureCommonBoms()
             configureTestingBom()
             configureCustomBoms()
@@ -42,22 +42,22 @@ public class BomManager(private val project: Project, private val publishingExte
                     IllegalStateException("Jenkins BOM version not found in version catalog")
                 }.requiredVersion
 
-            add("implementation", platform("$JENKINS_BOM-${bomVersion}"))
-            add("testImplementation", platform("$JENKINS_BOM-${bomVersion}"))
+            add("implementation", platform("$JENKINS_BOM:${bomVersion}"))
+            add("testImplementation", platform("$JENKINS_BOM:${bomVersion}"))
         }
     }
 
-    private fun DependencyHandler.configurePluginBom() {
-        if (publishingExtension.usePluginBom.get()) {
-            val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("jenkins-plugin-bom").orElseThrow {
-                    IllegalStateException("Jenkins Plugins BOM version not found in version catalog")
-                }.requiredVersion
-
-            add("implementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
-            add("testImplementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
-        }
-    }
+//    private fun DependencyHandler.configurePluginBom() {
+//        if (publishingExtension.usePluginBom.get()) {
+//            val bomVersion =
+//                publishingExtension.bomVersion.orNull ?: libs.findVersion("jenkins-plugin-bom").orElseThrow {
+//                    IllegalStateException("Jenkins Plugins BOM version not found in version catalog")
+//                }.requiredVersion
+//
+//            add("implementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
+//            add("testImplementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
+//        }
+//    }
 
     private fun DependencyHandler.configureCommonBoms() {
 

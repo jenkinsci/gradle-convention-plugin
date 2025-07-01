@@ -1,5 +1,6 @@
 plugins {
     id("conventions.kotlin")
+    `maven-publish`
 }
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
@@ -24,7 +25,8 @@ gradlePlugin {
         create("jenkinsConventions") {
 
             id = "io.jenkins.gradle.convention"
-            implementationClass = "io.jenkins.gradle.JenkinsGradleConventionPlugin"
+            version = "1.0.0"
+            implementationClass = "io.jenkins.gradle.JenkinsConventionPlugin"
             displayName = "Jenkins Gradle Convention Plugin"
             description = "Convention plugin for developing Jenkins plugins with Gradle"
             tags.set(listOf("jenkins", "convention", "plugin", "jpi"))
@@ -35,3 +37,12 @@ gradlePlugin {
 
 }
 
+publishing {
+    publications {
+        withType<MavenPublication>().configureEach {
+            groupId = "io.jenkins.gradle"
+            artifactId = "convention"
+            version = "1.0.0"
+        }
+    }
+}

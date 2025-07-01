@@ -7,6 +7,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -16,7 +17,7 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
 
     repositories {
         gradlePluginPortal()
@@ -30,7 +31,12 @@ dependencyResolutionManagement {
             name = "JenkinsReleases"
             url = uri("https://repo.jenkins-ci.org/releases/")
         }
+        maven {
+            name = "JenkinsIncrementals"
+            url = uri("https://repo.jenkins-ci.org/incrementals/")
+        }
     }
 }
 
 include("convention-plugin")
+include("test-plugin")
