@@ -1,5 +1,6 @@
 import constants.PluginMetadata
 import extensions.JenkinsPluginExtension
+import extensions.PublishingExtension
 import internal.BomManager
 import internal.JpiPluginAdapter
 import org.gradle.api.GradleException
@@ -15,18 +16,19 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 PluginMetadata.EXTENSION_NAME,
                 project
             )
+            val publishingExtension = project.extensions.create<PublishingExtension>(
+                "publishing",
+                project
+            )
 
             val jpiAdapter = JpiPluginAdapter(project, pluginExtension)
+            val bomManager = BomManager(project, publishingExtension)
+
             jpiAdapter.apply()
 
-//            val managers = createManagers(project, pluginExtension)
-
-            val manager = BomManager(project, pluginExtension)
-
             project.afterEvaluate {
-                configureProject(project, pluginExtension, manager, jpiAdapter)
+                configureProject(project, jpiAdapter, bomManager)
             }
-
 
         } catch (e: Exception) {
             throw GradleException("Failed to apply ${PluginMetadata.EXTENSION_NAME}: ${e.message}", e)
@@ -36,29 +38,13 @@ public class JenkinsConventionPlugin : Plugin<Project> {
 
 }
 
-private fun createManagers(project: Project, pluginExtension: JenkinsPluginExtension) {
-
-    // other managers would be added in future
-
-    BomManager(project, pluginExtension)
-
-}
-
 private fun configureProject(
     project: Project,
-    pluginExtension: JenkinsPluginExtension,
-    manager: BomManager,
-    jpiAdapter: JpiPluginAdapter,
+    jpiPluginAdapter: JpiPluginAdapter,
+    bomManager: BomManager,
 ) {
-    jpiAdapter.configure()
-    applyManagers(manager)
-}
 
-private fun applyManagers(manager: BomManager) {
+    jpiPluginAdapter.configure()
+    bomManager.configure()
 
-    try {
-        manager.configure()
-    } catch (e: Exception) {
-        throw GradleException("Failed to configure with ${manager.javaClass.name}: ${e.message}", e)
-    }
 }

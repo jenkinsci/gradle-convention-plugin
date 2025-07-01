@@ -1,9 +1,17 @@
 [versions]
 # Kotlin and Gradle
 kotlin = "2.1.21"
-gradle = "9.0.0 RC1"
+gradle = "9.0-rc-1"
 jetbrains-annotations = "26.0.2"
 jenkins-stapler = "1997.v356365fb_929e"
+jackson-bom = "2.19.1"
+junit-bom = "5.13.2"
+spring-bom = "6.2.8"
+netty-bom = "4.2.2.Final"
+slf4j-bom = "2.0.16"
+jetty-bom = "12.0.22"
+mockito-bom = "5.18.0"
+testcontainers-bom = "1.21.3"
 
 # Jenkins
 jenkins-core = "2.516"
@@ -31,7 +39,6 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
 jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }
 jenkins-gradle-jpi2 = { module = "org.jenkins-ci.tools:gradle-jpi-plugin", version.ref = "jenkins-gradle-jpi2" }
-jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
 
 # Quality
 spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
@@ -39,6 +46,17 @@ detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 spotbugs-gradle-plugin = { group = "com.github.spotbugs", name = "spotbugs", version.ref = "spotbugs" }
 jacoco-gradle-plugin = { group = "org.jacoco", name = "org.jacoco.core", version.ref = "jacoco" }
 checkstyle-gradle-plugin = { group = "com.puppycrawl.tools", name = "checkstyle", version.ref = "checkstyle" }
+
+jenkins-bom = { group = "io.jenkins.tools.bom", name = "bom", version.ref = "jenkins-core" }
+jenkins-plugin-bom = { module = "io.jenkins.tools.bom:bom", version.ref = "jenkins-plugin-bom" }
+spring-bom = { group = "org.springframework", name = "spring-framework-bom", version.ref = "spring-bom" }
+jackson-bom = { group = "com.fasterxml.jackson", name = "jackson-bom", version.ref = "jackson-bom" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit-bom" }
+jetty-bom = { group = "org.eclipse.jetty", name = "jetty-bom", version.ref = "jetty-bom" }
+slf4j-bom = { group = "org.slf4j", name = "slf4j-bom", version.ref = "slf4j-bom" }
+netty-bom = { group = "io.netty", name = "netty-bom", version.ref = "netty-bom" }
+mockito-bom = { group = "org.mockito", name = "mockito-bom", version.ref = "mockito-bom" }
+testcontainers-bom = { group = "org.testcontainers", name = "testcontainers-bom", version.ref = "testcontainers-bom" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

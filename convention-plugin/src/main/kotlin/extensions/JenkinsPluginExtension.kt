@@ -25,7 +25,7 @@ public open class JenkinsPluginExtension @Inject constructor(private val project
         project.name.replace("jenkins-", "").replace("-plugin", "")
     )
 
-    public val artifactId: Property<String> = objects.property<String>().convention(pluginId.orNull)
+    public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
 
     public val groupId: Property<String> = objects.property<String>().convention("org.jenkins-ci.plugins")
 
@@ -38,7 +38,7 @@ public open class JenkinsPluginExtension @Inject constructor(private val project
 
     public val usePluginFirstClassLoader: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>()
+    public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
     public val minimumJenkinsCoreVersion: Property<String> = objects.property<String>().convention("2.504.3")
 
@@ -62,24 +62,23 @@ public open class JenkinsPluginExtension @Inject constructor(private val project
 
     public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
 
-    public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
     public val incrementalsRepoUrl: Property<String> =
         objects.property<String>().convention("https://repo.jenkins-ci.org/incrementals")
 
     public val testJvmArguments: ListProperty<String> = objects.listProperty<String>().convention(
         listOf(
-            "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-            "--add-opens", "java.base/java.io=ALL-UNNAMED",
-            "--add-opens", "java.base/java.util=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            "--add-opens=java.base/java.io=ALL-UNNAMED",
+            "--add-opens=java.base/java.util=ALL-UNNAMED",
         )
     )
 
     public val pluginDependencies: ListProperty<JenkinsPluginDependency> =
         objects.listProperty<JenkinsPluginDependency>()
 
-    public val pluginLabels: SetProperty<String> = objects.setProperty<String>()
-
+    public val pluginLabels: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
     public enum class PluginType {
         BUILD,
@@ -103,7 +102,7 @@ public open class JenkinsPluginExtension @Inject constructor(private val project
     }
 
     public fun dependency(pluginId: String, action: JenkinsPluginDependency.() -> Unit) {
-        val dependency = objects.newInstance(JenkinsPluginDependency::class.java, project).apply {
+        val dependency = objects.newInstance<JenkinsPluginDependency>().apply {
             this.pluginId.set(pluginId)
         }
         action(dependency)
