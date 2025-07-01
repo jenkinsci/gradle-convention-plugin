@@ -1,6 +1,6 @@
 [versions]
 # Kotlin and Gradle
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 gradle = "9.0-rc-1"
 jetbrains-annotations = "26.0.2"
 jenkins-stapler = "1997.v356365fb_929e"
