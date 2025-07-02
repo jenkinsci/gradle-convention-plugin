@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.mapProperty
 import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
-public abstract class PublishingExtension @Inject constructor(objects: ObjectFactory) {
+public abstract class BomExtension @Inject constructor(objects: ObjectFactory) {
 
     public val useGithubReleases: Property<Boolean> = objects.property<Boolean>().convention(true)
     public val generateChangelog: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -20,6 +20,9 @@ public abstract class PublishingExtension @Inject constructor(objects: ObjectFac
 
     // Ecosystem BOM
     public val useCommonBoms: Property<Boolean> = objects.property<Boolean>().convention(true)
+
+    public val useGroovyBom: Property<Boolean> = objects.property<Boolean>().convention(true)
+    public val groovyBomVersion: Property<String> = objects.property<String>()
 
     public val useJacksonBom: Property<Boolean> = objects.property<Boolean>().convention(true)
     public val jacksonBomVersion: Property<String> = objects.property<String>()

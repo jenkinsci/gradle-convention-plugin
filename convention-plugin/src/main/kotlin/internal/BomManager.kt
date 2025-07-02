@@ -1,6 +1,6 @@
 package internal
 
-import extensions.PublishingExtension
+import extensions.BomExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -8,7 +8,7 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
-public class BomManager(private val project: Project, private val publishingExtension: PublishingExtension) {
+public class BomManager(private val project: Project, private val bomExtension: BomExtension) {
 
     private val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -23,6 +23,7 @@ public class BomManager(private val project: Project, private val publishingExte
         private const val NETTY_BOM = "io.netty:netty-bom"
         private const val MOCKITO_BOM = "org.mockito:mockito-bom"
         private const val TESTCONTAINERS_BOM = "org.testcontainers:testcontainers-bom"
+        private const val GROOVY_BOM = "org.apache.groovy:groovy-bom"
     }
 
     public fun configure() {
@@ -36,9 +37,9 @@ public class BomManager(private val project: Project, private val publishingExte
     }
 
     private fun DependencyHandler.configureCoreBom() {
-        if (publishingExtension.useCoreBom.get()) {
+        if (bomExtension.useCoreBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("jenkins-bom").orElseThrow {
+                bomExtension.bomVersion.orNull ?: libs.findVersion("jenkins-bom").orElseThrow {
                     IllegalStateException("Jenkins BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -61,13 +62,23 @@ public class BomManager(private val project: Project, private val publishingExte
 
     private fun DependencyHandler.configureCommonBoms() {
 
-        if (!publishingExtension.useCommonBoms.get()) {
+        if (!bomExtension.useCommonBoms.get()) {
             return
         }
 
-        if (publishingExtension.useJacksonBom.get()) {
+        if (bomExtension.useGroovyBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("jackson-bom").orElseThrow {
+                bomExtension.groovyBomVersion.orNull ?: libs.findVersion("groovy-bom").orElseThrow {
+                    IllegalStateException("Groovy BOM version not found in version catalog")
+                }.requiredVersion
+
+            add("implementation", platform("$GROOVY_BOM:$bomVersion"))
+            add("testImplementation", platform("$GROOVY_BOM:$bomVersion"))
+        }
+
+        if (bomExtension.useJacksonBom.get()) {
+            val bomVersion =
+                bomExtension.jacksonBomVersion.orNull ?: libs.findVersion("jackson-bom").orElseThrow {
                     IllegalStateException("Jenkins BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -75,9 +86,9 @@ public class BomManager(private val project: Project, private val publishingExte
             add("testImplementation", platform("$JACKSON_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useSpringBom.get()) {
+        if (bomExtension.useSpringBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("spring-bom").orElseThrow {
+                bomExtension.springBomVersion.orNull ?: libs.findVersion("spring-bom").orElseThrow {
                     IllegalStateException("Spring BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -85,9 +96,9 @@ public class BomManager(private val project: Project, private val publishingExte
             add("testImplementation", platform("$SPRING_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useJettyBom.get()) {
+        if (bomExtension.useJettyBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("jetty-bom").orElseThrow {
+                bomExtension.jettyBomVersion.orNull ?: libs.findVersion("jetty-bom").orElseThrow {
                     IllegalStateException("Jetty BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -95,9 +106,9 @@ public class BomManager(private val project: Project, private val publishingExte
             add("testImplementation", platform("$JETTY_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useNettyBom.get()) {
+        if (bomExtension.useNettyBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("netty-bom").orElseThrow {
+                bomExtension.nettyBomVersion.orNull ?: libs.findVersion("netty-bom").orElseThrow {
                     IllegalStateException("Netty BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -105,9 +116,9 @@ public class BomManager(private val project: Project, private val publishingExte
             add("testImplementation", platform("$NETTY_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useSlf4jBom.get()) {
+        if (bomExtension.useSlf4jBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("slf4j-bom").orElseThrow {
+                bomExtension.slf4jBomVersion.orNull ?: libs.findVersion("slf4j-bom").orElseThrow {
                     IllegalStateException("SLF4J BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -118,27 +129,27 @@ public class BomManager(private val project: Project, private val publishingExte
 
     private fun DependencyHandler.configureTestingBom() {
 
-        if (publishingExtension.useJunitBom.get()) {
+        if (bomExtension.useJunitBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("junit-bom").orElseThrow {
+                bomExtension.junitBomVersion.orNull ?: libs.findVersion("junit-bom").orElseThrow {
                     IllegalStateException("JUnit BOM version not found in version catalog")
                 }.requiredVersion
 
             add("testImplementation", platform("$JUNIT_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useMockitoBom.get()) {
+        if (bomExtension.useMockitoBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("mockito-bom").orElseThrow {
+                bomExtension.mockitoBomVersion.orNull ?: libs.findVersion("mockito-bom").orElseThrow {
                     IllegalStateException("Mockito BOM version not found in version catalog")
                 }.requiredVersion
 
             add("testImplementation", platform("$MOCKITO_BOM:$bomVersion"))
         }
 
-        if (publishingExtension.useTestcontainersBom.get()) {
+        if (bomExtension.useTestcontainersBom.get()) {
             val bomVersion =
-                publishingExtension.bomVersion.orNull ?: libs.findVersion("testcontainers-bom").orElseThrow {
+                bomExtension.testcontainersBom.orNull ?: libs.findVersion("testcontainers-bom").orElseThrow {
                     IllegalStateException("Testcontainers BOM version not found in version catalog")
                 }.requiredVersion
 
@@ -147,7 +158,7 @@ public class BomManager(private val project: Project, private val publishingExte
     }
 
     private fun DependencyHandler.configureCustomBoms() {
-        publishingExtension.customBoms.get().forEach { (bomName, bomVersion) ->
+        bomExtension.customBoms.get().forEach { (bomName, bomVersion) ->
             add("implementation", platform("$bomName:$bomVersion"))
             add("testImplementation", platform("$bomName:$bomVersion"))
         }

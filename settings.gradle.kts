@@ -39,4 +39,4 @@ dependencyResolutionManagement {
 }
 
 include("convention-plugin")
-include("test-plugin")
+//include("test-plugin")
