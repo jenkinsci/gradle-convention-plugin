@@ -1,8 +1,8 @@
 package io.jenkins.gradle
 
 import constants.PluginMetadata
+import extensions.BomExtension
 import extensions.JenkinsPluginExtension
-import extensions.PublishingExtension
 import internal.BomManager
 import internal.JpiPluginAdapter
 import org.gradle.api.GradleException
@@ -18,14 +18,14 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 PluginMetadata.EXTENSION_NAME,
                 project
             )
-            val publishingExtension = project.extensions.create<PublishingExtension>(
-                "jenkinsPublishing",
-                PublishingExtension::class.java,
+            val bomExtension = project.extensions.create<BomExtension>(
+                "bom",
+                BomExtension::class.java,
                 project.objects
             )
 
             val jpiAdapter = JpiPluginAdapter(project, pluginExtension)
-            val bomManager = BomManager(project, publishingExtension)
+            val bomManager = BomManager(project, bomExtension)
 
             jpiAdapter.apply()
 

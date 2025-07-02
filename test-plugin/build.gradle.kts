@@ -35,15 +35,10 @@ jenkinsConvention {
     // License is already set to default Apache 2.0
 }
 
-jenkinsPublishing {
-    useCoreBom.set(true)
-    useCommonBoms.set(true)
-    useJacksonBom.set(true)
-    useNettyBom.set(true)
-    useSlf4jBom.set(true)
-    useJunitBom.set(true)
-    useMockitoBom.set(true)
-    useTestcontainersBom.set(true)
+bom {
+    // By default, all Boms are turned on
+    useNettyBom.set(false)
+    useSlf4jBom.set(false)
 }
 
 dependencies {

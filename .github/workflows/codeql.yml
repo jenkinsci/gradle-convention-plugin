@@ -1,52 +1,59 @@
 name: codeql.yml
 on:
-    push:
-        branches: [ "main" ]
-    pull_request:
-        branches: [ "main" ]
-    schedule:
-        -   cron: '0 3 * * SUN'
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 3 * * SUN'
 
 jobs:
-    analyze:
-        name: Analyze
-        runs-on: ubuntu-latest
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
 
-        permissions:
-            actions: read
-            contents: read
-            security-events: write
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-        strategy:
-            fail-fast: false
-            matrix:
-                language: [ 'java' ]
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java', 'kotlin' ]
 
-        steps:
-            -   name: Checkout Repository
-                uses: actions/checkout@v4
-                with:
-                    fetch-depth: 0
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            -   name: Initialize CodeQL
-                uses: github/codeql-action/init@v3
-                with:
-                    languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
 
-            -   name: Set Up JDK for ${{ matrix.language }}
-                uses: actions/setup-java@v4
-                with:
-                    distribution: 'temurin'
-                    java-version: '17'
-                    cache: 'gradle'
+      - name: Set Up JDK for ${{ matrix.language }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17.0.15'
+          cache: 'gradle'
 
-            -   name: Grant executable permissions for gradlew
-                run: chmod +x ./gradlew
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/wrapper
+          key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: gradle-wrapper-${{ runner.os }}-
 
-            -   name: Build with Gradle
-                run: ./gradlew assemble --no-daemon --console=plain
+      - name: Grant executable permissions for gradlew
+        run: chmod +x gradlew
 
-            -   name: Perform CodeQL Analysis
-                uses: github/codeql-action/analyze@v3
-                with:
-                    upload: true
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon --no-configuration-cache --console=plain --stacktrace --info
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          upload: true
