@@ -9,17 +9,17 @@ import org.jenkinsci.gradle.plugins.jpi.JpiPlugin
 import org.jenkinsci.gradle.plugins.jpi.core.PluginDeveloper
 import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
 
-public class JpiPluginAdapter(private val project: Project, private val pluginExtension: JenkinsPluginExtension) {
-
+public class JpiPluginAdapter(
+    private val project: Project,
+    private val pluginExtension: JenkinsPluginExtension,
+) {
     private val jpiExtension: JpiExtension by lazy {
         project.extensions.getByType<JpiExtension>()
     }
 
     public fun apply() {
-
         project.pluginManager.apply("java-library")
         project.pluginManager.apply(JpiPlugin::class.java)
-
     }
 
     public fun configure() {
@@ -28,7 +28,6 @@ public class JpiPluginAdapter(private val project: Project, private val pluginEx
 
     private fun bridgeExtensionProperties() {
         jpiExtension.apply {
-
             pluginId.set(pluginExtension.pluginId)
             humanReadableName.set(pluginExtension.humanReadableName)
             homePage.set(pluginExtension.homePage)
@@ -60,7 +59,7 @@ public class JpiPluginAdapter(private val project: Project, private val pluginEx
                             timezone.set(dev.timezone)
                         }
                     }
-                }
+                },
             )
 
             pluginLicenses.set(
@@ -73,12 +72,8 @@ public class JpiPluginAdapter(private val project: Project, private val pluginEx
                             comments.set(lic.comments)
                         }
                     }
-                }
+                },
             )
-
-
         }
-
     }
-
 }

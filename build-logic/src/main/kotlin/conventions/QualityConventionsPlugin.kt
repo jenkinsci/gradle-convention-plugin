@@ -13,7 +13,6 @@ import org.gradle.kotlin.dsl.withType
 public class QualityConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
-
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             pluginManager.apply("com.diffplug.spotless")
@@ -26,7 +25,6 @@ public class QualityConventionsPlugin : Plugin<Project> {
                 dependsOn("spotlessCheck")
                 dependsOn("detekt")
             }
-
         }
     }
 }
@@ -72,9 +70,13 @@ private fun Project.configureSpotless(libs: VersionCatalog) {
 
 private fun Project.configureDetekt(libs: VersionCatalog) {
     configure<DetektExtension> {
-
         toolVersion = libs.findVersion("detekt").get().requiredVersion
         parallel = true
+
+        val baseline = rootProject.file("detekt-baseline.xml")
+        if (baseline.exists()) {
+            this.baseline = baseline
+        }
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
@@ -87,7 +89,5 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
             sarif.required.set(true)
             txt.required.set(true)
         }
-
     }
-
 }

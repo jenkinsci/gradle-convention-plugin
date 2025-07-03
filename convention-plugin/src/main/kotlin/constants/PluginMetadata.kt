@@ -1,7 +1,6 @@
 package constants
 
 public object PluginMetadata {
-
     public const val ID: String = "io.jenkins.gradle.convention"
     public const val EXTENSION_NAME: String = "jenkinsConvention"
     public const val DISPLAY_NAME: String = "Jenkins Gradle Convention Plugin"
