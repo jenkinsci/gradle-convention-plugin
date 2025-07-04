@@ -31,35 +31,40 @@ public class QualityConventionsPlugin : Plugin<Project> {
 
 private fun Project.configureSpotless(libs: VersionCatalog) {
     configure<SpotlessExtension> {
+        val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
+        val googleJavaFormat = libs.findVersion("googleJavaFormat").get().requiredVersion
+
         kotlin {
             target("**/*.kt")
-            targetExclude("${layout.buildDirectory}/**")
-            ktlint(libs.findVersion("ktlint").get().requiredVersion)
+            targetExclude("**/build/**", "bin/**")
+            ktlint(ktlintVersion)
             trimTrailingWhitespace()
             endWithNewline()
         }
         kotlinGradle {
-            target("**/*.gradle.kts")
-            ktlint(libs.findVersion("ktlint").get().requiredVersion)
+            target("*.gradle.kts", "**/*.gradle.kts")
+            ktlint(ktlintVersion)
             trimTrailingWhitespace()
             endWithNewline()
         }
         java {
             target("**/*.java")
-            googleJavaFormat(libs.findVersion("googleJavaFormat").get().requiredVersion)
+            googleJavaFormat(googleJavaFormat)
             trimTrailingWhitespace()
             endWithNewline()
             targetExclude("**/generated/**", "**/build/**")
         }
         format("misc") {
             target(
+                "*.md",
+                ".gitignore",
+                "*.properties",
                 "*.yml",
                 "*.yaml",
-                "*.md",
                 "*.json",
-                ".gitignore",
                 ".editorconfig",
             )
+            targetExclude("**/build/**", "**/.gradle/**", "**/.idea/**")
             trimTrailingWhitespace()
             endWithNewline()
         }

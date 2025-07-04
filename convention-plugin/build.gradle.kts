@@ -7,9 +7,20 @@ plugins {
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
 
 dependencies {
-    implementation(gradleApi())
-    implementation(gradleKotlinDsl())
+    compileOnly(gradleApi())
+    compileOnly(gradleKotlinDsl())
     implementation(libs.jenkins.gradle.jpi2)
+
+    implementation(libs.spotless.gradle.plugin)
+    implementation(libs.detekt.gradle.plugin)
+    implementation(libs.ktlint.gradle.plugin)
+    implementation(libs.spotbugs.gradle.plugin)
+    implementation(libs.owasp.depcheck.gradle.plugin)
+    implementation(libs.benmanes.versions.gradle.plugin)
+    implementation(libs.pit.gradle.plugin)
+    implementation(libs.kover.gradle.plugin)
+    implementation(libs.node.gradle.plugin)
+    implementation(libs.dokka.gradle.plugin)
 }
 
 gradlePlugin {

@@ -1,34 +1,52 @@
 package extensions
 
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
+import org.gradle.kotlin.dsl.setProperty
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public abstract class QualityExtension
     @Inject
     constructor(
-        objects: ObjectFactory,
+        project: Project,
     ) {
-        public val checkstyle: CheckstyleExtension = objects.newInstance()
-        public val spotbugs: SpotbugsExtension = objects.newInstance()
-        public val pmd: PmdExtension = objects.newInstance()
-        public val jacoco: JacocoExtension = objects.newInstance()
-        public val detekt: DetektExtension = objects.newInstance()
-        public val spotless: SpotlessExtension = objects.newInstance()
-        public val owaspDependencyCheck: OwaspDependencyCheckExtension = objects.newInstance()
-        public val versions: GradleVersionExtension = objects.newInstance()
-        public val pitest: PitestExtension = objects.newInstance()
-        public val errorProne: ErrorProneExtension = objects.newInstance()
-        public val taskScanner: TaskScannerExtension = objects.newInstance()
-        public val kover: KoverExtension = objects.newInstance()
-        public val eslint: EslintExtension = objects.newInstance()
-        public val dokka: DokkaExtension = objects.newInstance()
+        private val objects: ObjectFactory = project.objects
+
+        public val checkstyle: CheckstyleExtension =
+            project.extensions.create("checkstyle", CheckstyleExtension::class.java, objects)
+        public val spotbugs: SpotbugsExtension =
+            project.extensions.create("spotbugs", SpotbugsExtension::class.java, objects)
+        public val pmd: PmdExtension = project.extensions.create("pmd", PmdExtension::class.java, objects)
+        public val jacoco: JacocoExtension = project.extensions.create("jacoco", JacocoExtension::class.java, objects)
+        public val detekt: DetektExtension =
+            project.extensions.create("detekt", DetektExtension::class.java, objects, project)
+        public val spotless: SpotlessExtension =
+            project.extensions.create("spotless", SpotlessExtension::class.java, objects)
+        public val owaspDependencyCheck: OwaspDependencyCheckExtension =
+            project.extensions.create(
+                "owaspDependencyCheck",
+                OwaspDependencyCheckExtension::class.java,
+                objects,
+                project,
+            )
+        public val versions: GradleVersionExtension =
+            project.extensions.create("versions", GradleVersionExtension::class.java, objects)
+        public val pitest: PitestExtension = project.extensions.create("pitest", PitestExtension::class.java, objects)
+        public val kover: KoverExtension = project.extensions.create("Kover", KoverExtension::class.java, objects)
+        public val eslint: EslintExtension =
+            project.extensions.create("eslint", EslintExtension::class.java, objects, project)
+        public val dokka: DokkaExtension = project.extensions.create("dokka", DokkaExtension::class.java, objects)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -47,11 +65,7 @@ public abstract class QualityExtension
 
         public fun pitest(action: PitestExtension.() -> Unit): Unit = action(pitest)
 
-        public fun errorProne(action: ErrorProneExtension.() -> Unit): Unit = action(errorProne)
-
         public fun versions(action: GradleVersionExtension.() -> Unit): Unit = action(versions)
-
-        public fun taskScanner(action: TaskScannerExtension.() -> Unit): Unit = action(taskScanner)
 
         public fun kover(action: KoverExtension.() -> Unit): Unit = action(kover)
 
@@ -65,6 +79,9 @@ public abstract class QualityExtension
             public const val DEFAULT_MUTATION_THRESHOLD: Int = 85
             public const val DEFAULT_MAX_ALLOWED_TASKS: Int = 10
             public const val DEFAULT_KOVER_THRESHOLD: Int = 80
+            public const val DEFAULT_TIMEOUT_FACTOR: Float = 1.25f
+            public const val DEFAULT_TIMEOUT_CONST_IN_MILLIS: Int = 400
+            public const val DEFAULT_THREADS: Int = 4
         }
     }
 
@@ -86,8 +103,8 @@ public abstract class SpotbugsExtension
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val toolVersion: Property<String> = objects.property<String>()
-        public val effortLevel: Property<String> = objects.property<String>().convention("DEFAULT")
-        public val reportLevel: Property<String> = objects.property<String>().convention("DEFAULT")
+        public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.DEFAULT)
+        public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.DEFAULT)
         public val excludeFilterFile: RegularFileProperty = objects.fileProperty()
     }
 
@@ -100,6 +117,8 @@ public abstract class PmdExtension
         public val toolVersion: Property<String> = objects.property<String>()
         public val ruleSets: RegularFileProperty = objects.fileProperty()
         public val enableCPD: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
     }
 
 public abstract class JacocoExtension
@@ -109,19 +128,30 @@ public abstract class JacocoExtension
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val toolVersion: Property<String> = objects.property<String>()
-        public val coverageThreshold: Property<Double> =
-            objects.property<Double>().convention(QualityExtension.DEFAULT_COVERAGE_THRESHOLD)
     }
 
 public abstract class DetektExtension
     @Inject
     constructor(
         objects: ObjectFactory,
+        project: Project,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val toolVersion: Property<String> = objects.property<String>()
         public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val configFile: RegularFileProperty =
+            objects.fileProperty().convention(
+                project.layout.projectDirectory.file("config/detekt/detekt.yml"),
+            )
+        public val baseline: RegularFileProperty =
+            objects.fileProperty().convention(
+                project.layout.projectDirectory.file("config/detekt/baseline.xml"),
+            )
+        public val source: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf("src/main/java", "src/main/kotlin"),
+            )
     }
 
 public abstract class SpotlessExtension
@@ -138,11 +168,31 @@ public abstract class OwaspDependencyCheckExtension
     @Inject
     constructor(
         objects: ObjectFactory,
+        project: Project,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val failOnCvss: Property<Float> =
             objects.property<Float>().convention(QualityExtension.DEFAULT_OWASP_THRESHOLD)
-        public val format: Property<String> = objects.property<String>().convention("ALL")
+        public val formats: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                setOf("XML", "HTML", "SARIF"),
+            )
+        public val dataDirectory: DirectoryProperty =
+            objects.directoryProperty().convention(project.layout.buildDirectory.dir("dependency-check-data"))
+        public val outputDirectory: DirectoryProperty =
+            objects.directoryProperty().convention(
+                project.layout.buildDirectory.dir("reports/dependency-check"),
+            )
+        public val suppressionFiles: ListProperty<RegularFile> =
+            objects
+                .listProperty<RegularFile>()
+                .convention(
+                    emptyList(),
+                )
+        public val scanConfigurations: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf("runtimeClasspath"),
+            )
     }
 
 public abstract class PitestExtension
@@ -151,23 +201,17 @@ public abstract class PitestExtension
         objects: ObjectFactory,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
-        public val toolVersion: Property<String> = objects.property<String>().convention("")
-        public val threads: Property<Int> = objects.property<Int>().convention(0)
+        public val pitVersion: Property<String> = objects.property<String>()
+        public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
+        public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))
+        public val excludedClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*Test*"))
+        public val mutationThreshold: Property<Int> =
+            objects.property<Int>().convention(QualityExtension.DEFAULT_MUTATION_THRESHOLD)
         public val outputFormats: ListProperty<String> =
             objects.listProperty<String>().convention(
                 listOf("XML", "HTML"),
             )
-        public val mutationThreshold: Property<Int> =
-            objects.property<Int>().convention(QualityExtension.DEFAULT_MUTATION_THRESHOLD)
-    }
-
-public abstract class ErrorProneExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-    ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val toolVersion: Property<String> = objects.property<String>().convention("")
+        public val mutators: SetProperty<String> = objects.setProperty<String>().convention(setOf("DEFAULT"))
     }
 
 public abstract class GradleVersionExtension
@@ -176,22 +220,6 @@ public abstract class GradleVersionExtension
         objects: ObjectFactory,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val checkForStableVersionsOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
-    }
-
-public abstract class TaskScannerExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-    ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val patterns: ListProperty<String> =
-            objects.listProperty<String>().convention(
-                listOf("TODO", "FIXME", "HACK"),
-            )
-        public val maxAllowedTasks: Property<Int> =
-            objects.property<Int>().convention(QualityExtension.DEFAULT_MAX_ALLOWED_TASKS)
-        public val failOnExceed: Property<Boolean> = objects.property<Boolean>().convention(false)
     }
 
 public abstract class KoverExtension
@@ -200,7 +228,6 @@ public abstract class KoverExtension
         objects: ObjectFactory,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
-        public val toolVersion: Property<String> = objects.property<String>().convention("")
         public val coverageThreshold: Property<Int> =
             objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
     }
@@ -209,9 +236,11 @@ public abstract class EslintExtension
     @Inject
     constructor(
         objects: ObjectFactory,
+        project: Project,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
-        public val configFile: RegularFileProperty = objects.fileProperty()
+        public val configFile: RegularFileProperty =
+            objects.fileProperty().convention(project.layout.buildDirectory.file(".eslintrc.js"))
         public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
     }
 
@@ -221,4 +250,5 @@ public abstract class DokkaExtension
         objects: ObjectFactory,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val formats: SetProperty<String> = objects.setProperty<String>().convention(setOf("gfm"))
     }
