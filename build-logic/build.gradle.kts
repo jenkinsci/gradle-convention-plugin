@@ -14,7 +14,7 @@ val javaToolchainVersion: Provider<Int> =
 
 java {
     toolchain {
-        languageVersion = javaToolchainVersion.map( JavaLanguageVersion::of)
+        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
     }
 }
 
@@ -44,6 +44,13 @@ kotlin {
 
 gradlePlugin {
     plugins {
+        create("javaConventions") {
+            id = "conventions.java"
+            displayName = "Java Conventions"
+            implementationClass = "conventions.JavaConventionsPlugin"
+        }
+    }
+    plugins {
         create("kotlinConventions") {
             id = "conventions.kotlin"
             displayName = "Kotlin Conventions"
@@ -52,7 +59,7 @@ gradlePlugin {
     }
     plugins {
         create("qualityConventions") {
-            id = "conventions.qualtiy"
+            id = "conventions.quality"
             displayName = "Quality Conventions"
             implementationClass = "conventions.QualityConventionsPlugin"
         }
@@ -67,5 +74,5 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.spotless.gradle.plugin)
     implementation(libs.detekt.gradle.plugin)
+    implementation(libs.ktlint.gradle.plugin)
 }
-

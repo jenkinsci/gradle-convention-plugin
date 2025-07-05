@@ -11,9 +11,7 @@ import org.gradle.kotlin.dsl.withType
 
 public class JavaConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-
         with(project) {
-
             pluginManager.apply("java-library")
 
             configureJava()
@@ -23,7 +21,6 @@ public class JavaConventionsPlugin : Plugin<Project> {
 
 private fun Project.configureJava() {
     configure<JavaPluginExtension> {
-
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
         withSourcesJar()
         withJavadocJar()
@@ -35,12 +32,12 @@ private fun Project.configureJava() {
                 listOf(
                     "-parameters",
                     "-Xlint:deprecation",
-                    "Xlint:unchecked"
-                )
+                    "Xlint:unchecked",
+                ),
             )
         }
 
-        tasks.withType<AbstractArchiveTask>() {
+        tasks.withType<AbstractArchiveTask> {
             isPreserveFileTimestamps = false
             isReproducibleFileOrder = true
         }

@@ -15,102 +15,120 @@ import org.gradle.kotlin.dsl.setProperty
 import java.net.URI
 import javax.inject.Inject
 
-public open class JenkinsPluginExtension @Inject constructor(private val project: Project) {
+public open class JenkinsPluginExtension
+    @Inject
+    constructor(
+        private val project: Project,
+    ) {
+        private val objects: ObjectFactory = project.objects
 
-    private val objects: ObjectFactory = project.objects
+        public val jenkinsVersion: Property<String> = objects.property<String>().convention("2.504.3")
 
-    public val jenkinsVersion: Property<String> = objects.property<String>().convention("2.504.3")
+        public val pluginId: Property<String> =
+            objects.property<String>().convention(
+                project.name
+                    .replace("jenkins-", "")
+                    .replace("-plugin", ""),
+            )
 
-    public val pluginId: Property<String> = objects.property<String>().convention(
-        project.name.replace("jenkins-", "").replace("-plugin", "")
-    )
+        public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
 
-    public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
+        public val groupId: Property<String> = objects.property<String>().convention("org.jenkins-ci.plugins")
 
-    public val groupId: Property<String> = objects.property<String>().convention("org.jenkins-ci.plugins")
+        public val humanReadableName: Property<String> =
+            objects.property<String>().convention(
+                project.provider {
+                    project.description ?: project.name
+                },
+            )
 
-    public val humanReadableName: Property<String> =
-        objects.property<String>().convention(project.provider { project.description ?: project.name })
+        public val homePage: Property<URI> = objects.property<URI>()
 
-    public val homePage: Property<URI> = objects.property<URI>()
+        public val sandboxed: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val sandboxed: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val usePluginFirstClassLoader: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val usePluginFirstClassLoader: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
-    public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
+        public val minimumJenkinsCoreVersion: Property<String> = objects.property<String>().convention("2.504.3")
 
-    public val minimumJenkinsCoreVersion: Property<String> = objects.property<String>().convention("2.504.3")
+        public val description: Property<String> = objects.property<String>().convention("A Jenkins Plugin")
 
-    public val description: Property<String> = objects.property<String>().convention("A Jenkins Plugin")
+        public val githubUrl: Property<URI> = objects.property<URI>()
 
-    public val githubUrl: Property<URI> = objects.property<URI>()
+        public val pluginDevelopers: ListProperty<JenkinsPluginDeveloper> =
+            objects
+                .listProperty<JenkinsPluginDeveloper>()
 
-    public val pluginDevelopers: ListProperty<JenkinsPluginDeveloper> = objects.listProperty<JenkinsPluginDeveloper>()
+        public val pluginLicenses: ListProperty<JenkinsPluginLicense> = objects.listProperty<JenkinsPluginLicense>()
 
-    public val pluginLicenses: ListProperty<JenkinsPluginLicense> = objects.listProperty<JenkinsPluginLicense>()
+        public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
 
-    public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
+        public val pipelineCompatible: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val pipelineCompatible: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val generateTests: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val generateTests: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
 
-    public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
+        public val extension: Property<String> = objects.property<String>().convention(".hpi")
 
-    public val extension: Property<String> = objects.property<String>().convention(".hpi")
+        public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
 
-    public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
+        public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
-    public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val incrementalsRepoUrl: Property<String> =
+            objects.property<String>().convention("https://repo.jenkins-ci.org/incrementals")
 
-    public val incrementalsRepoUrl: Property<String> =
-        objects.property<String>().convention("https://repo.jenkins-ci.org/incrementals")
+        public val testJvmArguments: ListProperty<String> =
+            objects
+                .listProperty<String>()
+                .convention(
+                    listOf(
+                        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+                        "--add-opens=java.base/java.io=ALL-UNNAMED",
+                        "--add-opens=java.base/java.util=ALL-UNNAMED",
+                    ),
+                )
 
-    public val testJvmArguments: ListProperty<String> = objects.listProperty<String>().convention(
-        listOf(
-            "--add-opens=java.base/java.lang=ALL-UNNAMED",
-            "--add-opens=java.base/java.io=ALL-UNNAMED",
-            "--add-opens=java.base/java.util=ALL-UNNAMED",
-        )
-    )
+        public val pluginDependencies: ListProperty<JenkinsPluginDependency> =
+            objects.listProperty<JenkinsPluginDependency>()
 
-    public val pluginDependencies: ListProperty<JenkinsPluginDependency> =
-        objects.listProperty<JenkinsPluginDependency>()
+        public val pluginLabels: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
-    public val pluginLabels: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
-
-    public enum class PluginType {
-        BUILD,
-        SCM,
-        NOTIFICATION,
-        DEPLOYMENT,
-        SECURITY,
-        PIPELINE,
-        TESTING,
-        INTEGRATION,
-        ADMINISTRATION,
-        MISC
-    }
-
-    public fun developer(configure: JenkinsPluginDeveloper.() -> Unit) {
-        pluginDevelopers.add(objects.newInstance<JenkinsPluginDeveloper>().apply(configure))
-    }
-
-    public fun license(configure: JenkinsPluginLicense.() -> Unit) {
-        pluginLicenses.add(objects.newInstance<JenkinsPluginLicense>().apply(configure))
-    }
-
-    public fun dependency(pluginId: String, action: JenkinsPluginDependency.() -> Unit) {
-        val dependency = objects.newInstance<JenkinsPluginDependency>().apply {
-            this.pluginId.set(pluginId)
+        public enum class PluginType {
+            BUILD,
+            SCM,
+            NOTIFICATION,
+            DEPLOYMENT,
+            SECURITY,
+            PIPELINE,
+            TESTING,
+            INTEGRATION,
+            ADMINISTRATION,
+            MISC,
         }
-        action(dependency)
-        pluginDependencies.add(dependency)
-    }
 
-    public fun dependency(configure: JenkinsPluginDependency.() -> Unit) {
-        pluginDependencies.add(objects.newInstance<JenkinsPluginDependency>().apply(configure))
-    }
+        public fun developer(configure: JenkinsPluginDeveloper.() -> Unit) {
+            pluginDevelopers.add(objects.newInstance<JenkinsPluginDeveloper>().apply(configure))
+        }
 
-}
+        public fun license(configure: JenkinsPluginLicense.() -> Unit) {
+            pluginLicenses.add(objects.newInstance<JenkinsPluginLicense>().apply(configure))
+        }
+
+        public fun dependency(
+            pluginId: String,
+            action: JenkinsPluginDependency.() -> Unit,
+        ) {
+            val dependency =
+                objects.newInstance<JenkinsPluginDependency>().apply {
+                    this.pluginId.set(pluginId)
+                }
+            action(dependency)
+            pluginDependencies.add(dependency)
+        }
+
+        public fun dependency(configure: JenkinsPluginDependency.() -> Unit) {
+            pluginDependencies.add(objects.newInstance<JenkinsPluginDependency>().apply(configure))
+        }
+    }
