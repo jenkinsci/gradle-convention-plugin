@@ -10,8 +10,6 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.Pmd
@@ -19,10 +17,10 @@ import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.testing.Test
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
@@ -31,8 +29,6 @@ public class QualityManager(
     private val project: Project,
     private val qualityExtension: QualityExtension,
 ) {
-    private val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
-
     public fun apply() {
         applyQualityPlugins()
         configure()
@@ -76,17 +72,20 @@ public class QualityManager(
     }
 
     private fun configureCheckstyle() {
-        if (!qualityExtension.checkstyle.enabled.get()) return
+        val checkstyle = qualityExtension.checkstyle
+        if (!checkstyle.enabled.get()) return
         project.configure<CheckstyleExtension> {
-            toolVersion =
-                qualityExtension.checkstyle.toolVersion.orNull ?: libs.findVersion("checkstyle").get().requiredVersion
-            configFile = project.file(qualityExtension.checkstyle.configFile.get())
-            isIgnoreFailures = !qualityExtension.checkstyle.failOnViolation.get()
+            toolVersion = checkstyle.toolVersion.get()
+            checkstyle.configFile.orNull?.let {
+                configFile = it.asFile
+            }
+            isIgnoreFailures = !checkstyle.failOnViolation.get()
         }
         project.tasks.withType<Checkstyle>().configureEach { checkstyleTask ->
             checkstyleTask.reports {
                 it.xml.required.set(true)
                 it.html.required.set(true)
+                it.sarif.required.set(true)
             }
         }
     }
@@ -95,12 +94,10 @@ public class QualityManager(
         if (!qualityExtension.spotbugs.enabled.get()) return
 
         project.configure<SpotBugsExtension> {
-            toolVersion.set(
-                qualityExtension.spotbugs.toolVersion.orNull ?: libs.findVersion("spotbugs").get().requiredVersion,
-            )
+            toolVersion.set(qualityExtension.spotbugs.toolVersion.get())
             effort.set(qualityExtension.spotbugs.effortLevel.get())
             reportLevel.set(qualityExtension.spotbugs.reportLevel.get())
-            excludeFilter.set(qualityExtension.spotbugs.excludeFilterFile)
+            excludeFilter.set(qualityExtension.spotbugs.excludeFilterFile.orNull)
         }
     }
 
@@ -108,19 +105,15 @@ public class QualityManager(
         if (!qualityExtension.pmd.enabled.get()) return
 
         project.configure<PmdExtension> {
-            toolVersion =
-                qualityExtension.pmd.toolVersion.orNull ?: libs.findVersion("pmd").get().requiredVersion
-            ruleSetFiles =
-                project.files(
-                    qualityExtension.pmd.ruleSets
-                        .get()
-                        .asFile,
-                )
+            toolVersion = qualityExtension.pmd.toolVersion.get()
+            qualityExtension.pmd.ruleSetFiles.orNull?.let {
+                ruleSetFiles = project.files(it.asFile)
+            }
             isConsoleOutput = qualityExtension.pmd.consoleOutput.get()
             isIgnoreFailures = !qualityExtension.pmd.failOnViolation.get()
         }
-        project.tasks.withType<Pmd> {
-            reports {
+        project.tasks.withType<Pmd>().configureEach { pmd ->
+            pmd.reports {
                 it.xml.required.set(true)
                 it.html.required.set(true)
             }
@@ -135,20 +128,33 @@ public class QualityManager(
     }
 
     private fun configureJacoco() {
-        if (!qualityExtension.jacoco.enabled.get()) return
+        val jacocoConfig = qualityExtension.jacoco
+        if (!jacocoConfig.enabled.get()) return
 
         project.configure<JacocoPluginExtension> {
-            toolVersion = qualityExtension.jacoco.toolVersion.orNull ?: libs.findVersion("jacoco").get().requiredVersion
+            toolVersion = jacocoConfig.toolVersion.get()
         }
-        project.tasks.withType<Test> {
-            finalizedBy("jacocoTestReport")
+        project.tasks.withType<Test>().configureEach { t ->
+            t.finalizedBy(project.tasks.withType<JacocoReport>())
         }
-        project.tasks.withType<JacocoReport> {
-            dependsOn(project.tasks.withType<Test>())
-            reports {
+        project.tasks.withType<JacocoReport>().configureEach { jacocoReport ->
+            jacocoReport.dependsOn(project.tasks.withType<Test>())
+            jacocoReport.reports {
                 it.xml.required.set(true)
                 it.html.required.set(true)
-                it.csv.required.set(true)
+                it.csv.required.set(false)
+            }
+        }
+        project.tasks.withType<JacocoCoverageVerification>().configureEach { t ->
+            t.violationRules { rules ->
+                rules.rule { rule ->
+                    rule.excludes.addAll(jacocoConfig.excludes.get())
+                    rule.limit {
+                        it.counter = "LINE"
+                        it.value = "COVEREDRATIO"
+                        it.minimum = jacocoConfig.minimumCodeCoverage.get().toBigDecimal()
+                    }
+                }
             }
         }
     }
@@ -157,19 +163,18 @@ public class QualityManager(
         if (!qualityExtension.detekt.enabled.get()) return
 
         project.configure<DetektExtension> {
-            toolVersion = qualityExtension.detekt.toolVersion.orNull ?: libs.findVersion("detekt").get().requiredVersion
+            toolVersion = qualityExtension.detekt.toolVersion.get()
             autoCorrect = qualityExtension.detekt.autoCorrect.get()
             buildUponDefaultConfig = true
             isIgnoreFailures = !qualityExtension.detekt.failOnViolation.get()
             source.setFrom(qualityExtension.detekt.source)
-            config.setFrom(qualityExtension.detekt.configFile)
+            config.setFrom(listOfNotNull(qualityExtension.detekt.configFile.asFile.orNull))
             baseline =
-                qualityExtension.detekt.baseline
-                    .get()
-                    .asFile
+                qualityExtension.detekt.baseline.orNull
+                    ?.asFile
         }
-        project.tasks.withType<Detekt> {
-            reports {
+        project.tasks.withType<Detekt>().configureEach { detekt ->
+            detekt.reports {
                 it.xml.required.set(true)
                 it.html.required.set(true)
                 it.sarif.required.set(true)
@@ -181,11 +186,8 @@ public class QualityManager(
         if (!qualityExtension.spotless.enabled.get()) return
 
         project.configure<SpotlessExtension> {
-            val ktlintVersion =
-                qualityExtension.spotless.ktlintVersion.orNull ?: libs.findVersion("ktlint").get().requiredVersion
-            val googleJavaFormat =
-                qualityExtension.spotless.googleJavaFormatVersion.orNull
-                    ?: libs.findVersion("googleJavaFormat").get().requiredVersion
+            val ktlintVersion = qualityExtension.spotless.ktlintVersion.get()
+            val googleJavaFormat = qualityExtension.spotless.googleJavaFormatVersion.get()
 
             kotlin {
                 it.target("**/*.kt")
@@ -255,9 +257,7 @@ public class QualityManager(
 
         project.configure<PitestPluginExtension> {
             threads.set(pit.threads)
-            pitestVersion.set(
-                pit.pitVersion.orNull ?: libs.findVersion("pit").get().requiredVersion,
-            )
+            pitestVersion.set(pit.pitVersion.get())
             targetClasses.set(pit.targetClasses)
             excludedClasses.set(pit.excludedClasses)
             mutationThreshold.set(pit.mutationThreshold)
@@ -270,8 +270,8 @@ public class QualityManager(
         val versions = qualityExtension.versions
         if (!versions.enabled.get()) return
 
-        project.tasks.withType<DependencyUpdatesTask> {
-            rejectVersionIf {
+        project.tasks.withType<DependencyUpdatesTask>().configureEach { t ->
+            t.rejectVersionIf {
                 isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
             }
         }
@@ -317,12 +317,23 @@ public class QualityManager(
         project.tasks.register<NpmTask>("eslint") {
             group = "Verification"
             description = "Run ESLint on frontend sources."
-            val fix = if (esLint.autofix.get()) "--fix" else ""
+
             val configFile =
-                esLint.configFile
-                    .get()
-                    .asFile.absolutePath
-            args.set(listOf("run", "lint", fix, "--config", configFile))
+                esLint.configFile.orNull
+                    ?.asFile
+                    ?.absolutePath
+
+            val baseArgs = mutableListOf("run", "lint")
+
+            if (esLint.autofix.get()) {
+                baseArgs.add("--fix")
+            }
+
+            configFile?.let {
+                baseArgs.addAll(listOf("--config", it))
+            }
+
+            args.set(baseArgs)
         }
     }
 
@@ -361,6 +372,7 @@ public class QualityManager(
                 qualityExtension.pitest.enabled.get() to "pitest",
                 (qualityExtension.eslint.enabled.get() && project.tasks.findByName("eslint") != null) to
                     "eslint",
+                qualityExtension.jacoco.enabled.get() to "jacocoTestCoverageVerification",
             ).forEach { (enabled, path) ->
                 {
                     if (enabled) {

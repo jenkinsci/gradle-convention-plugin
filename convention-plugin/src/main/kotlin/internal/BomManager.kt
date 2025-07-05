@@ -2,18 +2,13 @@ package internal
 
 import extensions.BomExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 public class BomManager(
     private val project: Project,
     private val bomExtension: BomExtension,
 ) {
-    private val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
-
     public companion object {
         private const val JENKINS_BOM = "io.jenkins.tools.bom:bom-2.479.x"
         private const val JENKINS_PLUGIN_BOM = "io.jenkins.plugins:plugin-bom"
@@ -40,13 +35,7 @@ public class BomManager(
 
     private fun DependencyHandler.configureCoreBom() {
         if (bomExtension.useCoreBom.get()) {
-            val bomVersion =
-                bomExtension.bomVersion.orNull ?: libs
-                    .findVersion("jenkins-bom")
-                    .orElseThrow {
-                        IllegalStateException("Jenkins BOM version not found in version catalog")
-                    }.requiredVersion
-
+            val bomVersion = bomExtension.bomVersion.get()
             add("implementation", platform("$JENKINS_BOM:$bomVersion"))
             add("testImplementation", platform("$JENKINS_BOM:$bomVersion"))
         }
@@ -55,11 +44,7 @@ public class BomManager(
     private fun DependencyHandler.configurePluginBom() {
         if (bomExtension.usePluginBom.get()) {
             val bomVersion =
-                bomExtension.bomVersion.orNull ?: libs
-                    .findVersion("jenkins-plugin-bom")
-                    .orElseThrow {
-                        IllegalStateException("Jenkins Plugins BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.bomVersion.get()
 
             add("implementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
             add("testImplementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
@@ -73,11 +58,7 @@ public class BomManager(
 
         if (bomExtension.useGroovyBom.get()) {
             val bomVersion =
-                bomExtension.groovyBomVersion.orNull ?: libs
-                    .findVersion("groovy-bom")
-                    .orElseThrow {
-                        IllegalStateException("Groovy BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.groovyBomVersion.get()
 
             add("implementation", platform("$GROOVY_BOM:$bomVersion"))
             add("testImplementation", platform("$GROOVY_BOM:$bomVersion"))
@@ -85,11 +66,7 @@ public class BomManager(
 
         if (bomExtension.useJacksonBom.get()) {
             val bomVersion =
-                bomExtension.jacksonBomVersion.orNull ?: libs
-                    .findVersion("jackson-bom")
-                    .orElseThrow {
-                        IllegalStateException("Jenkins BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.jacksonBomVersion.get()
 
             add("implementation", platform("$JACKSON_BOM:$bomVersion"))
             add("testImplementation", platform("$JACKSON_BOM:$bomVersion"))
@@ -97,11 +74,7 @@ public class BomManager(
 
         if (bomExtension.useSpringBom.get()) {
             val bomVersion =
-                bomExtension.springBomVersion.orNull ?: libs
-                    .findVersion("spring-bom")
-                    .orElseThrow {
-                        IllegalStateException("Spring BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.springBomVersion.get()
 
             add("implementation", platform("$SPRING_BOM:$bomVersion"))
             add("testImplementation", platform("$SPRING_BOM:$bomVersion"))
@@ -109,11 +82,7 @@ public class BomManager(
 
         if (bomExtension.useJettyBom.get()) {
             val bomVersion =
-                bomExtension.jettyBomVersion.orNull ?: libs
-                    .findVersion("jetty-bom")
-                    .orElseThrow {
-                        IllegalStateException("Jetty BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.jettyBomVersion.get()
 
             add("implementation", platform("$JETTY_BOM:$bomVersion"))
             add("testImplementation", platform("$JETTY_BOM:$bomVersion"))
@@ -121,11 +90,7 @@ public class BomManager(
 
         if (bomExtension.useNettyBom.get()) {
             val bomVersion =
-                bomExtension.nettyBomVersion.orNull ?: libs
-                    .findVersion("netty-bom")
-                    .orElseThrow {
-                        IllegalStateException("Netty BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.nettyBomVersion.get()
 
             add("implementation", platform("$NETTY_BOM:$bomVersion"))
             add("testImplementation", platform("$NETTY_BOM:$bomVersion"))
@@ -133,11 +98,7 @@ public class BomManager(
 
         if (bomExtension.useSlf4jBom.get()) {
             val bomVersion =
-                bomExtension.slf4jBomVersion.orNull ?: libs
-                    .findVersion("slf4j-bom")
-                    .orElseThrow {
-                        IllegalStateException("SLF4J BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.slf4jBomVersion.get()
 
             add("implementation", platform("$SLF4J_BOM:$bomVersion"))
             add("testImplementation", platform("$SLF4J_BOM:$bomVersion"))
@@ -147,33 +108,21 @@ public class BomManager(
     private fun DependencyHandler.configureTestingBom() {
         if (bomExtension.useJunitBom.get()) {
             val bomVersion =
-                bomExtension.junitBomVersion.orNull ?: libs
-                    .findVersion("junit-bom")
-                    .orElseThrow {
-                        IllegalStateException("JUnit BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.junitBomVersion.get()
 
             add("testImplementation", platform("$JUNIT_BOM:$bomVersion"))
         }
 
         if (bomExtension.useMockitoBom.get()) {
             val bomVersion =
-                bomExtension.mockitoBomVersion.orNull ?: libs
-                    .findVersion("mockito-bom")
-                    .orElseThrow {
-                        IllegalStateException("Mockito BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.mockitoBomVersion.get()
 
             add("testImplementation", platform("$MOCKITO_BOM:$bomVersion"))
         }
 
         if (bomExtension.useTestcontainersBom.get()) {
             val bomVersion =
-                bomExtension.testcontainersBom.orNull ?: libs
-                    .findVersion("testcontainers-bom")
-                    .orElseThrow {
-                        IllegalStateException("Testcontainers BOM version not found in version catalog")
-                    }.requiredVersion
+                bomExtension.testcontainersBom.get()
 
             add("testImplementation", platform("$TESTCONTAINERS_BOM:$bomVersion"))
         }

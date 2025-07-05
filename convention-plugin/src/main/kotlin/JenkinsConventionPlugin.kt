@@ -8,21 +8,28 @@ import internal.QualityManager
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByType
 
 public class JenkinsConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
+        val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+
         try {
             val pluginExtension =
                 project.extensions.create<JenkinsPluginExtension>(
                     PluginMetadata.EXTENSION_NAME,
                     project,
+                    libs,
                 )
             val bomExtension =
                 project.extensions.create(
                     "bom",
                     BomExtension::class.java,
                     project.objects,
+                    libs,
                 )
 
             val qualityExtension = project.extensions.create("quality", QualityExtension::class.java, project)
