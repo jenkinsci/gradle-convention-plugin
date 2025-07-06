@@ -145,7 +145,16 @@ public abstract class JacocoExtension
             objects.property<Double>().convention(
                 QualityExtension.DEFAULT_CODE_COVERAGE_THRESHOLD,
             )
-        public val excludes: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
+        public val excludes: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf(
+                    "**/generated/**",
+                    "**/Messages.class",
+                    "**/*Descriptor.class",
+                    "**/*Jelly.class",
+                    "**/tags/**",
+                ),
+            )
     }
 
 public abstract class DetektExtension
