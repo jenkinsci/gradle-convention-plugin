@@ -353,8 +353,8 @@ public class QualityManager(
         val dokka = qualityExtension.dokka
         if (!dokka.enabled.get()) return
 
-        project.tasks.matching { it.name == "dokkaGenerate" }.configureEach {
-            it.enabled = true
+        project.tasks.named("dokkaHtml").configure { task ->
+            task.outputs.dir(dokka.outputDirectory)
         }
     }
 
@@ -380,6 +380,7 @@ public class QualityManager(
                 (qualityExtension.eslint.enabled.get() && project.tasks.findByName("eslint") != null) to
                     "eslint",
                 (qualityExtension.jacoco.enabled.get() && hasJava) to "jacocoTestCoverageVerification",
+                qualityExtension.dokka.enabled.get() to "dokkaHtml",
             ).forEach { (enabled, path) ->
                 if (enabled) {
                     it.dependsOn(path)
