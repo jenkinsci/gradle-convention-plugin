@@ -20,6 +20,12 @@ public class JpiPluginAdapter(
     public fun apply() {
         project.pluginManager.apply("java-library")
         project.pluginManager.apply(JpiPlugin::class.java)
+
+        project.tasks.whenTaskAdded { task ->
+            if (task.name == "generateLicenseInfo") {
+                task.enabled = false
+            }
+        }
     }
 
     public fun configure() {

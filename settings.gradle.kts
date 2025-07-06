@@ -35,6 +35,8 @@ dependencyResolutionManagement {
             name = "JenkinsIncrementals"
             url = uri("https://repo.jenkins-ci.org/incrementals/")
         }
+
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
     }
 }
 

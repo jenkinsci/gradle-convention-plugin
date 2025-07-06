@@ -10,12 +10,12 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.testing.Test
-import org.gradle.internal.extensions.stdlib.capitalized
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
@@ -51,23 +51,33 @@ public class QualityManager(
     }
 
     private fun applyQualityPlugins() {
-        listOf(
-            qualityExtension.checkstyle.enabled.get() to "checkstyle",
-            qualityExtension.spotless.enabled.get() to "com.diffplug.gradle.spotless",
-            qualityExtension.pmd.enabled.get() to "pmd",
-            qualityExtension.jacoco.enabled.get() to "jacoco",
-            qualityExtension.detekt.enabled.get() to "io.gitlab.arturbosch.detekt",
-            qualityExtension.spotbugs.enabled.get() to "com.github.spotbugs",
-            qualityExtension.owaspDependencyCheck.enabled.get() to "org.owasp.dependencycheck",
-            qualityExtension.versions.enabled.get() to "com.github.ben-manes.versions",
-            qualityExtension.kover.enabled.get() to "org.jetbrains.kotlinx.kover",
-            qualityExtension.pitest.enabled.get() to "info.solidsoft.gradle.pitest",
-            (qualityExtension.eslint.enabled.get() && hasFrontendCode()) to "com.github.node-gradle.node",
-            qualityExtension.dokka.enabled.get() to "org.jetbrains.dokka",
-        ).forEach { (enabled, pluginId) ->
-            if (enabled) {
-                project.pluginManager.apply(pluginId)
+        val hasJava = project.plugins.hasPlugin(JavaPlugin::class.java)
+
+        val pluginIds =
+            buildList {
+                addIfEnabled(qualityExtension.checkstyle.enabled.orNull == true, "checkstyle")
+                addIfEnabled(qualityExtension.spotless.enabled.orNull == true, "com.diffplug.spotless")
+                addIfEnabled(qualityExtension.pmd.enabled.orNull == true, "pmd")
+                addIfEnabled(qualityExtension.jacoco.enabled.orNull == true && hasJava, "jacoco")
+                addIfEnabled(qualityExtension.detekt.enabled.orNull == true, "io.gitlab.arturbosch.detekt")
+                addIfEnabled(qualityExtension.spotbugs.enabled.orNull == true, "com.github.spotbugs")
+                addIfEnabled(qualityExtension.owaspDependencyCheck.enabled.orNull == true, "org.owasp.dependencycheck")
+                addIfEnabled(qualityExtension.versions.enabled.orNull == true, "com.github.ben-manes.versions")
+                addIfEnabled(qualityExtension.kover.enabled.orNull == true, "org.jetbrains.kotlinx.kover")
+                addIfEnabled(qualityExtension.pitest.enabled.orNull == true, "info.solidsoft.pitest")
+                addIfEnabled(
+                    qualityExtension.dokka.enabled.orNull == true,
+                    "org.jetbrains.dokka",
+                )
+                if (qualityExtension.eslint.enabled.orNull == true &&
+                    hasFrontendCode()
+                ) {
+                    add("com.github.node-gradle.node")
+                }
             }
+
+        pluginIds.forEach { pluginId ->
+            project.pluginManager.apply(pluginId)
         }
     }
 
@@ -128,14 +138,15 @@ public class QualityManager(
     }
 
     private fun configureJacoco() {
+        val hasJava = project.plugins.hasPlugin(JavaPlugin::class.java)
         val jacocoConfig = qualityExtension.jacoco
-        if (!jacocoConfig.enabled.get()) return
+        if (!jacocoConfig.enabled.get() || !hasJava) return
 
         project.configure<JacocoPluginExtension> {
             toolVersion = jacocoConfig.toolVersion.get()
         }
         project.tasks.withType<Test>().configureEach { t ->
-            t.finalizedBy(project.tasks.withType<JacocoReport>())
+            t.finalizedBy("jacocoTestReport")
         }
         project.tasks.withType<JacocoReport>().configureEach { jacocoReport ->
             jacocoReport.dependsOn(project.tasks.withType<Test>())
@@ -146,9 +157,10 @@ public class QualityManager(
             }
         }
         project.tasks.withType<JacocoCoverageVerification>().configureEach { t ->
+            t.dependsOn("jacocoTestReport")
             t.violationRules { rules ->
                 rules.rule { rule ->
-                    rule.excludes.addAll(jacocoConfig.excludes.get())
+                    rule.excludes = jacocoConfig.excludes.get()
                     rule.limit {
                         it.counter = "LINE"
                         it.value = "COVEREDRATIO"
@@ -312,7 +324,7 @@ public class QualityManager(
     private fun configureEsLint() {
         val esLint = qualityExtension.eslint
 
-        if (!esLint.enabled.get()) return
+        if (!esLint.enabled.get() || !hasFrontendCode()) return
 
         project.tasks.register<NpmTask>("eslint") {
             group = "Verification"
@@ -339,16 +351,10 @@ public class QualityManager(
 
     private fun configureDokka() {
         val dokka = qualityExtension.dokka
-
         if (!dokka.enabled.get()) return
 
-        val formats = qualityExtension.dokka.formats.get()
-        val dokkaTasks = formats.map { "dokka${it.capitalized()}" }
-
-        project.tasks.register("generateDocs") {
-            it.group = "Documentation"
-            it.description = "Generate API documentation in multiple formats: ${formats.joinToString { ", " }}"
-            it.dependsOn(dokkaTasks)
+        project.tasks.matching { it.name == "dokkaGenerate" }.configureEach {
+            it.enabled = true
         }
     }
 
@@ -361,6 +367,7 @@ public class QualityManager(
 
     private fun configureCheckTask() {
         project.tasks.named("check").configure {
+            val hasJava = project.plugins.hasPlugin(JavaPlugin::class.java)
             listOf(
                 qualityExtension.checkstyle.enabled.get() to "checkstyleMain",
                 qualityExtension.spotbugs.enabled.get() to "spotbugsMain",
@@ -372,14 +379,19 @@ public class QualityManager(
                 qualityExtension.pitest.enabled.get() to "pitest",
                 (qualityExtension.eslint.enabled.get() && project.tasks.findByName("eslint") != null) to
                     "eslint",
-                qualityExtension.jacoco.enabled.get() to "jacocoTestCoverageVerification",
+                (qualityExtension.jacoco.enabled.get() && hasJava) to "jacocoTestCoverageVerification",
             ).forEach { (enabled, path) ->
-                {
-                    if (enabled) {
-                        it.dependsOn(path)
-                    }
+                if (enabled) {
+                    it.dependsOn(path)
                 }
             }
         }
     }
+}
+
+private fun MutableList<String>.addIfEnabled(
+    enabled: Boolean,
+    pluginId: String,
+) {
+    if (enabled) add(pluginId)
 }

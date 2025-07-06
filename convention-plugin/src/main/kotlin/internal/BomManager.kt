@@ -11,7 +11,6 @@ public class BomManager(
 ) {
     public companion object {
         private const val JENKINS_BOM = "io.jenkins.tools.bom:bom-2.479.x"
-        private const val JENKINS_PLUGIN_BOM = "io.jenkins.plugins:plugin-bom"
         private const val SPRING_BOM = "org.springframework:spring-framework-bom"
         private const val JACKSON_BOM = "com.fasterxml.jackson:jackson-bom"
         private const val JUNIT_BOM = "org.junit:junit-bom"
@@ -26,7 +25,6 @@ public class BomManager(
     public fun configure() {
         project.dependencies {
             configureCoreBom()
-            configurePluginBom()
             configureCommonBoms()
             configureTestingBom()
             configureCustomBoms()
@@ -38,16 +36,6 @@ public class BomManager(
             val bomVersion = bomExtension.bomVersion.get()
             add("implementation", platform("$JENKINS_BOM:$bomVersion"))
             add("testImplementation", platform("$JENKINS_BOM:$bomVersion"))
-        }
-    }
-
-    private fun DependencyHandler.configurePluginBom() {
-        if (bomExtension.usePluginBom.get()) {
-            val bomVersion =
-                bomExtension.bomVersion.get()
-
-            add("implementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
-            add("testImplementation", platform("$JENKINS_PLUGIN_BOM:$bomVersion"))
         }
     }
 

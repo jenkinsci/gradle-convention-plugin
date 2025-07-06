@@ -26,35 +26,28 @@ public abstract class QualityExtension
         private val objects: ObjectFactory = project.objects
 
         public val checkstyle: CheckstyleExtension =
-            project.extensions.create("checkstyle", CheckstyleExtension::class.java, objects, project, libs)
-        public val spotbugs: SpotbugsExtension =
-            project.extensions.create("spotbugs", SpotbugsExtension::class.java, objects, libs)
-        public val pmd: PmdExtension = project.extensions.create("pmd", PmdExtension::class.java, objects, libs)
+            objects.newInstance(CheckstyleExtension::class.java, objects, project, libs)
+        public val spotbugs: SpotbugsExtension = objects.newInstance(SpotbugsExtension::class.java, objects, libs)
+        public val pmd: PmdExtension = objects.newInstance(PmdExtension::class.java, objects, libs)
         public val jacoco: JacocoExtension =
-            project.extensions.create(
-                "jacoco",
+            objects.newInstance(
                 JacocoExtension::class.java,
                 objects,
                 libs,
             )
-        public val detekt: DetektExtension =
-            project.extensions.create("detekt", DetektExtension::class.java, objects, project, libs)
-        public val spotless: SpotlessExtension =
-            project.extensions.create("spotless", SpotlessExtension::class.java, objects)
+        public val detekt: DetektExtension = objects.newInstance(DetektExtension::class.java, objects, project, libs)
+        public val spotless: SpotlessExtension = objects.newInstance(SpotlessExtension::class.java, objects, libs)
         public val owaspDependencyCheck: OwaspDependencyCheckExtension =
-            project.extensions.create(
-                "owaspDependencyCheck",
+            objects.newInstance(
                 OwaspDependencyCheckExtension::class.java,
                 objects,
                 project,
             )
-        public val versions: GradleVersionExtension =
-            project.extensions.create("versions", GradleVersionExtension::class.java, objects)
-        public val pitest: PitestExtension = project.extensions.create("pitest", PitestExtension::class.java, objects)
-        public val kover: KoverExtension = project.extensions.create("Kover", KoverExtension::class.java, objects)
-        public val eslint: EslintExtension =
-            project.extensions.create("eslint", EslintExtension::class.java, objects, project)
-        public val dokka: DokkaExtension = project.extensions.create("dokka", DokkaExtension::class.java, objects)
+        public val versions: GradleVersionExtension = objects.newInstance(GradleVersionExtension::class.java, objects)
+        public val pitest: PitestExtension = objects.newInstance(PitestExtension::class.java, objects, libs)
+        public val kover: KoverExtension = objects.newInstance(KoverExtension::class.java, objects)
+        public val eslint: EslintExtension = objects.newInstance(EslintExtension::class.java, objects, project)
+        public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java, objects)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -82,7 +75,7 @@ public abstract class QualityExtension
         public fun dokka(action: DokkaExtension.() -> Unit): Unit = action(dokka)
 
         public companion object {
-            public const val DEFAULT_CODE_COVERAGE_THRESHOLD: Double = 80.0
+            public const val DEFAULT_CODE_COVERAGE_THRESHOLD: Double = 0.8
             public const val DEFAULT_OWASP_THRESHOLD: Float = 7.0f
             public const val DEFAULT_MUTATION_THRESHOLD: Int = 85
             public const val DEFAULT_KOVER_THRESHOLD: Int = 80
@@ -188,7 +181,7 @@ public abstract class OwaspDependencyCheckExtension
         objects: ObjectFactory,
         project: Project,
     ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val failOnCvss: Property<Float> =
             objects.property<Float>().convention(QualityExtension.DEFAULT_OWASP_THRESHOLD)
         public val formats: ListProperty<String> =
@@ -221,7 +214,7 @@ public abstract class PitestExtension
         objects: ObjectFactory,
         libs: VersionCatalog,
     ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val pitVersion: Property<String> =
             objects.property<String>().convention(libs.findVersion("pit").get().requiredVersion)
         public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
@@ -249,7 +242,7 @@ public abstract class KoverExtension
     constructor(
         objects: ObjectFactory,
     ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val coverageThreshold: Property<Int> =
             objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
     }
@@ -260,7 +253,7 @@ public abstract class EslintExtension
         objects: ObjectFactory,
         project: Project,
     ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val configFile: RegularFileProperty = objects.fileProperty()
     }
@@ -271,5 +264,4 @@ public abstract class DokkaExtension
         objects: ObjectFactory,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val formats: SetProperty<String> = objects.setProperty<String>().convention(setOf("gfm"))
     }

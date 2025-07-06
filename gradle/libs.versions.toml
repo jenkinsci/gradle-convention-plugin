@@ -5,7 +5,6 @@ gradle = "9.0-rc-1"
 jetbrains-annotations = "26.0.2"
 jenkins-stapler = "1997.v356365fb_929e"
 jenkins-bom = "4228.v0a_71308d905b_"
-jenkins-plugin-bom = "4228.v0a_71308d905b_"
 groovy-bom = "4.0.27"
 jackson-bom = "2.19.1"
 junit-bom = "5.13.2"
@@ -57,14 +56,13 @@ kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", ve
 pit-gradle-plugin = { module = "info.solidsoft.gradle.pitest:gradle-pitest-plugin", version.ref = "pit" }
 benmanes-versions-gradle-plugin = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "versions" }
 owasp-depcheck-gradle-plugin = { module = "org.owasp:dependency-check-gradle", version.ref = "owaspCheck" }
-dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 node-gradle-plugin = { module = "com.github.node-gradle:gradle-node-plugin", version.ref = "node-gradle" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 owaspDependencyCheck = { id = "org.owasp.dependencycheck", version.ref = "owaspCheck" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]

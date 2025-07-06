@@ -22,7 +22,6 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 project.extensions.create<JenkinsPluginExtension>(
                     PluginMetadata.EXTENSION_NAME,
                     project,
-                    libs,
                 )
             val bomExtension =
                 project.extensions.create(
@@ -32,7 +31,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     libs,
                 )
 
-            val qualityExtension = project.extensions.create("quality", QualityExtension::class.java, project)
+            val qualityExtension = project.extensions.create("quality", QualityExtension::class.java, project, libs)
 
             val jpiAdapter = JpiPluginAdapter(project, pluginExtension)
             val bomManager = BomManager(project, bomExtension)

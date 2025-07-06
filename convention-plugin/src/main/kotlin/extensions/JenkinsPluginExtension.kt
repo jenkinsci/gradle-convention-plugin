@@ -64,8 +64,6 @@ public open class JenkinsPluginExtension
 
         public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
 
-        public val pipelineCompatible: Property<Boolean> = objects.property<Boolean>().convention(false)
-
         public val generateTests: Property<Boolean> = objects.property<Boolean>().convention(false)
 
         public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
@@ -93,7 +91,7 @@ public open class JenkinsPluginExtension
         public val pluginDependencies: ListProperty<JenkinsPluginDependency> =
             objects.listProperty<JenkinsPluginDependency>()
 
-        public val pluginLabels: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
+        public val pluginLabels: ListProperty<String> = objects.listProperty<String>().convention(emptySet())
 
         public enum class PluginType {
             BUILD,
