@@ -5,6 +5,7 @@ import com.github.spotbugs.snom.Effort
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -24,9 +25,10 @@ public abstract class QualityExtension
         libs: VersionCatalog,
     ) {
         private val objects: ObjectFactory = project.objects
+        private val layout: ProjectLayout = project.layout
 
         public val checkstyle: CheckstyleExtension =
-            objects.newInstance(CheckstyleExtension::class.java, objects, project, libs)
+            objects.newInstance(CheckstyleExtension::class.java, objects, libs)
         public val spotbugs: SpotbugsExtension = objects.newInstance(SpotbugsExtension::class.java, objects, libs)
         public val pmd: PmdExtension = objects.newInstance(PmdExtension::class.java, objects, libs)
         public val jacoco: JacocoExtension =
@@ -35,19 +37,24 @@ public abstract class QualityExtension
                 objects,
                 libs,
             )
-        public val detekt: DetektExtension = objects.newInstance(DetektExtension::class.java, objects, project, libs)
+        public val detekt: DetektExtension =
+            objects.newInstance(
+                DetektExtension::class.java,
+                objects,
+                libs,
+            )
         public val spotless: SpotlessExtension = objects.newInstance(SpotlessExtension::class.java, objects, libs)
         public val owaspDependencyCheck: OwaspDependencyCheckExtension =
             objects.newInstance(
                 OwaspDependencyCheckExtension::class.java,
                 objects,
-                project,
+                layout,
             )
         public val versions: GradleVersionExtension = objects.newInstance(GradleVersionExtension::class.java, objects)
         public val pitest: PitestExtension = objects.newInstance(PitestExtension::class.java, objects, libs)
         public val kover: KoverExtension = objects.newInstance(KoverExtension::class.java, objects)
-        public val eslint: EslintExtension = objects.newInstance(EslintExtension::class.java, objects, project)
-        public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java, objects)
+        public val eslint: EslintExtension = objects.newInstance(EslintExtension::class.java, objects)
+        public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java, objects, layout)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -87,7 +94,6 @@ public abstract class CheckstyleExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        project: Project,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -146,7 +152,6 @@ public abstract class DetektExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        project: Project,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -179,7 +184,7 @@ public abstract class OwaspDependencyCheckExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        project: Project,
+        layout: ProjectLayout,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val failOnCvss: Property<Float> =
@@ -190,11 +195,11 @@ public abstract class OwaspDependencyCheckExtension
             )
         public val dataDirectory: DirectoryProperty =
             objects.directoryProperty().convention(
-                project.layout.projectDirectory.dir(".gradle/dependency-check-data"),
+                layout.projectDirectory.dir(".gradle/dependency-check-data"),
             )
         public val outputDirectory: DirectoryProperty =
             objects.directoryProperty().convention(
-                project.layout.buildDirectory.dir("reports/dependency-check"),
+                layout.buildDirectory.dir("reports/dependency-check"),
             )
         public val suppressionFiles: ListProperty<RegularFile> =
             objects
@@ -251,7 +256,6 @@ public abstract class EslintExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        project: Project,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
@@ -262,6 +266,9 @@ public abstract class DokkaExtension
     @Inject
     constructor(
         objects: ObjectFactory,
+        layout: ProjectLayout,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val outputDirectory: DirectoryProperty =
+            objects.directoryProperty().convention(layout.buildDirectory.dir("dokka/html"))
     }
