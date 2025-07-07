@@ -18,7 +18,7 @@ public class QualityConventionsPlugin : Plugin<Project> {
             pluginManager.apply("com.diffplug.spotless")
             pluginManager.apply("io.gitlab.arturbosch.detekt")
 
-            configureSpotless(libs)
+            configureSpotless()
             configureDetekt(libs)
 
             tasks.named("check") {
@@ -29,42 +29,56 @@ public class QualityConventionsPlugin : Plugin<Project> {
     }
 }
 
-private fun Project.configureSpotless(libs: VersionCatalog) {
+private fun Project.configureSpotless() {
     configure<SpotlessExtension> {
-        val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
-        val googleJavaFormat = libs.findVersion("googleJavaFormat").get().requiredVersion
-
         kotlin {
             target("**/*.kt")
-            targetExclude("**/build/**", "bin/**")
-            ktlint(ktlintVersion)
+            targetExclude("**/build/**", "bin/**", "**/generated/**")
+            ktlint()
             trimTrailingWhitespace()
             endWithNewline()
         }
         kotlinGradle {
             target("*.gradle.kts", "**/*.gradle.kts")
-            ktlint(ktlintVersion)
+            targetExclude("**/build/**", "**/.gradle/**")
+            ktlint()
             trimTrailingWhitespace()
             endWithNewline()
         }
         java {
             target("**/*.java")
-            googleJavaFormat(googleJavaFormat)
+            targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
+            eclipse()
             trimTrailingWhitespace()
             endWithNewline()
-            targetExclude("**/generated/**", "**/build/**")
+            removeUnusedImports()
         }
         format("misc") {
             target(
                 "*.md",
+                "*.txt",
                 ".gitignore",
+                ".gitattributes",
                 "*.properties",
                 "*.yml",
                 "*.yaml",
                 "*.json",
                 ".editorconfig",
+                "*.xml",
+                "*.gradle",
+                "*.sh",
+                "*.dockerfile",
+                "Dockerfile*",
             )
-            targetExclude("**/build/**", "**/.gradle/**", "**/.idea/**")
+            targetExclude(
+                "**/build/**",
+                "**/.gradle/**",
+                "**/.idea/**",
+                "**/node_modules/**",
+                "**/.git/**",
+                "**/generated/**",
+            )
+
             trimTrailingWhitespace()
             endWithNewline()
         }

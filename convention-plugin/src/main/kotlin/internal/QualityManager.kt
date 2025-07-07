@@ -14,6 +14,8 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
+import org.gradle.api.plugins.quality.CodeNarc
+import org.gradle.api.plugins.quality.CodeNarcExtension
 import org.gradle.api.plugins.quality.Pmd
 import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.testing.Test
@@ -38,6 +40,7 @@ public class QualityManager(
 
     private fun configure() {
         configureCheckstyle()
+        configureCodenarc()
         configureSpotBugs()
         configurePmd()
         configureJacoco()
@@ -57,6 +60,7 @@ public class QualityManager(
         val pluginIds =
             buildList {
                 addIfEnabled(qualityExtension.checkstyle.enabled.get(), "checkstyle")
+                addIfEnabled(qualityExtension.codenarc.enabled.get(), "codenarc")
                 addIfEnabled(qualityExtension.spotless.enabled.get(), "com.diffplug.spotless")
                 addIfEnabled(qualityExtension.pmd.enabled.get(), "pmd")
                 addIfEnabled(qualityExtension.jacoco.enabled.get() && hasJava, "jacoco")
@@ -97,6 +101,24 @@ public class QualityManager(
                 it.xml.required.set(true)
                 it.html.required.set(true)
                 it.sarif.required.set(true)
+            }
+        }
+    }
+
+    private fun configureCodenarc() {
+        val codenarc = qualityExtension.codenarc
+        if (!codenarc.enabled.get()) return
+        project.configure<CodeNarcExtension> {
+            toolVersion = codenarc.toolVersion.get()
+            codenarc.configFile.orNull?.let {
+                configFile = it.asFile
+            }
+            isIgnoreFailures = !codenarc.failOnViolation.get()
+        }
+        project.tasks.withType<CodeNarc>().configureEach { task ->
+            task.reports {
+                it.xml.required.set(true)
+                it.html.required.set(true)
             }
         }
     }
@@ -220,40 +242,54 @@ public class QualityManager(
         if (!qualityExtension.spotless.enabled.get()) return
 
         project.configure<SpotlessExtension> {
-            val ktlintVersion = qualityExtension.spotless.ktlintVersion.get()
-            val googleJavaFormat = qualityExtension.spotless.googleJavaFormatVersion.get()
-
             kotlin {
                 it.target("**/*.kt")
-                it.targetExclude("**/build/**", "bin/**")
-                it.ktlint(ktlintVersion)
+                it.targetExclude("**/build/**", "bin/**", "**/generated/**")
+                it.ktlint()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
             }
             kotlinGradle {
                 it.target("*.gradle.kts", "**/*.gradle.kts")
-                it.ktlint(ktlintVersion)
+                it.targetExclude("**/build/**", "**/.gradle/**")
+                it.ktlint()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
             }
             java {
                 it.target("**/*.java")
-                it.googleJavaFormat(googleJavaFormat)
+                it.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
+                it.eclipse()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
-                it.targetExclude("**/generated/**", "**/build/**")
+                it.removeUnusedImports()
             }
             format("misc") {
                 it.target(
                     "*.md",
+                    "*.txt",
                     ".gitignore",
+                    ".gitattributes",
                     "*.properties",
                     "*.yml",
                     "*.yaml",
                     "*.json",
                     ".editorconfig",
+                    "*.xml",
+                    "*.gradle",
+                    "*.sh",
+                    "*.dockerfile",
+                    "Dockerfile*",
                 )
-                it.targetExclude("**/build/**", "**/.gradle/**", "**/.idea/**")
+                it.targetExclude(
+                    "**/build/**",
+                    "**/.gradle/**",
+                    "**/.idea/**",
+                    "**/node_modules/**",
+                    "**/.git/**",
+                    "**/generated/**",
+                )
+
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
             }
@@ -392,6 +428,7 @@ public class QualityManager(
             val hasJava = project.plugins.hasPlugin(JavaPlugin::class.java)
             listOf(
                 qualityExtension.checkstyle.enabled.get() to "checkstyleMain",
+                qualityExtension.codenarc.enabled.get() to "codenarcMain",
                 qualityExtension.spotbugs.enabled.get() to "spotbugsMain",
                 qualityExtension.pmd.enabled.get() to "pmdMain",
                 qualityExtension.spotless.enabled.get() to "spotlessCheck",

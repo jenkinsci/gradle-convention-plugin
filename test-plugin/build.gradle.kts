@@ -2,6 +2,12 @@ plugins {
     id("io.jenkins.gradle.convention") version "1.0.0"
 }
 
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    google()
+}
+
 version = "1.0.0-SNAPSHOT"
 
 jenkinsConvention {
@@ -21,7 +27,7 @@ jenkinsConvention {
         organization = "GSoC, Kotlin Foundation"
     }
 
-    // By default everything is enabled
+    // By default, everything is enabled
     quality {
         checkstyle {
             enabled = false
@@ -33,7 +39,7 @@ jenkinsConvention {
         useNettyBom = false
     }
 
-    // By default License is set to Apache 2.0
+    // By default, License is set to Apache 2.0
 }
 
 dependencies {
@@ -50,4 +56,8 @@ dependencies {
         "org.jenkins-ci.main:maven-plugin:3.4@jar",
         "org.jenkins-ci.plugins:credentials:1381.v2c3a_12074da_b_@jar",
     )
+}
+
+tasks.named("generateLicenseInfo").configure {
+    enabled = false
 }
