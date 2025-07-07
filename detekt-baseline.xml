@@ -2,8 +2,8 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
+    <ID>CyclomaticComplexMethod:BomManager.kt$BomManager$private fun addBomsTo(configurationName: String)</ID>
+    <ID>TooGenericExceptionCaught:JpiPluginAdapter.kt$JpiPluginAdapter$e: Exception</ID>
     <ID>UnusedParameter:GradleVersionUtils.kt$GradleVersionUtils$project: Project</ID>
-    <ID>UnusedParameter:JenkinsConventionPlugin.kt$project: Project</ID>
   </CurrentIssues>
 </SmellBaseline>

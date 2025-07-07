@@ -12,13 +12,26 @@ This plugin builds upon the [gradle-jpi-plugin](https://github.com/jenkinsci/gra
 
 ## Project Structure
 
-This plugin consists of the following modules:
-- `api` - Core APIs and interfaces
-- `core` - Core plugin functionality
-- `quality` - Quality checks and reporting
-- `bom` - Bill of Materials integration
-- `publishing` - Publishing support
-- `all` - All-in-one plugin
+`convention-plugin` - Core plugin functionality
+
+## How to use
+
+### 1. Publish the Convention Plugin to Maven Local
+
+```sh
+./gradlew :convention-plugin:publishToMavenLocal --no-daemon --no-configuration-cache
+```
+
+### 2. Build and Test the Consumer Jenkins Plugin
+
+```sh
+./gradlew :test-plugin:clean build check --no-configuration-cache --stacktrace
+```
+
+**Notes:**
+- Always run the `publishToMavenLocal` command after making changes to the convention plugin, so your consumer project picks up the latest version.
+- The `--no-configuration-cache` flag ensures a clean build and avoids issues when developing plugins.
+- The `--stacktrace` flag provides detailed error output for troubleshooting.
 
 ## Style Guidelines
 
