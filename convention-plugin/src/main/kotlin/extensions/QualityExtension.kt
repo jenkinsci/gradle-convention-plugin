@@ -28,7 +28,7 @@ public abstract class QualityExtension
         private val layout: ProjectLayout = project.layout
 
         public val checkstyle: CheckstyleExtension =
-            objects.newInstance(CheckstyleExtension::class.java, objects, libs)
+            objects.newInstance(CheckstyleExtension::class.java, objects, libs, project)
         public val codenarc: CodenarcExtension =
             objects.newInstance(CodenarcExtension::class.java, objects, libs)
         public val spotbugs: SpotbugsExtension = objects.newInstance(SpotbugsExtension::class.java, objects, libs)
@@ -99,12 +99,17 @@ public abstract class CheckstyleExtension
     constructor(
         objects: ObjectFactory,
         libs: VersionCatalog,
+        project: Project,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val toolVersion: Property<String> =
             objects.property<String>().convention(libs.findVersion("checkstyle").get().requiredVersion)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val configFile: RegularFileProperty = objects.fileProperty()
+        public val configFile: RegularFileProperty =
+            objects.fileProperty().convention(
+                project.rootProject.layout.projectDirectory
+                    .file("config/checkstyle/checkstyle.xml"),
+            )
     }
 
 public abstract class SpotbugsExtension

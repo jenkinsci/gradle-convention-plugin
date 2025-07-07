@@ -3,6 +3,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     gradlePluginPortal()
     google()
@@ -29,9 +30,6 @@ jenkinsConvention {
 
     // By default, everything is enabled
     quality {
-        checkstyle {
-            enabled = false
-        }
     }
 
     // By default, all BOMs are enabled
@@ -51,13 +49,4 @@ dependencies {
     compileOnly("com.intellij:annotations:12.0")
     testImplementation("org.eclipse.sisu:org.eclipse.sisu.plexus:0.0.0.M5")
     testImplementation("org.jmockit:jmockit:1.16")
-
-    optionalJenkinsPlugins(
-        "org.jenkins-ci.main:maven-plugin:3.4@jar",
-        "org.jenkins-ci.plugins:credentials:1381.v2c3a_12074da_b_@jar",
-    )
-}
-
-tasks.named("generateLicenseInfo").configure {
-    enabled = false
 }

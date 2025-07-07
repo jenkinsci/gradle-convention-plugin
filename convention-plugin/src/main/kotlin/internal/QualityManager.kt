@@ -91,9 +91,7 @@ public class QualityManager(
         if (!checkstyle.enabled.get()) return
         project.configure<CheckstyleExtension> {
             toolVersion = checkstyle.toolVersion.get()
-            checkstyle.configFile.orNull?.let {
-                configFile = it.asFile
-            }
+            configFile = checkstyle.configFile.get().asFile
             isIgnoreFailures = !checkstyle.failOnViolation.get()
         }
         project.tasks.withType<Checkstyle>().configureEach { checkstyleTask ->
@@ -257,9 +255,9 @@ public class QualityManager(
                 it.endWithNewline()
             }
             java {
-                it.target("**/*.java")
+                it.target("src/*/java/**/*.java")
                 it.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
-                it.eclipse()
+                it.googleJavaFormat()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
                 it.removeUnusedImports()

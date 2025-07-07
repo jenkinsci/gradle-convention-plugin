@@ -46,9 +46,9 @@ private fun Project.configureSpotless() {
             endWithNewline()
         }
         java {
-            target("**/*.java")
+            googleJavaFormat()
+            target("src/*/java/**/*.java")
             targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
-            eclipse()
             trimTrailingWhitespace()
             endWithNewline()
             removeUnusedImports()

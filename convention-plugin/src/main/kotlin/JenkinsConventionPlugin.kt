@@ -37,12 +37,11 @@ public class JenkinsConventionPlugin : Plugin<Project> {
         val bomManager = BomManager(project, bomExtension)
         val qualityManager = QualityManager(project, qualityExtension)
 
-        jpiAdapter.apply()
+        bomManager.configure()
+        qualityManager.apply()
 
         project.afterEvaluate {
-            jpiAdapter.configure()
-            bomManager.configure()
-            qualityManager.apply()
+            jpiAdapter.applyAndConfigure()
         }
     }
 }

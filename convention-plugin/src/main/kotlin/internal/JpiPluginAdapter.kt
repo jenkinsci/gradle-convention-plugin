@@ -5,7 +5,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
 import org.jenkinsci.gradle.plugins.jpi.JpiExtension
-import org.jenkinsci.gradle.plugins.jpi.JpiPlugin
 import org.jenkinsci.gradle.plugins.jpi.core.PluginDeveloper
 import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
 
@@ -17,14 +16,16 @@ public class JpiPluginAdapter(
         project.extensions.getByType<JpiExtension>()
     }
 
-    public fun apply() {
+    init {
         project.pluginManager.apply("java")
-        project.pluginManager.apply(JpiPlugin::class.java)
+    }
 
-        project.tasks.whenTaskAdded { task ->
-            if (task.name == "generateLicenseInfo") {
-                task.enabled = false
-            }
+    public fun applyAndConfigure() {
+        project.pluginManager.apply("org.jenkins-ci.jpi")
+
+        project.afterEvaluate {
+            configure()
+//            project.tasks.findByName("generateLicenseInfo")?.enabled = false
         }
     }
 
