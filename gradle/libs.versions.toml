@@ -16,7 +16,7 @@ mockito-bom = "5.18.0"
 testcontainers-bom = "1.21.3"
 
 # Jenkins
-jenkins-core = "2.516"
+jenkins-core = "2.517"
 jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
