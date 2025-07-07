@@ -21,18 +21,19 @@ jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
 spotbugs = "6.2.1"
+spotbugsTool = "4.9.3"
 detekt = "1.23.8"
 spotless = "7.0.4"
 ktlint = "1.6.0"
-googleJavaFormat = "1.27.0"
 owaspCheck = "12.1.3"
 versions = "0.52.0"
 kover = "0.9.1"
 dokka = "1.9.20"
-pit = "1.19.0-rc.1"
+pit = "1.15.0"
 checkstyle = "10.12.4"
 jacoco = "0.8.13"
 pmd = "7.0.0"
+codenarc = "3.6.0"
 node-gradle = "7.1.0"
 
 [libraries]
@@ -48,10 +49,10 @@ jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jen
 jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }
 jenkins-gradle-jpi2 = { group = "org.jenkins-ci.jpi2", name = "org.jenkins-ci.jpi2.gradle.plugin", version.ref = "jenkins-gradle-jpi2" }
 
-spotless-gradle-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+spotless-gradle-plugin = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-gradle-plugin = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
-spotbugs-gradle-plugin = { module = "com.github.spotbugs.snom:spotbugs-gradle-plugin", version.ref = "spotbugs" }
+spotbugs-gradle-plugin = { module = "com.github.spotbugs:com.github.spotbugs.gradle.plugin", version.ref = "spotbugs" }
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 pit-gradle-plugin = { module = "info.solidsoft.gradle.pitest:gradle-pitest-plugin", version.ref = "pit" }
 benmanes-versions-gradle-plugin = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "versions" }

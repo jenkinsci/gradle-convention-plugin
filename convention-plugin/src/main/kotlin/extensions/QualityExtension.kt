@@ -29,6 +29,8 @@ public abstract class QualityExtension
 
         public val checkstyle: CheckstyleExtension =
             objects.newInstance(CheckstyleExtension::class.java, objects, libs)
+        public val codenarc: CodenarcExtension =
+            objects.newInstance(CodenarcExtension::class.java, objects, libs)
         public val spotbugs: SpotbugsExtension = objects.newInstance(SpotbugsExtension::class.java, objects, libs)
         public val pmd: PmdExtension = objects.newInstance(PmdExtension::class.java, objects, libs)
         public val jacoco: JacocoExtension =
@@ -57,6 +59,8 @@ public abstract class QualityExtension
         public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java, objects, layout)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
+
+        public fun codenarc(action: CodenarcExtension.() -> Unit): Unit = action(codenarc)
 
         public fun spotbugs(action: SpotbugsExtension.() -> Unit): Unit = action(spotbugs)
 
@@ -111,7 +115,7 @@ public abstract class SpotbugsExtension
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val toolVersion: Property<String> =
-            objects.property<String>().convention(libs.findVersion("spotbugs").get().requiredVersion)
+            objects.property<String>().convention(libs.findVersion("spotbugsTool").get().requiredVersion)
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
         public val excludeFilterFile: RegularFileProperty = objects.fileProperty()
@@ -183,10 +187,6 @@ public abstract class SpotlessExtension
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val ktlintVersion: Property<String> =
-            objects.property<String>().convention(libs.findVersion("ktlint").get().requiredVersion)
-        public val googleJavaFormatVersion: Property<String> =
-            objects.property<String>().convention(libs.findVersion("googleJavaFormat").get().requiredVersion)
     }
 
 public abstract class OwaspDependencyCheckExtension
@@ -228,7 +228,7 @@ public abstract class PitestExtension
         objects: ObjectFactory,
         libs: VersionCatalog,
     ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val pitVersion: Property<String> =
             objects.property<String>().convention(libs.findVersion("pit").get().requiredVersion)
         public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
@@ -280,4 +280,17 @@ public abstract class DokkaExtension
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val outputDirectory: DirectoryProperty =
             objects.directoryProperty().convention(layout.buildDirectory.dir("dokka/html"))
+    }
+
+public abstract class CodenarcExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val toolVersion: Property<String> =
+            objects.property<String>().convention(libs.findVersion("codenarc").get().requiredVersion)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val configFile: RegularFileProperty = objects.fileProperty()
     }

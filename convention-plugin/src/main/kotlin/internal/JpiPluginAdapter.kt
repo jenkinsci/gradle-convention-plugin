@@ -18,7 +18,7 @@ public class JpiPluginAdapter(
     }
 
     public fun apply() {
-        project.pluginManager.apply("java-library")
+        project.pluginManager.apply("java")
         project.pluginManager.apply(JpiPlugin::class.java)
 
         project.tasks.whenTaskAdded { task ->
