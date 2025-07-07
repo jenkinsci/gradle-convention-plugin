@@ -2,7 +2,7 @@ name: Jenkins Gradle Convention CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [ main, master ]
   pull_request:
   workflow_dispatch:
 
@@ -23,6 +23,9 @@ jobs:
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2
+
+      - name: Grant executable permissions for gradlew
+        run: chmod +x gradlew
 
       - name: Build and publish convention plugin to Maven Local
         run: |
