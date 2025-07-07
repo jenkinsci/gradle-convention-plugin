@@ -33,4 +33,4 @@ jobs:
 
       - name: Build and test consumer Jenkins plugin
         run: |
-          ./gradlew :test-plugin:clean build check --no-configuration-cache --stacktrace
+          ./gradlew :test-plugin:build check --no-configuration-cache --stacktrace
