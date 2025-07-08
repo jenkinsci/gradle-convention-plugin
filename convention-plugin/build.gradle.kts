@@ -9,6 +9,7 @@ description = "Gradle plugin that provides conventions for developing Jenkins pl
 dependencies {
     compileOnly(gradleApi())
     compileOnly(gradleKotlinDsl())
+    compileOnly(libs.kotlin.gradle.plugin)
     implementation(libs.jenkins.gradle.jpi2)
 
     implementation(libs.spotless.gradle.plugin)
@@ -24,11 +25,8 @@ dependencies {
 }
 
 gradlePlugin {
-
     plugins {
-
         create("jenkinsConventions") {
-
             id = "io.jenkins.gradle.convention"
             version = "1.0.0"
             implementationClass = "JenkinsConventionPlugin"

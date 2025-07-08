@@ -10,6 +10,8 @@ import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
+private const val JAVA_VERSION = 17
+
 public class KotlinConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
@@ -17,16 +19,15 @@ public class KotlinConventionsPlugin : Plugin<Project> {
             pluginManager.apply("java-gradle-plugin")
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
-            configureKotlin()
-            configureCommonDependencies(libs)
+            project.configureKotlin()
+            project.configureCommonDependencies(libs)
         }
     }
 }
 
 private fun Project.configureKotlin() {
-    extensions.configure<KotlinJvmProjectExtension> {
-        jvmToolchain(17)
+    configure<KotlinJvmProjectExtension> {
+        jvmToolchain(JAVA_VERSION)
 
         explicitApi()
 

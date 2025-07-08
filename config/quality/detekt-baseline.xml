@@ -2,8 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>CyclomaticComplexMethod:BomManager.kt$BomManager$private fun addBomsTo(configurationName: String)</ID>
-    <ID>TooGenericExceptionCaught:JpiPluginAdapter.kt$JpiPluginAdapter$e: Exception</ID>
+    <ID>MaxLineLength:LanguagePluginValidator.kt$LanguagePluginValidator$"Add 'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\") }"</ID>
     <ID>UnusedParameter:GradleVersionUtils.kt$GradleVersionUtils$project: Project</ID>
   </CurrentIssues>
 </SmellBaseline>

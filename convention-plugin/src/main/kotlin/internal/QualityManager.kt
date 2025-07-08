@@ -11,7 +11,6 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.CodeNarc
@@ -33,66 +32,34 @@ public class QualityManager(
     private val qualityExtension: QualityExtension,
 ) {
     public fun apply() {
-        applyQualityPlugins()
-        configure()
-        configureCheckTask()
-    }
-
-    private fun configure() {
+        configureSpotless()
         configureCheckstyle()
         configureCodenarc()
         configureSpotBugs()
         configurePmd()
         configureJacoco()
         configureDetekt()
-        configureSpotless()
-        configureOwaspDependencyCheck()
         configurePitMutation()
-        configureGradleVersionPlugin()
         configureKoverExtension()
+        configureOwaspDependencyCheck()
+        configureGradleVersionPlugin()
         configureEsLint()
         configureDokka()
-    }
-
-    private fun applyQualityPlugins() {
-        val hasJava = project.plugins.hasPlugin("java") || project.plugins.hasPlugin("java-library")
-
-        val pluginIds =
-            buildList {
-                addIfEnabled(qualityExtension.checkstyle.enabled.get(), "checkstyle")
-                addIfEnabled(qualityExtension.codenarc.enabled.get(), "codenarc")
-                addIfEnabled(qualityExtension.spotless.enabled.get(), "com.diffplug.spotless")
-                addIfEnabled(qualityExtension.pmd.enabled.get(), "pmd")
-                addIfEnabled(qualityExtension.jacoco.enabled.get() && hasJava, "jacoco")
-                addIfEnabled(qualityExtension.detekt.enabled.get(), "io.gitlab.arturbosch.detekt")
-                addIfEnabled(qualityExtension.spotbugs.enabled.get(), "com.github.spotbugs")
-                addIfEnabled(qualityExtension.owaspDependencyCheck.enabled.get(), "org.owasp.dependencycheck")
-                addIfEnabled(qualityExtension.versions.enabled.get(), "com.github.ben-manes.versions")
-                addIfEnabled(qualityExtension.kover.enabled.get(), "org.jetbrains.kotlinx.kover")
-                addIfEnabled(qualityExtension.pitest.enabled.get(), "info.solidsoft.pitest")
-                addIfEnabled(
-                    qualityExtension.dokka.enabled.orNull == true,
-                    "org.jetbrains.dokka",
-                )
-                if (qualityExtension.eslint.enabled.orNull == true &&
-                    hasFrontendCode()
-                ) {
-                    add("com.github.node-gradle.node")
-                }
-            }
-
-        pluginIds.forEach { pluginId ->
-            project.pluginManager.apply(pluginId)
-        }
+        configureCheckTask()
     }
 
     private fun configureCheckstyle() {
-        val checkstyle = qualityExtension.checkstyle
-        if (!checkstyle.enabled.get()) return
+        if (!qualityExtension.checkstyle.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("checkstyle")
+
         project.configure<CheckstyleExtension> {
-            toolVersion = checkstyle.toolVersion.get()
-            configFile = checkstyle.configFile.get().asFile
-            isIgnoreFailures = !checkstyle.failOnViolation.get()
+            toolVersion = qualityExtension.checkstyle.toolVersion.get()
+            configFile =
+                qualityExtension.checkstyle.configFile
+                    .get()
+                    .asFile
+            isIgnoreFailures = !qualityExtension.checkstyle.failOnViolation.get()
         }
         project.tasks.withType<Checkstyle>().configureEach { checkstyleTask ->
             checkstyleTask.reports {
@@ -104,14 +71,16 @@ public class QualityManager(
     }
 
     private fun configureCodenarc() {
-        val codenarc = qualityExtension.codenarc
-        if (!codenarc.enabled.get()) return
+        if (!qualityExtension.codenarc.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("codenarc")
+
         project.configure<CodeNarcExtension> {
-            toolVersion = codenarc.toolVersion.get()
-            codenarc.configFile.orNull?.let {
+            toolVersion = qualityExtension.codenarc.toolVersion.get()
+            qualityExtension.codenarc.configFile.orNull?.let {
                 configFile = it.asFile
             }
-            isIgnoreFailures = !codenarc.failOnViolation.get()
+            isIgnoreFailures = !qualityExtension.codenarc.failOnViolation.get()
         }
         project.tasks.withType<CodeNarc>().configureEach { task ->
             task.reports {
@@ -122,7 +91,9 @@ public class QualityManager(
     }
 
     private fun configureSpotBugs() {
-        if (!qualityExtension.spotbugs.enabled.get()) return
+        if (!qualityExtension.spotbugs.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("com.github.spotbugs")
 
         project.configure<SpotBugsExtension> {
             toolVersion.set(qualityExtension.spotbugs.toolVersion.get())
@@ -142,7 +113,9 @@ public class QualityManager(
     }
 
     private fun configurePmd() {
-        if (!qualityExtension.pmd.enabled.get()) return
+        if (!qualityExtension.pmd.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("pmd")
 
         project.configure<PmdExtension> {
             toolVersion = qualityExtension.pmd.toolVersion.get()
@@ -158,7 +131,7 @@ public class QualityManager(
                 it.html.required.set(true)
             }
         }
-        if (qualityExtension.pmd.enableCPD.get()) {
+        if (qualityExtension.pmd.enableCPD.getOrElse(false)) {
             project.tasks.register("cpdCheck") {
                 it.group = "verification"
                 it.description = "Run CPD copy-paste-detection"
@@ -169,11 +142,12 @@ public class QualityManager(
 
     private fun configureJacoco() {
         val hasJava = project.plugins.hasPlugin("java") || project.plugins.hasPlugin("java-library")
-        val jacocoConfig = qualityExtension.jacoco
-        if (!jacocoConfig.enabled.get() || !hasJava) return
+        if (!qualityExtension.jacoco.enabled.getOrElse(false) || !hasJava) return
+
+        project.pluginManager.apply("jacoco")
 
         project.configure<JacocoPluginExtension> {
-            toolVersion = jacocoConfig.toolVersion.get()
+            toolVersion = qualityExtension.jacoco.toolVersion.get()
         }
         project.tasks.withType<Test>().configureEach { t ->
             t.finalizedBy("jacocoTestReport")
@@ -186,7 +160,7 @@ public class QualityManager(
                 it.csv.required.set(false)
             }
 
-            val allExcludes = jacocoConfig.excludes.get()
+            val allExcludes = qualityExtension.jacoco.excludes.get()
             val classDirectories =
                 project
                     .fileTree(
@@ -202,11 +176,14 @@ public class QualityManager(
             t.dependsOn("jacocoTestReport")
             t.violationRules { rules ->
                 rules.rule { rule ->
-                    rule.excludes = jacocoConfig.excludes.get()
+                    rule.excludes = qualityExtension.jacoco.excludes.get()
                     rule.limit {
                         it.counter = "LINE"
                         it.value = "COVEREDRATIO"
-                        it.minimum = jacocoConfig.minimumCodeCoverage.get().toBigDecimal()
+                        it.minimum =
+                            qualityExtension.jacoco.minimumCodeCoverage
+                                .get()
+                                .toBigDecimal()
                     }
                 }
             }
@@ -214,7 +191,9 @@ public class QualityManager(
     }
 
     private fun configureDetekt() {
-        if (!qualityExtension.detekt.enabled.get()) return
+        if (!qualityExtension.detekt.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("io.gitlab.arturbosch.detekt")
 
         project.configure<DetektExtension> {
             toolVersion = qualityExtension.detekt.toolVersion.get()
@@ -226,6 +205,7 @@ public class QualityManager(
             baseline =
                 qualityExtension.detekt.baseline.orNull
                     ?.asFile
+            parallel = true
         }
         project.tasks.withType<Detekt>().configureEach { detekt ->
             detekt.reports {
@@ -238,6 +218,8 @@ public class QualityManager(
 
     private fun configureSpotless() {
         if (!qualityExtension.spotless.enabled.get()) return
+
+        project.pluginManager.apply("com.diffplug.spotless")
 
         project.configure<SpotlessExtension> {
             kotlin {
@@ -295,48 +277,50 @@ public class QualityManager(
     }
 
     private fun configureOwaspDependencyCheck() {
-        val owasp = qualityExtension.owaspDependencyCheck
+        if (!qualityExtension.owaspDependencyCheck.enabled.getOrElse(true)) return
 
-        if (!owasp.enabled.get()) return
+        project.pluginManager.apply("org.owasp.dependencycheck")
 
         project.configure<DependencyCheckExtension> {
-            failBuildOnCVSS = owasp.failOnCvss.get()
-            formats = owasp.formats.get()
+            failBuildOnCVSS = qualityExtension.owaspDependencyCheck.failOnCvss.get()
+            formats = qualityExtension.owaspDependencyCheck.formats.get()
             suppressionFiles =
-                owasp.suppressionFiles
+                qualityExtension.owaspDependencyCheck.suppressionFiles
                     .get()
                     .map { it.asFile.absolutePath }
-            owasp.outputDirectory
+            qualityExtension.owaspDependencyCheck.outputDirectory
                 .get()
                 .asFile.absolutePath
             data {
                 it.directory =
-                    owasp.dataDirectory
+                    qualityExtension.owaspDependencyCheck.dataDirectory
                         .get()
                         .asFile.absolutePath
             }
-            scanConfigurations = owasp.scanConfigurations.get()
+            scanConfigurations = qualityExtension.owaspDependencyCheck.scanConfigurations.get()
         }
     }
 
     private fun configurePitMutation() {
-        val pit = qualityExtension.pitest
-        if (!pit.enabled.get()) return
+        if (!qualityExtension.pitest.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("info.solidsoft.pitest")
 
         project.configure<PitestPluginExtension> {
-            threads.set(pit.threads)
-            pitestVersion.set(pit.pitVersion.get())
-            targetClasses.set(pit.targetClasses)
-            excludedClasses.set(pit.excludedClasses)
-            mutationThreshold.set(pit.mutationThreshold)
-            outputFormats.set(pit.outputFormats)
-            mutators.set(pit.mutators)
+            threads.set(qualityExtension.pitest.threads)
+            pitestVersion.set(qualityExtension.pitest.pitVersion.get())
+            targetClasses.set(qualityExtension.pitest.targetClasses)
+            excludedClasses.set(qualityExtension.pitest.excludedClasses)
+            mutationThreshold.set(qualityExtension.pitest.mutationThreshold)
+            outputFormats.set(qualityExtension.pitest.outputFormats)
+            mutators.set(qualityExtension.pitest.mutators)
         }
     }
 
     private fun configureGradleVersionPlugin() {
-        val versions = qualityExtension.versions
-        if (!versions.enabled.get()) return
+        if (!qualityExtension.versions.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("com.github.ben-manes.versions")
 
         project.tasks.withType<DependencyUpdatesTask>().configureEach { t ->
             t.rejectVersionIf {
@@ -353,8 +337,9 @@ public class QualityManager(
     }
 
     private fun configureKoverExtension() {
-        val kover = qualityExtension.kover
-        if (!kover.enabled.get()) return
+        if (!qualityExtension.kover.enabled.getOrElse(false)) return
+
+        project.pluginManager.apply("org.jetbrains.kotlinx.kover")
 
         project.configure<KoverProjectExtension> {
             reports { rep ->
@@ -378,22 +363,22 @@ public class QualityManager(
     }
 
     private fun configureEsLint() {
-        val esLint = qualityExtension.eslint
+        if (!qualityExtension.eslint.enabled.getOrElse(false) || !hasFrontendCode()) return
 
-        if (!esLint.enabled.get() || !hasFrontendCode()) return
+        project.pluginManager.apply("com.github.node-gradle.node")
 
         project.tasks.register<NpmTask>("eslint") {
             group = "Verification"
             description = "Run ESLint on frontend sources."
 
             val configFile =
-                esLint.configFile.orNull
+                qualityExtension.eslint.configFile.orNull
                     ?.asFile
                     ?.absolutePath
 
             val baseArgs = mutableListOf("run", "lint")
 
-            if (esLint.autofix.get()) {
+            if (qualityExtension.eslint.autofix.get()) {
                 baseArgs.add("--fix")
             }
 
@@ -406,11 +391,12 @@ public class QualityManager(
     }
 
     private fun configureDokka() {
-        val dokka = qualityExtension.dokka
-        if (!dokka.enabled.get()) return
+        if (!qualityExtension.dokka.enabled.get()) return
+
+        project.pluginManager.apply("org.jetbrains.dokka")
 
         project.tasks.named("dokkaHtml").configure { task ->
-            task.outputs.dir(dokka.outputDirectory)
+            task.outputs.dir(qualityExtension.dokka.outputDirectory)
         }
     }
 
@@ -423,20 +409,19 @@ public class QualityManager(
 
     private fun configureCheckTask() {
         project.tasks.named("check").configure {
-            val hasJava = project.plugins.hasPlugin(JavaPlugin::class.java)
             listOf(
-                qualityExtension.checkstyle.enabled.get() to "checkstyleMain",
-                qualityExtension.codenarc.enabled.get() to "codenarcMain",
-                qualityExtension.spotbugs.enabled.get() to "spotbugsMain",
-                qualityExtension.pmd.enabled.get() to "pmdMain",
-                qualityExtension.spotless.enabled.get() to "spotlessCheck",
-                qualityExtension.detekt.enabled.get() to "detekt",
-                qualityExtension.owaspDependencyCheck.enabled.get() to "dependencyCheckAnalyze",
-                qualityExtension.kover.enabled.get() to "koverVerify",
-                qualityExtension.pitest.enabled.get() to "pitest",
-                (qualityExtension.eslint.enabled.get() && project.tasks.findByName("eslint") != null) to
+                qualityExtension.checkstyle.enabled.getOrElse(false) to "checkstyleMain",
+                qualityExtension.codenarc.enabled.getOrElse(false) to "codenarcMain",
+                qualityExtension.spotbugs.enabled.getOrElse(false) to "spotbugsMain",
+                qualityExtension.pmd.enabled.getOrElse(false) to "pmdMain",
+                qualityExtension.spotless.enabled.getOrElse(false) to "spotlessCheck",
+                qualityExtension.detekt.enabled.getOrElse(false) to "detekt",
+                qualityExtension.owaspDependencyCheck.enabled.getOrElse(false) to "dependencyCheckAnalyze",
+                qualityExtension.kover.enabled.getOrElse(false) to "koverVerify",
+                qualityExtension.pitest.enabled.getOrElse(false) to "pitest",
+                (qualityExtension.eslint.enabled.getOrElse(false) && project.tasks.findByName("eslint") != null) to
                     "eslint",
-                (qualityExtension.jacoco.enabled.get() && hasJava) to "jacocoTestCoverageVerification",
+                (qualityExtension.jacoco.enabled.getOrElse(false)) to "jacocoTestCoverageVerification",
             ).forEach { (enabled, path) ->
                 if (enabled) {
                     it.dependsOn(path)
@@ -444,11 +429,4 @@ public class QualityManager(
             }
         }
     }
-}
-
-private fun MutableList<String>.addIfEnabled(
-    enabled: Boolean,
-    pluginId: String,
-) {
-    if (enabled) add(pluginId)
 }

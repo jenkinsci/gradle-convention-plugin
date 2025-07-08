@@ -15,7 +15,7 @@ import org.gradle.kotlin.dsl.setProperty
 import java.net.URI
 import javax.inject.Inject
 
-public open class JenkinsPluginExtension
+public abstract class JenkinsPluginExtension
     @Inject
     constructor(
         private val project: Project,
@@ -26,9 +26,7 @@ public open class JenkinsPluginExtension
 
         public val pluginId: Property<String> =
             objects.property<String>().convention(
-                project.name
-                    .replace("jenkins-", "")
-                    .replace("-plugin", ""),
+                project.name.removePrefix("jenkins-").removeSuffix("-plugin"),
             )
 
         public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
