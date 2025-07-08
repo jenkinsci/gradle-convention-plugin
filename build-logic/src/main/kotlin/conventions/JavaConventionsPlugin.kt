@@ -9,30 +9,30 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
+private const val JAVA_VERSION = 17
+
 public class JavaConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             pluginManager.apply("java-library")
-
-            configureJava()
+            project.configureJava()
         }
     }
 }
 
 private fun Project.configureJava() {
     configure<JavaPluginExtension> {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
         withSourcesJar()
         withJavadocJar()
 
         tasks.withType<JavaCompile>().configureEach {
             options.encoding = "UTF-8"
-            options.release.set(17)
+            options.release.set(JAVA_VERSION)
             options.compilerArgs.addAll(
                 listOf(
                     "-parameters",
-                    "-Xlint:deprecation",
-                    "Xlint:unchecked",
+                    "-Xlint:all,-serial",
                 ),
             )
         }

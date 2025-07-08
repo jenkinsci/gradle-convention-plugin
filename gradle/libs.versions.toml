@@ -3,21 +3,25 @@
 kotlin = "2.1.21"
 gradle = "9.0-rc-1"
 jetbrains-annotations = "26.0.2"
+
+# Jenkins
+jenkins-bom = "5015.vb_52d36583443"
+jenkins-core = "2.518"
 jenkins-stapler = "1997.v356365fb_929e"
-jenkins-bom = "4228.v0a_71308d905b_"
+jenkins-gradle-jpi2 = "0.54.0"
+
+# Ecosystem BOMs
 groovy-bom = "4.0.27"
 jackson-bom = "2.19.1"
-junit-bom = "5.13.2"
 spring-bom = "6.2.8"
 netty-bom = "4.2.2.Final"
 slf4j-bom = "2.0.16"
 jetty-bom = "12.0.22"
+
+# Testing BOMs
+junit-bom = "5.13.2"
 mockito-bom = "5.18.0"
 testcontainers-bom = "1.21.3"
-
-# Jenkins
-jenkins-core = "2.516"
-jenkins-gradle-jpi2 = "0.54.0"
 
 # Quality
 spotbugs = "6.2.1"
@@ -49,6 +53,7 @@ jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jen
 jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }
 jenkins-gradle-jpi2 = { module = "org.jenkins-ci.jpi2:org.jenkins-ci.jpi2.gradle.plugin", version.ref = "jenkins-gradle-jpi2" }
 
+# Quality
 spotless-gradle-plugin = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint-gradle-plugin = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
@@ -64,6 +69,8 @@ dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", vers
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 owaspDependencyCheck = { id = "org.owasp.dependencycheck", version.ref = "owaspCheck" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]

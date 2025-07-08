@@ -21,10 +21,7 @@ public class QualityConventionsPlugin : Plugin<Project> {
             configureSpotless()
             configureDetekt(libs)
 
-            tasks.named("check") {
-                dependsOn("spotlessCheck")
-                dependsOn("detekt")
-            }
+            tasks.named("check") { dependsOn("spotlessCheck", "detekt") }
         }
     }
 }
@@ -82,8 +79,6 @@ private fun Project.configureSpotless() {
             trimTrailingWhitespace()
             endWithNewline()
         }
-
-        tasks.named("check").configure { dependsOn("spotlessCheck") }
     }
 }
 
@@ -92,7 +87,7 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
         toolVersion = libs.findVersion("detekt").get().requiredVersion
         parallel = true
 
-        val baseline = rootProject.file("detekt-baseline.xml")
+        val baseline = rootProject.file("config/quality/detekt-baseline.xml")
         if (baseline.exists()) {
             this.baseline = baseline
         }

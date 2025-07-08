@@ -27,7 +27,6 @@ public abstract class BomExtension
                     .get()
                     .requiredVersion,
             )
-        public val usePluginBom: Property<Boolean> = objects.property<Boolean>().convention(true)
 
         // Ecosystem BOM
         public val useCommonBoms: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -106,7 +105,7 @@ public abstract class BomExtension
             )
 
         public val useTestcontainersBom: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val testcontainersBom: Property<String> =
+        public val testcontainersBomVersion: Property<String> =
             objects.property<String>().convention(
                 libs
                     .findVersion("testcontainers-bom")

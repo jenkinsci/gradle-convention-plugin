@@ -24,33 +24,29 @@ public class JpiPluginAdapter(
         project.pluginManager.apply("org.jenkins-ci.jpi")
 
         project.afterEvaluate {
-            configure()
-//            project.tasks.findByName("generateLicenseInfo")?.enabled = false
+            bridgeExtensionProperties()
+            project.tasks.findByName("generateLicenseInfo")?.enabled = false
         }
     }
 
-    public fun configure() {
-        bridgeExtensionProperties()
-    }
-
-    private fun bridgeExtensionProperties() {
-        jpiExtension.apply {
-            pluginId.set(pluginExtension.pluginId)
-            humanReadableName.set(pluginExtension.humanReadableName)
-            homePage.set(pluginExtension.homePage)
-            jenkinsVersion.set(pluginExtension.jenkinsVersion)
-            minimumJenkinsCoreVersion.set(pluginExtension.minimumJenkinsCoreVersion)
-            extension.set(pluginExtension.extension)
-            scmTag.set(pluginExtension.scmTag)
-            gitHub.set(pluginExtension.githubUrl)
-            generateTests.set(pluginExtension.generateTests)
-            generatedTestClassName.set(pluginExtension.generatedTestClassName)
-            sandboxed.set(pluginExtension.sandboxed)
-            usePluginFirstClassLoader.set(pluginExtension.usePluginFirstClassLoader)
-            maskedClassesFromCore.set(pluginExtension.maskedClassesFromCore)
-            incrementalsRepoUrl.set(pluginExtension.incrementalsRepoUrl)
-            testJvmArguments.set(pluginExtension.testJvmArguments)
-            requireEscapeByDefaultInJelly.set(pluginExtension.requireEscapeByDefaultInJelly)
+    private fun bridgeExtensionProperties() =
+        with(jpiExtension) {
+            pluginId.convention(pluginExtension.pluginId)
+            humanReadableName.convention(pluginExtension.humanReadableName)
+            homePage.convention(pluginExtension.homePage)
+            jenkinsVersion.convention(pluginExtension.jenkinsVersion)
+            minimumJenkinsCoreVersion.convention(pluginExtension.minimumJenkinsCoreVersion)
+            extension.convention(pluginExtension.extension)
+            scmTag.convention(pluginExtension.scmTag)
+            gitHub.convention(pluginExtension.githubUrl)
+            generateTests.convention(pluginExtension.generateTests)
+            generatedTestClassName.convention(pluginExtension.generatedTestClassName)
+            sandboxed.convention(pluginExtension.sandboxed)
+            usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
+            maskedClassesFromCore.convention(pluginExtension.maskedClassesFromCore)
+            incrementalsRepoUrl.convention(pluginExtension.incrementalsRepoUrl)
+            testJvmArguments.convention(pluginExtension.testJvmArguments)
+            requireEscapeByDefaultInJelly.convention(pluginExtension.requireEscapeByDefaultInJelly)
 
             pluginDevelopers.set(
                 pluginExtension.pluginDevelopers.map { developers ->
@@ -82,5 +78,4 @@ public class JpiPluginAdapter(
                 },
             )
         }
-    }
 }
