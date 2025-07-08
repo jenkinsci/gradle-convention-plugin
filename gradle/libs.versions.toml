@@ -7,7 +7,7 @@ jetbrains-annotations = "26.0.2"
 # Jenkins
 jenkins-bom = "5015.vb_52d36583443"
 jenkins-core = "2.518"
-jenkins-stapler = "1997.v356365fb_929e"
+jenkins-stapler = "2003.vdf15e5c62336"
 jenkins-gradle-jpi2 = "0.54.0"
 
 # Ecosystem BOMs
