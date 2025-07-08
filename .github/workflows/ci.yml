@@ -33,7 +33,7 @@ jobs:
 
       - name: Add test consumer plugin to build script
         run: |
-          echo "include(\"test-plugin"\)" >> ./settings.gradle.kts
+          echo 'include("test-plugin")' >> ./settings.gradle.kts
 
       - name: Build and test consumer Jenkins plugin
         run: |
