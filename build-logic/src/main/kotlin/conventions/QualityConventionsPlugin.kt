@@ -86,11 +86,7 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
     configure<DetektExtension> {
         toolVersion = libs.findVersion("detekt").get().requiredVersion
         parallel = true
-
-        val baseline = rootProject.file("config/quality/detekt-baseline.xml")
-        if (baseline.exists()) {
-            this.baseline = baseline
-        }
+        baseline = rootProject.file("config/detekt/detekt-baseline.xml")
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {

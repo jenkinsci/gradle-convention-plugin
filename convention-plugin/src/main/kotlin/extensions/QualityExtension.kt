@@ -106,10 +106,7 @@ public abstract class CheckstyleExtension
             objects.property<String>().convention(libs.findVersion("checkstyle").get().requiredVersion)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val configFile: RegularFileProperty =
-            objects.fileProperty().convention(
-                project.rootProject.layout.projectDirectory
-                    .file("config/checkstyle/checkstyle.xml"),
-            )
+            objects.fileProperty()
     }
 
 public abstract class SpotbugsExtension
