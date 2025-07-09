@@ -11,6 +11,8 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
@@ -20,11 +22,13 @@ import org.gradle.api.plugins.quality.Pmd
 import org.gradle.api.plugins.quality.PmdExtension
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.Companion.attribute
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
 @Suppress("TooManyFunctions")
@@ -220,6 +224,8 @@ public class QualityManager(
         if (!qualityExtension.spotless.enabled.get()) return
 
         project.pluginManager.apply("com.diffplug.spotless")
+
+        variantResolution("spotless")
 
         project.configure<SpotlessExtension> {
             kotlin {
@@ -474,5 +480,17 @@ public class QualityManager(
             .use { input -> userConfig.asFile.outputStream().use { output -> input.copyTo(output) } }
 
         return userConfig
+    }
+
+    private fun variantResolution(config: String) {
+        project.configurations.matching { it.name.startsWith(config) }.configureEach {
+            it.attributes { at ->
+                at.attribute(
+                    LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
+                    project.objects.named(LibraryElements.JAR),
+                )
+                at.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage.JAVA_RUNTIME))
+            }
+        }
     }
 }
