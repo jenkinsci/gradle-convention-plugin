@@ -42,6 +42,21 @@ kotlin {
     }
 }
 
+sourceSets {
+    main {
+        java.setSrcDirs(emptyList<String>())
+        kotlin.setSrcDirs(listOf("src/main/kotlin"))
+    }
+    test {
+        java.setSrcDirs(emptyList<String>())
+        kotlin.setSrcDirs(listOf("src/test/kotlin"))
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    source = project.files().asFileTree
+}
+
 gradlePlugin {
     plugins {
         create("javaConventions") {

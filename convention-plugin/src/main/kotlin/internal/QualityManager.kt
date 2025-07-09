@@ -11,6 +11,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
+import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.CodeNarc
@@ -55,11 +56,10 @@ public class QualityManager(
 
         project.configure<CheckstyleExtension> {
             toolVersion = qualityExtension.checkstyle.toolVersion.get()
-            configFile =
-                qualityExtension.checkstyle.configFile
-                    .get()
-                    .asFile
+            configFile = resolveCheckstyleConfigFile().asFile
             isIgnoreFailures = !qualityExtension.checkstyle.failOnViolation.get()
+
+            resolveCheckstyleSuppressionFile()
         }
         project.tasks.withType<Checkstyle>().configureEach { checkstyleTask ->
             checkstyleTask.reports {
@@ -428,5 +428,51 @@ public class QualityManager(
                 }
             }
         }
+    }
+
+    private fun resolveCheckstyleConfigFile(): RegularFile {
+        val checkstyleConfigPath = "config/checkstyle/checkstyle.xml"
+        val userConfig =
+            project.layout.projectDirectory
+                .file(checkstyleConfigPath)
+
+        if (userConfig.asFile.exists()) {
+            return userConfig
+        }
+
+        val resourceUrl =
+            javaClass.classLoader.getResource("defaults/checkstyle/checkstyle.xml")
+                ?: error("Missing built-in checkstyle.xml in plugin resources. This is a bug.")
+
+        userConfig.asFile.parentFile.mkdirs()
+
+        resourceUrl
+            .openStream()
+            .use { input -> userConfig.asFile.outputStream().use { output -> input.copyTo(output) } }
+
+        return userConfig
+    }
+
+    private fun resolveCheckstyleSuppressionFile(): RegularFile {
+        val checkstyleConfigPath = "config/checkstyle/suppressions.xml"
+        val userConfig =
+            project.layout.projectDirectory
+                .file(checkstyleConfigPath)
+
+        if (userConfig.asFile.exists()) {
+            return userConfig
+        }
+
+        val resourceUrl =
+            javaClass.classLoader.getResource("defaults/checkstyle/suppressions.xml")
+                ?: error("Missing built-in suppressions.xml in plugin resources. This is a bug.")
+
+        userConfig.asFile.parentFile.mkdirs()
+
+        resourceUrl
+            .openStream()
+            .use { input -> userConfig.asFile.outputStream().use { output -> input.copyTo(output) } }
+
+        return userConfig
     }
 }
