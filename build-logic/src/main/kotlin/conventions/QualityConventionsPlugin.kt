@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 Aarav Mahajan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 package conventions
 
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -34,13 +49,18 @@ private fun Project.configureSpotless() {
             ktlint()
             trimTrailingWhitespace()
             endWithNewline()
+            licenseHeaderFile(rootProject.file("config/license-header.txt"), "(package |@file:|import )")
         }
         kotlinGradle {
-            target("*.gradle.kts", "**/*.gradle.kts")
+            target("*.gradle.kts", "**/*.gradle.kts", "settings.gradle.kts")
             targetExclude("**/build/**", "**/.gradle/**")
             ktlint()
             trimTrailingWhitespace()
             endWithNewline()
+            licenseHeaderFile(
+                rootProject.file("config/license-header.txt").absolutePath,
+                "^\\s*(pluginManagement|plugins|plugin|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject|[a-zA-Z])",
+            )
         }
         java {
             googleJavaFormat()
@@ -49,6 +69,7 @@ private fun Project.configureSpotless() {
             trimTrailingWhitespace()
             endWithNewline()
             removeUnusedImports()
+            licenseHeaderFile(rootProject.file("config/license-header.txt").absolutePath, "(package |@file:|import )")
         }
         format("misc") {
             target(
