@@ -2,9 +2,9 @@
 
 If you discover a security vulnerability in this project, please report it responsibly.
 
-- **How to report:**  
+- **How to report:**
   Please email aaravmahajan2003@gmail.com or create a [GitHub Security Advisory](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/security/advisories) for confidential disclosure.
-- **What to include:**  
+- **What to include:**
   - Detailed description of the vulnerability
   - Steps to reproduce (if possible)
   - Your contact information
