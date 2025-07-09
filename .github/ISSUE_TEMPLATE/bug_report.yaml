@@ -1,0 +1,103 @@
+name: Bug report
+description: Report a bug or issue with the Gradle Convention plugin for Jenkins plugin development
+title: "[Bug]: "
+labels: [bug]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please ensure:
+        - You are using the latest version of the convention plugin.
+        - You have tested with Gradle 9.x, Kotlin 2.1+, and Java 17+.
+        - You have checked the documentation and searched for similar issues.
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: Describe the bug
+      description: Clearly describe the bug or unexpected behavior. What is happening? What should happen?
+      placeholder: A clear and concise description of the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the problem. Provide a minimal, reproducible example if possible.
+      placeholder: |
+        1. Provide your build.gradle(.kts) or relevant configuration snippet.
+        2. List the precise Gradle command(s) used.
+        3. Describe the Jenkins plugin project structure or link to a minimal repo.
+        4. Include any relevant logs or stack traces.
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect the plugin to do?
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots or Logs
+      description: If applicable, add screenshots or copy relevant logs/stack traces here.
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: gradle_version
+    attributes:
+      label: Gradle version
+    validations:
+      required: true
+
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Convention plugin version
+    validations:
+      required: true
+
+  - type: input
+    id: jenkins_plugin_version
+    attributes:
+      label: Jenkins plugin version
+    validations:
+      required: false
+
+  - type: input
+    id: java_version
+    attributes:
+      label: Java version
+    validations:
+      required: true
+
+  - type: input
+    id: kotlin_version
+    attributes:
+      label: Kotlin version (if applicable)
+    validations:
+      required: false
+
+  - type: input
+    id: os_version
+    attributes:
+      label: OS and version
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Any other information, configuration, or links that may help debug the issue.
+    validations:
+      required: false
