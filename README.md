@@ -43,4 +43,4 @@ This plugin builds upon the [gradle-jpi-plugin](https://github.com/jenkinsci/gra
 
 ## License
 
-This project is licensed under the [MIT](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE) license.
+This project is licensed under the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE) license.
