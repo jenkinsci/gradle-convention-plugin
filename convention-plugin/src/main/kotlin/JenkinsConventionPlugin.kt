@@ -13,16 +13,13 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+@file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports")
+
 import constants.PluginMetadata
 import extensions.BomExtension
 import extensions.JenkinsPluginExtension
 import extensions.QualityExtension
-import internal.BomManager
-import internal.JavaConventionManager
-import internal.JpiPluginAdapter
-import internal.KotlinConventionManager
-import internal.LanguagePluginValidator
-import internal.QualityManager
+import internal.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
@@ -33,7 +30,6 @@ import org.gradle.kotlin.dsl.getByType
 import utils.GradleVersionUtils
 import javax.inject.Inject
 
-@SuppressWarnings("INCUBATING")
 public abstract class JenkinsConventionPlugin
     @Inject
     constructor(
@@ -48,7 +44,7 @@ public abstract class JenkinsConventionPlugin
                     PluginMetadata.EXTENSION_NAME,
                     project,
                 )
-            val bomExtension = project.extensions.create<BomExtension>("bom", project.objects, libs)
+            val bomExtension = project.extensions.create<BomExtension>("bom", project, libs)
             val qualityExtension = project.extensions.create<QualityExtension>("quality", project, libs)
 
             LanguagePluginValidator(project, problems).validate()

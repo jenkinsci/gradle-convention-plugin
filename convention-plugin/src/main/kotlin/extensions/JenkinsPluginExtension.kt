@@ -15,6 +15,7 @@
  */
 package extensions
 
+import constants.ConfigurationConstants
 import model.JenkinsPluginDependency
 import model.JenkinsPluginDeveloper
 import model.JenkinsPluginLicense
@@ -22,6 +23,7 @@ import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
@@ -37,16 +39,35 @@ public abstract class JenkinsPluginExtension
     ) {
         private val objects: ObjectFactory = project.objects
 
-        public val jenkinsVersion: Property<String> = objects.property<String>().convention("2.504.3")
+        private fun <T : Any> gradleProperty(
+            key: String,
+            converter: (String) -> T,
+        ): Provider<T> = project.providers.gradleProperty(key).map(converter)
+
+        private fun gradleProperty(key: String) = project.providers.gradleProperty(key)
+
+        public val jenkinsVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(
+                    ConfigurationConstants.JENKINS_VERSION,
+                ).orElse("2.504.3"),
+            )
 
         public val pluginId: Property<String> =
             objects.property<String>().convention(
-                project.name.removePrefix("jenkins-").removeSuffix("-plugin"),
+                gradleProperty(ConfigurationConstants.PLUGIN_ID).orElse(
+                    project.name.removePrefix("jenkins-").removeSuffix("-plugin"),
+                ),
             )
 
         public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
 
-        public val groupId: Property<String> = objects.property<String>().convention("org.jenkins-ci.plugins")
+        public val groupId: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(
+                    ConfigurationConstants.GROUP_ID,
+                ).orElse("org.jenkins-ci.plugins"),
+            )
 
         public val humanReadableName: Property<String> =
             objects.property<String>().convention(
@@ -57,15 +78,34 @@ public abstract class JenkinsPluginExtension
 
         public val homePage: Property<URI> = objects.property<URI>()
 
-        public val sandboxed: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val sandboxed: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(ConfigurationConstants.SANDBOXED, String::toBoolean).orElse(false),
+            )
 
-        public val usePluginFirstClassLoader: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val usePluginFirstClassLoader: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    ConfigurationConstants.USE_PLUGIN_FIRST_CLASS_LOADER,
+                    String::toBoolean,
+                ).orElse(false),
+            )
 
         public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
-        public val minimumJenkinsCoreVersion: Property<String> = objects.property<String>().convention("2.504.3")
+        public val minimumJenkinsCoreVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(
+                    ConfigurationConstants.MINIMUM_JENKINS_VERSION,
+                ).orElse("2.504.3"),
+            )
 
-        public val description: Property<String> = objects.property<String>().convention("A Jenkins Plugin")
+        public val description: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(
+                    ConfigurationConstants.DESCRIPTION,
+                ).orElse("A Jenkins Plugin"),
+            )
 
         public val githubUrl: Property<URI> = objects.property<URI>()
 
@@ -77,7 +117,13 @@ public abstract class JenkinsPluginExtension
 
         public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
 
-        public val generateTests: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val generateTests: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    ConfigurationConstants.GENERATE_TESTS,
+                    String::toBoolean,
+                ).orElse(false),
+            )
 
         public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
 

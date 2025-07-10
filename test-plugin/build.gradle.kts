@@ -17,21 +17,15 @@ plugins {
     id("io.jenkins.gradle.convention") version "1.0.0"
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    gradlePluginPortal()
-    google()
-}
-
 version = "1.0.0-SNAPSHOT"
+description = "Checkmarx CxSAST Plugin for Jenkins"
 
 jenkinsConvention {
-    description = "Checkmarx CxSAST Plugin for Jenkins"
-    humanReadableName = "Jenkins Checkmarx Plugin"
 
+    // Only need to declare, what is unique to every project
     homePage = uri("https://wiki.jenkins-ci.org/display/JENKINS/Checkmarx+CxSAST+Plugin")
     githubUrl = uri("https://github.com/jenkinsci/checkmarx-plugin.git")
+
     pluginLabels = listOf("security", "static-analysis")
 
     developer {
@@ -44,13 +38,13 @@ jenkinsConvention {
     }
 
     // By default, everything is enabled
-    quality {
-    }
+//    quality {
+//    }
 
     // By default, all BOMs are enabled
-    bom {
-        useNettyBom = false
-    }
+//    bom {
+//        useNettyBom = false
+//    }
 
     // By default, License is set to Apache 2.0
 }
