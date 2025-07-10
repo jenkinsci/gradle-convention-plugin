@@ -3,6 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>MaxLineLength:LanguagePluginValidator.kt$LanguagePluginValidator$"Add 'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\") }"</ID>
-    <ID>UnusedParameter:GradleVersionUtils.kt$GradleVersionUtils$project: Project</ID>
+    <ID>WildcardImport:JenkinsConventionPlugin.kt$import internal.*</ID>
   </CurrentIssues>
 </SmellBaseline>
