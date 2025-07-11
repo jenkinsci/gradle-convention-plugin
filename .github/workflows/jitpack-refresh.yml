@@ -1,0 +1,13 @@
+name: jitpack-refresh.yml
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-jitpack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Trigger Jitpack build for main SNAPSHOT"
+        run: curl -s -X GET "https://jitpack.io/com/github/aaravmahajanofficial/jenkins-gradle-convention-plugin/main-SNAPSHOT/build.log" >> /dev/null
