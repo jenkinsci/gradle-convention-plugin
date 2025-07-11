@@ -58,7 +58,8 @@ public class LanguagePluginValidator
                                     "Please apply either 'java-library' or 'org.jetbrains.kotlin.jvm' to your project.",
                             ).solution("Add 'java-library' to your plugins block: plugins { id(\"java-library\") }")
                             .solution(
-                                "Add 'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\") }",
+                                "Add 'org.jetbrains.kotlin.jvm' to your plugins block:" +
+                                    " plugins { id(\"org.jetbrains.kotlin.jvm\") }",
                             ).severity(Severity.ERROR)
                             .contextualLabel("No language plugin detected in project '${project.name}'")
                     }

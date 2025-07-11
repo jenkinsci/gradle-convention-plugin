@@ -13,16 +13,10 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-plugins {
-    base
-    `maven-publish`
-    alias(libs.plugins.kotlin.jvm) apply false
-    id("conventions.java")
-    id("conventions.kotlin")
-    id("conventions.quality")
-}
+package constants
 
-tasks.named<Wrapper>("wrapper") {
-    gradleVersion = libs.versions.gradle.get()
-    distributionType = Wrapper.DistributionType.ALL
+public object UrlConstants {
+    public const val JENKINS_INCREMENTALS_REPO_URL: String = "https://repo.jenkins-ci.org/incrementals"
+    public const val JENKINS_RELEASES_REPO_URL: String = "https://repo.jenkins-ci.org/releases"
+    public const val JENKINS_PUBLIC_REPO_URL: String = "https://repo.jenkins-ci.org/public"
 }
