@@ -38,3 +38,7 @@ jobs:
       - name: Build and test consumer Jenkins plugin
         run: |
           ./gradlew :test-plugin:clean build check --no-configuration-cache --stacktrace
+
+      - name: "Trigger Jitpack build for main SNAPSHOT"
+        run: |
+          curl -s -X GET "https://jitpack.io/com/github/aaravmahajanofficial/jenkins-gradle-convention-plugin/main-SNAPSHOT/build.log" >> /dev/null
