@@ -16,6 +16,9 @@
 plugins {
     base
     alias(libs.plugins.kotlin.jvm) apply false
+    id("conventions.java")
+    id("conventions.kotlin")
+    id("conventions.quality")
 }
 
 tasks.named<Wrapper>("wrapper") {

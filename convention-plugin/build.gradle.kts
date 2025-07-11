@@ -24,7 +24,9 @@ description = "Gradle plugin that provides conventions for developing Jenkins pl
 dependencies {
     compileOnly(gradleApi())
     compileOnly(gradleKotlinDsl())
-    compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.kotlin.gradle.plugin) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
+    }
     implementation(libs.jenkins.gradle.jpi2)
 
     implementation(libs.spotless.gradle.plugin)
