@@ -24,6 +24,7 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 public class QualityConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -111,7 +112,7 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = "17"
+        jvmTarget = JvmTarget.JVM_17.target
         autoCorrect = false
 
         reports {

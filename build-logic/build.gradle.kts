@@ -18,7 +18,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
-    alias(libs.plugins.kotlin.jvm)
 }
 
 group = "io.jenkins.gradle.conventions"
@@ -98,11 +97,15 @@ gradlePlugin {
 
 dependencies {
     implementation(gradleApi())
-    implementation(gradleKotlinDsl())
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlin.reflect)
-    implementation(libs.kotlin.gradle.plugin)
     implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin)
+    implementation(libs.detekt.gradle.plugin) {
+        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
+    }
+    implementation(libs.ktlint.gradle.plugin) {
+        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
+    }
+
+    compileOnly(libs.kotlin.gradle.plugin) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
+    }
 }
