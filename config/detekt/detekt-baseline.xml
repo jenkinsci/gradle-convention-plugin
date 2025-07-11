@@ -2,7 +2,10 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>MaxLineLength:LanguagePluginValidator.kt$LanguagePluginValidator$"Add 'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\") }"</ID>
+    <ID>MaxLineLength:LanguagePluginValidator.kt$LanguagePluginValidator$"Add
+      'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\")
+      }"
+    </ID>
     <ID>WildcardImport:JenkinsConventionPlugin.kt$import internal.*</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -37,6 +37,8 @@ public abstract class JenkinsConventionPlugin
     ) : Plugin<Project> {
         override fun apply(project: Project) {
             GradleVersionUtils.verifyGradleVersion()
+            RepositoryManager(project)
+
             val libs: VersionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             val pluginExtension =

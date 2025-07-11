@@ -16,6 +16,7 @@
 package extensions
 
 import constants.ConfigurationConstants
+import constants.UrlConstants
 import model.JenkinsPluginDependency
 import model.JenkinsPluginDeveloper
 import model.JenkinsPluginLicense
@@ -134,7 +135,7 @@ public abstract class JenkinsPluginExtension
         public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
         public val incrementalsRepoUrl: Property<String> =
-            objects.property<String>().convention("https://repo.jenkins-ci.org/incrementals")
+            objects.property<String>().convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
 
         public val testJvmArguments: ListProperty<String> =
             objects
