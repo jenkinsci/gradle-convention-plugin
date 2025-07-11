@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/aaravmahajanofficial/jenkins-gradle-convention-plugin.svg)](https://jitpack.io/#aaravmahajanofficial/jenkins-gradle-convention-plugin)
+[![](https://jitpack.io/v/aaravmahajanofficial/jenkins-gradle-convention-plugin.svg?branch=main)](https://jitpack.io/#aaravmahajanofficial/jenkins-gradle-convention-plugin)
 # Jenkins Gradle Convention Plugin
 
 A Gradle convention plugin for developing Jenkins plugins with modern practices.
