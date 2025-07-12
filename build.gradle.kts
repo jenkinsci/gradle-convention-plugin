@@ -15,11 +15,8 @@
  */
 plugins {
     base
-    `maven-publish`
+    id("com.vanniktech.maven.publish") version "0.33.0" apply false
     alias(libs.plugins.kotlin.jvm) apply false
-    id("conventions.java")
-    id("conventions.kotlin")
-    id("conventions.quality")
 }
 
 tasks.named<Wrapper>("wrapper") {
