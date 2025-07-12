@@ -30,7 +30,7 @@ public class LanguagePluginValidator
     @Inject
     constructor(
         private val project: Project,
-        private val problems: Problems,
+        problems: Problems,
     ) {
         public companion object {
             private val PROBLEM_GROUP = ProblemGroup.create("jenkins-gradle-convention", "Jenkins Gradle Convention")

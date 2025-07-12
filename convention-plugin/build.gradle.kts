@@ -16,10 +16,13 @@
 plugins {
     id("conventions.kotlin")
     id("conventions.quality")
-    `maven-publish`
+    alias(libs.plugins.plugin.publish)
 }
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
+
+group = project.property("group") as String
+version = project.property("version") as String
 
 dependencies {
     compileOnly(gradleApi())
@@ -28,7 +31,6 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
     }
     implementation(libs.jenkins.gradle.jpi2)
-
     implementation(libs.spotless.gradle.plugin)
     implementation(libs.detekt.gradle.plugin)
     implementation(libs.ktlint.gradle.plugin)
@@ -42,24 +44,24 @@ dependencies {
 }
 
 gradlePlugin {
+    website = "https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin"
+    vcsUrl = "https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin"
     plugins {
         create("jenkinsConventions") {
-            id = "io.jenkins.gradle.convention"
-            version = "1.0.0"
-            implementationClass = "JenkinsConventionPlugin"
+            id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin"
             displayName = "Jenkins Gradle Convention Plugin"
             description = "Convention plugin for developing Jenkins plugins with Gradle"
-            tags.set(listOf("jenkins", "convention", "plugin", "jpi"))
+            tags = listOf("jenkins", "gradle-plugin", "convention-plugin", "plugin", "ci-cd")
+            implementationClass = "JenkinsConventionPlugin"
         }
     }
 }
 
-publishing {
-    publications {
-        withType<MavenPublication>().configureEach {
-            groupId = "io.jenkins.gradle"
-            artifactId = "convention"
-            version = "1.0.0"
-        }
-    }
-}
+// publishing {
+//    repositories {
+//        maven {
+//            name = "localPluginRepository"
+//            url = uri("C:\\Users\\aarav\\Desktop/local-plugin-repository")
+//        }
+//    }
+// }

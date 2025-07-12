@@ -20,9 +20,6 @@ plugins {
     `java-gradle-plugin`
 }
 
-group = "io.jenkins.gradle.conventions"
-version = rootProject.version
-
 val javaToolchainVersion: Provider<Int> =
     providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(17)
 
