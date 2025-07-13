@@ -34,26 +34,6 @@ public class RepositoryManager(
                     content.includeGroup("io.jenkins.tools.bom")
                 }
             }
-            maven {
-                it.name = "JenkinsReleases"
-                it.url = URI.create(UrlConstants.JENKINS_RELEASES_REPO_URL)
-                it.mavenContent { content ->
-                    content.includeGroup("io.jenkins.plugins")
-                    content.includeGroup("io.jenkins-ci.main")
-                    content.includeGroup("io.jenkins-ci.plugins")
-                    content.includeGroup("io.jenkins.tools.bom")
-                }
-            }
-            maven {
-                it.name = "JenkinsIncrementals"
-                it.url = URI.create(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
-                it.mavenContent { content ->
-                    content.includeGroup("io.jenkins.plugins")
-                    content.includeGroup("io.jenkins-ci.main")
-                    content.includeGroup("io.jenkins-ci.plugins")
-                    content.includeGroup("io.jenkins.tools.bom")
-                }
-            }
             mavenCentral()
             gradlePluginPortal()
         }

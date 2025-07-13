@@ -15,7 +15,7 @@
  */
 package internal
 
-import extensions.JenkinsPluginExtension
+import extensions.PluginExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
@@ -25,7 +25,7 @@ import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
 
 public class JpiPluginAdapter(
     private val project: Project,
-    private val pluginExtension: JenkinsPluginExtension,
+    private val pluginExtension: PluginExtension,
 ) {
     private val jpiExtension: JpiExtension by lazy {
         project.extensions.getByType<JpiExtension>()
@@ -38,10 +38,8 @@ public class JpiPluginAdapter(
     public fun applyAndConfigure() {
         project.pluginManager.apply("org.jenkins-ci.jpi")
 
-        project.afterEvaluate {
-            bridgeExtensionProperties()
-            project.tasks.findByName("generateLicenseInfo")?.enabled = false
-        }
+        bridgeExtensionProperties()
+        project.tasks.findByName("generateLicenseInfo")?.enabled = false
     }
 
     private fun bridgeExtensionProperties() =
@@ -70,7 +68,7 @@ public class JpiPluginAdapter(
                             id.set(dev.id)
                             name.set(dev.name)
                             email.set(dev.email)
-                            url.set(dev.portfolioUrl.toString())
+                            url.set(dev.website.toString())
                             organization.set(dev.organization)
                             organizationUrl.set(dev.organizationUrl.toString())
                             roles.set(dev.roles)

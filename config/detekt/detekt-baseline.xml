@@ -2,10 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>MaxLineLength:LanguagePluginValidator.kt$LanguagePluginValidator$"Add
-      'org.jetbrains.kotlin.jvm' to your plugins block: plugins { id(\"org.jetbrains.kotlin.jvm\")
-      }"
-    </ID>
     <ID>WildcardImport:JenkinsConventionPlugin.kt$import internal.*</ID>
+    <ID>WildcardImport:QualityManager.kt$import org.gradle.api.plugins.quality.*</ID>
   </CurrentIssues>
 </SmellBaseline>

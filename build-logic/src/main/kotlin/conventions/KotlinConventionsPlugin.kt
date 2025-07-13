@@ -31,7 +31,6 @@ public class KotlinConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             pluginManager.apply("org.jetbrains.kotlin.jvm")
-            pluginManager.apply("java-gradle-plugin")
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             project.configureKotlin()

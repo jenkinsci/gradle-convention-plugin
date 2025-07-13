@@ -15,7 +15,7 @@
  */
 plugins {
     base
-    id("com.vanniktech.maven.publish") version "0.33.0" apply false
+    alias(libs.plugins.maven.gradle.publish.plugin) apply false
     alias(libs.plugins.kotlin.jvm) apply false
 }
 
