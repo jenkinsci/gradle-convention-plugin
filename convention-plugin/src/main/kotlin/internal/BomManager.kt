@@ -94,7 +94,7 @@ public class BomManager(
         bomExtension.customBoms.get().forEach { (coordinates, version) ->
             val platformDependency = platform("$coordinates:$version")
             add("implementation", platformDependency)
-            add("testImplementation", platform(platformDependency))
+            add("testImplementation", platformDependency)
         }
     }
 

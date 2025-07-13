@@ -15,11 +15,11 @@
  */
 package extensions
 
+import DeveloperExtension
+import DevelopersExtension
 import constants.ConfigurationConstants
 import constants.UrlConstants
 import model.JenkinsPluginDependency
-import model.JenkinsPluginDeveloper
-import model.JenkinsPluginLicense
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -33,7 +33,7 @@ import org.gradle.kotlin.dsl.setProperty
 import java.net.URI
 import javax.inject.Inject
 
-public abstract class JenkinsPluginExtension
+public open class PluginExtension
     @Inject
     constructor(
         private val project: Project,
@@ -89,7 +89,7 @@ public abstract class JenkinsPluginExtension
                 gradleProperty(
                     ConfigurationConstants.USE_PLUGIN_FIRST_CLASS_LOADER,
                     String::toBoolean,
-                ).orElse(false),
+                ).orElse(true),
             )
 
         public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
@@ -110,11 +110,11 @@ public abstract class JenkinsPluginExtension
 
         public val githubUrl: Property<URI> = objects.property<URI>()
 
-        public val pluginDevelopers: ListProperty<JenkinsPluginDeveloper> =
+        public val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects
-                .listProperty<JenkinsPluginDeveloper>()
+                .listProperty<DeveloperExtension>()
 
-        public val pluginLicenses: ListProperty<JenkinsPluginLicense> = objects.listProperty<JenkinsPluginLicense>()
+        public val pluginLicenses: ListProperty<LicenseExtension> = objects.listProperty<LicenseExtension>()
 
         public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
 
@@ -166,12 +166,12 @@ public abstract class JenkinsPluginExtension
             MISC,
         }
 
-        public fun developer(configure: JenkinsPluginDeveloper.() -> Unit) {
-            pluginDevelopers.add(objects.newInstance<JenkinsPluginDeveloper>().apply(configure))
+        public fun developers(configure: DevelopersExtension.() -> Unit) {
+            DevelopersExtension(objects, pluginDevelopers).apply(configure)
         }
 
-        public fun license(configure: JenkinsPluginLicense.() -> Unit) {
-            pluginLicenses.add(objects.newInstance<JenkinsPluginLicense>().apply(configure))
+        public fun licenses(configure: LicensesExtension.() -> Unit) {
+            LicensesExtension(objects, pluginLicenses).apply(configure)
         }
 
         public fun dependency(
@@ -188,5 +188,10 @@ public abstract class JenkinsPluginExtension
 
         public fun dependency(configure: JenkinsPluginDependency.() -> Unit) {
             pluginDependencies.add(objects.newInstance<JenkinsPluginDependency>().apply(configure))
+        }
+
+        public fun validate() {
+            require(githubUrl.isPresent && githubUrl.toString().isNotBlank()) { "githubUrl must be set" }
+            require(pluginDevelopers.getOrElse(emptyList()).isNotEmpty()) { "At least one developer must be specified" }
         }
     }

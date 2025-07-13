@@ -25,12 +25,13 @@ import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.mapProperty
 import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
+import kotlin.jvm.optionals.getOrElse
 
-public abstract class BomExtension
+public open class BomExtension
     @Inject
     constructor(
         private val project: Project,
-        libs: VersionCatalog,
+        private val libs: VersionCatalog,
     ) {
         private val objects: ObjectFactory = project.objects
 
@@ -39,7 +40,16 @@ public abstract class BomExtension
             converter: (String) -> T,
         ): Provider<T> = project.providers.gradleProperty(key).map(converter)
 
-        private fun gradleProperty(key: String) = project.providers.gradleProperty(key)
+        public fun gradleProperty(key: String): Provider<String> = project.providers.gradleProperty(key)
+
+        private fun versionFromCatalogOrFail(alias: String): String =
+            libs
+                .findVersion(alias)
+                .getOrElse {
+                    error(
+                        "Version '$alias' missing from version catalog. Please update 'libs.versions.toml'.",
+                    )
+                }.requiredVersion
 
         // Jenkins BOM
         public val useCoreBom: Property<Boolean> =
@@ -52,10 +62,7 @@ public abstract class BomExtension
         public val bomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.CORE_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("jenkins-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("jenkins-bom"),
                 ),
             )
 
@@ -72,10 +79,7 @@ public abstract class BomExtension
         public val groovyBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.GROOVY_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("groovy-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("groovy-bom"),
                 ),
             )
 
@@ -89,10 +93,7 @@ public abstract class BomExtension
         public val jacksonBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.JACKSON_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("jackson-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("jackson-bom"),
                 ),
             )
 
@@ -106,10 +107,7 @@ public abstract class BomExtension
         public val springBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.SPRING_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("spring-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("spring-bom"),
                 ),
             )
 
@@ -123,10 +121,7 @@ public abstract class BomExtension
         public val nettyBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.NETTY_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("netty-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("netty-bom"),
                 ),
             )
 
@@ -140,10 +135,7 @@ public abstract class BomExtension
         public val slf4jBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.SLF4J_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("slf4j-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("slf4j-bom"),
                 ),
             )
 
@@ -157,10 +149,7 @@ public abstract class BomExtension
         public val jettyBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.JETTY_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("jetty-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("jetty-bom"),
                 ),
             )
 
@@ -175,10 +164,7 @@ public abstract class BomExtension
         public val junitBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.JUNIT_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("junit-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("junit-bom"),
                 ),
             )
 
@@ -189,10 +175,7 @@ public abstract class BomExtension
         public val mockitoBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.MOCKITO_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("mockito-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("mockito-bom"),
                 ),
             )
 
@@ -206,10 +189,7 @@ public abstract class BomExtension
         public val testcontainersBomVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.TESTCONTAINERS_BOM_VERSION).orElse(
-                    libs
-                        .findVersion("testcontainers-bom")
-                        .get()
-                        .requiredVersion,
+                    versionFromCatalogOrFail("testcontainers-bom"),
                 ),
             )
 

@@ -37,14 +37,6 @@ dependencyResolutionManagement {
             name = "Jenkins"
             url = uri("https://repo.jenkins-ci.org/public/")
         }
-        maven {
-            name = "JenkinsReleases"
-            url = uri("https://repo.jenkins-ci.org/releases/")
-        }
-        maven {
-            name = "JenkinsIncrementals"
-            url = uri("https://repo.jenkins-ci.org/incrementals/")
-        }
     }
 
     versionCatalogs {

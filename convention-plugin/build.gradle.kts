@@ -28,12 +28,13 @@ dependencies {
     compileOnly(gradleApi())
     compileOnly(gradleKotlinDsl())
     compileOnly(libs.kotlin.gradle.plugin) {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
+        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
     implementation(libs.jenkins.gradle.jpi2)
     implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin)
+    implementation(libs.detekt.gradle.plugin) {
+        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
+    }
     implementation(libs.spotbugs.gradle.plugin)
     implementation(libs.owasp.depcheck.gradle.plugin)
     implementation(libs.benmanes.versions.gradle.plugin)
@@ -41,6 +42,10 @@ dependencies {
     implementation(libs.kover.gradle.plugin)
     implementation(libs.node.gradle.plugin)
     implementation(libs.dokka.gradle.plugin)
+
+    implementation(libs.ktlint.gradle.plugin) {
+        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
+    }
 }
 
 gradlePlugin {
@@ -56,12 +61,3 @@ gradlePlugin {
         }
     }
 }
-
-// publishing {
-//    repositories {
-//        maven {
-//            name = "localPluginRepository"
-//            url = uri("C:\\Users\\aarav\\Desktop/local-plugin-repository")
-//        }
-//    }
-// }

@@ -16,7 +16,6 @@
 package internal
 
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.gradle.api.tasks.compile.JavaCompile
@@ -30,28 +29,28 @@ public class JavaConventionManager(
     private val project: Project,
 ) {
     public fun configure() {
-        project.plugins.withType<JavaPlugin> {
-            project.configure<JavaPluginExtension> {
-                toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
-                withSourcesJar()
-                withJavadocJar()
-            }
+        project.pluginManager.apply("java-library")
 
-            project.tasks.withType<JavaCompile>().configureEach {
-                it.options.encoding = "UTF-8"
-                it.options.release.set(JAVA_VERSION)
-                it.options.compilerArgs.addAll(
-                    listOf(
-                        "-parameters",
-                        "-Xlint:all,-serial",
-                    ),
-                )
-            }
+        project.configure<JavaPluginExtension> {
+            toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
+            withSourcesJar()
+            withJavadocJar()
+        }
 
-            project.tasks.withType<AbstractArchiveTask> {
-                isPreserveFileTimestamps = false
-                isReproducibleFileOrder = true
-            }
+        project.tasks.withType<JavaCompile>().configureEach {
+            it.options.encoding = "UTF-8"
+            it.options.release.set(JAVA_VERSION)
+            it.options.compilerArgs.addAll(
+                listOf(
+                    "-parameters",
+                    "-Xlint:all,-serial",
+                ),
+            )
+        }
+
+        project.tasks.withType<AbstractArchiveTask> {
+            isPreserveFileTimestamps = false
+            isReproducibleFileOrder = true
         }
     }
 }

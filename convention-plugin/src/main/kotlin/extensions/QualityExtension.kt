@@ -33,7 +33,7 @@ import org.gradle.kotlin.dsl.setProperty
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-public abstract class QualityExtension
+public open class QualityExtension
     @Inject
     constructor(
         project: Project,
@@ -127,7 +127,7 @@ private fun gradleProperty(
     key: String,
 ) = project.providers.gradleProperty(key)
 
-public abstract class CheckstyleExtension
+public open class CheckstyleExtension
     @Inject
     constructor(
         libs: VersionCatalog,
@@ -152,7 +152,7 @@ public abstract class CheckstyleExtension
         public val configFile: RegularFileProperty = project.objects.fileProperty()
     }
 
-public abstract class SpotbugsExtension
+public open class SpotbugsExtension
     @Inject
     constructor(
         project: Project,
@@ -178,7 +178,7 @@ public abstract class SpotbugsExtension
         public val excludeFilterFile: RegularFileProperty = project.objects.fileProperty()
     }
 
-public abstract class PmdExtension
+public open class PmdExtension
     @Inject
     constructor(
         project: Project,
@@ -204,7 +204,7 @@ public abstract class PmdExtension
         public val ruleSetFiles: RegularFileProperty = project.objects.fileProperty()
     }
 
-public abstract class JacocoExtension
+public open class JacocoExtension
     @Inject
     constructor(
         project: Project,
@@ -240,7 +240,7 @@ public abstract class JacocoExtension
             )
     }
 
-public abstract class DetektExtension
+public open class DetektExtension
     @Inject
     constructor(
         project: Project,
@@ -270,7 +270,7 @@ public abstract class DetektExtension
         public val baseline: RegularFileProperty = project.objects.fileProperty()
     }
 
-public abstract class SpotlessExtension
+public open class SpotlessExtension
     @Inject
     constructor(
         project: Project,
@@ -286,7 +286,7 @@ public abstract class SpotlessExtension
             )
     }
 
-public abstract class OwaspDependencyCheckExtension
+public open class OwaspDependencyCheckExtension
     @Inject
     constructor(
         project: Project,
@@ -325,7 +325,7 @@ public abstract class OwaspDependencyCheckExtension
             )
     }
 
-public abstract class PitestExtension
+public open class PitestExtension
     @Inject
     constructor(
         project: Project,
@@ -364,7 +364,7 @@ public abstract class PitestExtension
         public val mutators: SetProperty<String> = project.objects.setProperty<String>().convention(setOf("DEFAULT"))
     }
 
-public abstract class GradleVersionExtension
+public open class GradleVersionExtension
     @Inject
     constructor(
         project: Project,
@@ -372,7 +372,7 @@ public abstract class GradleVersionExtension
         public val enabled: Property<Boolean> = project.objects.property<Boolean>().convention(true)
     }
 
-public abstract class KoverExtension
+public open class KoverExtension
     @Inject
     constructor(
         project: Project,
@@ -389,7 +389,7 @@ public abstract class KoverExtension
             project.objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
     }
 
-public abstract class EslintExtension
+public open class EslintExtension
     @Inject
     constructor(
         project: Project,
@@ -406,7 +406,7 @@ public abstract class EslintExtension
         public val configFile: RegularFileProperty = project.objects.fileProperty()
     }
 
-public abstract class DokkaExtension
+public open class DokkaExtension
     @Inject
     constructor(
         project: Project,
@@ -423,7 +423,7 @@ public abstract class DokkaExtension
             project.objects.directoryProperty().convention(project.layout.buildDirectory.dir("dokka/html"))
     }
 
-public abstract class CodenarcExtension
+public open class CodenarcExtension
     @Inject
     constructor(
         project: Project,

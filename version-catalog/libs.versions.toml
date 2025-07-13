@@ -41,6 +41,9 @@ pmd = "7.0.0"
 codenarc = "3.6.0"
 node-gradle = "7.1.0"
 
+# Publishing
+maven-gradle-publish-plugin = "0.33.0"
+
 [libraries]
 # Kotlin and Gradle
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -73,6 +76,7 @@ owaspDependencyCheck = { id = "org.owasp.dependencycheck", version.ref = "owaspC
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+maven-gradle-publish-plugin = { id = "com.vanniktech.maven.publish", version.ref = "maven-gradle-publish-plugin" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]

@@ -24,7 +24,7 @@ public object ConfigurationConstants {
     public const val JENKINS_VERSION: String = "$JENKINS_PREFIX.jenkinsVersion"
     public const val PLUGIN_ID: String = "$JENKINS_PREFIX.pluginId"
     public const val GROUP_ID: String = "$JENKINS_PREFIX.groupId"
-    public const val DESCRIPTION: String = "$JENKINS_PREFIX.jenkinsVersion"
+    public const val DESCRIPTION: String = "$JENKINS_PREFIX.description"
     public const val MINIMUM_JENKINS_VERSION: String = "$JENKINS_PREFIX.minimumJenkinsCoreVersion"
     public const val SANDBOXED: String = "$JENKINS_PREFIX.sandboxed"
     public const val USE_PLUGIN_FIRST_CLASS_LOADER: String = "$JENKINS_PREFIX.usePluginFirstClassLoader"
