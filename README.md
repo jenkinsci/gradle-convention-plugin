@@ -1,3 +1,5 @@
+[![Jenkins Gradle Convention CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
+
 # Jenkins Gradle Convention Plugin
 
 A Gradle convention plugin for developing Jenkins plugins with modern practices.
