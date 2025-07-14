@@ -16,12 +16,12 @@
 package extensions
 
 import constants.ConfigurationConstants
-import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.mapProperty
 import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
@@ -30,17 +30,16 @@ import kotlin.jvm.optionals.getOrElse
 public open class BomExtension
     @Inject
     constructor(
-        private val project: Project,
+        objects: ObjectFactory,
+        private val providers: ProviderFactory,
         private val libs: VersionCatalog,
     ) {
-        private val objects: ObjectFactory = project.objects
-
         private fun <T : Any> gradleProperty(
             key: String,
             converter: (String) -> T,
-        ): Provider<T> = project.providers.gradleProperty(key).map(converter)
+        ): Provider<T> = providers.gradleProperty(key).map(converter)
 
-        public fun gradleProperty(key: String): Provider<String> = project.providers.gradleProperty(key)
+        public fun gradleProperty(key: String): Provider<String> = providers.gradleProperty(key)
 
         private fun versionFromCatalogOrFail(alias: String): String =
             libs

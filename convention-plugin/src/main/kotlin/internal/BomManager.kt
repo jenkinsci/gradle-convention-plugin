@@ -53,7 +53,7 @@ public class BomManager(
     private fun DependencyHandler.configureCoreBom() {
         applyBomIfEnabled(
             bomExtension.useCoreBom,
-            BOMCoordinates.JENKINS_BOM,
+            JENKINS_BOM,
             bomExtension.bomVersion,
         )
     }
