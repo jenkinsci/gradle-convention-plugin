@@ -17,6 +17,7 @@
 
 package internal
 
+import com.diffplug.gradle.spotless.SpotlessCheck
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import com.github.benmanes.gradle.versions.VersionsPlugin
@@ -51,6 +52,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
+import org.owasp.dependencycheck.gradle.tasks.Analyze
 
 public class QualityManager(
     private val project: Project,
@@ -82,10 +84,10 @@ public class QualityManager(
 
         project.configure<CheckstyleExtension> {
             toolVersion = qualityExtension.checkstyle.toolVersion.get()
-            configFile = resolveCheckstyleConfigFile().asFile
+            configFile = resolveConfigFile("checkstyle", "checkstyle.xml").asFile
             isIgnoreFailures = !qualityExtension.checkstyle.failOnViolation.get()
 
-            resolveCheckstyleSuppressionFile()
+            resolveConfigFile("checkstyle", "suppressions.xml")
         }
         project.tasks.withType<Checkstyle>().configureEach { task ->
             task.group = "Verification"
@@ -104,9 +106,11 @@ public class QualityManager(
 
         project.configure<CodeNarcExtension> {
             toolVersion = qualityExtension.codenarc.toolVersion.get()
-            qualityExtension.codenarc.configFile.orNull?.let {
-                configFile = it.asFile
-            }
+            configFile =
+                resolveConfigFile(
+                    toolName = "codenarc",
+                    "rules.groovy",
+                ).asFile
             isIgnoreFailures = !qualityExtension.codenarc.failOnViolation.get()
         }
         project.tasks.withType<CodeNarc>().configureEach { task ->
@@ -115,6 +119,15 @@ public class QualityManager(
                 it.xml.required.set(true)
                 it.html.required.set(true)
             }
+//            task.configFile =
+//                resolveConfigFile(
+//                    toolName = "codenarc",
+//                    if (task.name.contains("Test", ignoreCase = true)) {
+//                        "rules-test.groovy"
+//                    } else {
+//                        "rules.groovy"
+//                    },
+//                ).asFile
         }
     }
 
@@ -127,10 +140,13 @@ public class QualityManager(
             toolVersion.set(qualityExtension.spotbugs.toolVersion.get())
             effort.set(qualityExtension.spotbugs.effortLevel.get())
             reportLevel.set(qualityExtension.spotbugs.reportLevel.get())
-            excludeFilter.set(qualityExtension.spotbugs.excludeFilterFile.orNull)
+            excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml").asFile)
         }
 
         project.tasks.withType<SpotBugsTask>().configureEach {
+            it.reports.create("xml") { report ->
+                report.required.set(true)
+            }
             it.reports.create("html") { report ->
                 report.required.set(true)
             }
@@ -441,18 +457,19 @@ public class QualityManager(
     private fun configureCheckTask() {
         project.tasks.named("check").configure {
             listOf(
-                qualityExtension.checkstyle.enabled.getOrElse(false) to "checkstyleMain",
-                qualityExtension.codenarc.enabled.getOrElse(false) to "codenarcMain",
-                qualityExtension.spotbugs.enabled.getOrElse(false) to "spotbugsMain",
-                qualityExtension.pmd.enabled.getOrElse(false) to "pmdMain",
-                qualityExtension.spotless.enabled.getOrElse(false) to "spotlessCheck",
-                qualityExtension.detekt.enabled.getOrElse(false) to "detekt",
-                qualityExtension.owaspDependencyCheck.enabled.getOrElse(false) to "dependencyCheckAnalyze",
+                qualityExtension.checkstyle.enabled.getOrElse(false) to project.tasks.withType<Checkstyle>(),
+                qualityExtension.codenarc.enabled.getOrElse(false) to project.tasks.withType<CodeNarc>(),
+                qualityExtension.spotbugs.enabled.getOrElse(false) to project.tasks.withType<SpotBugsTask>(),
+                qualityExtension.pmd.enabled.getOrElse(false) to project.tasks.withType<Pmd>(),
+                qualityExtension.spotless.enabled.getOrElse(false) to project.tasks.withType<SpotlessCheck>(),
+                qualityExtension.detekt.enabled.getOrElse(false) to project.tasks.withType<Detekt>(),
+                qualityExtension.owaspDependencyCheck.enabled.getOrElse(false) to project.tasks.withType<Analyze>(),
+                (qualityExtension.jacoco.enabled.getOrElse(false)) to
+                    project.tasks.withType<JacocoCoverageVerification>(),
                 qualityExtension.kover.enabled.getOrElse(false) to "koverVerify",
                 qualityExtension.pitest.enabled.getOrElse(false) to "pitest",
                 (qualityExtension.eslint.enabled.getOrElse(false) && project.tasks.findByName("eslint") != null) to
                     "eslint",
-                (qualityExtension.jacoco.enabled.getOrElse(false)) to "jacocoTestCoverageVerification",
             ).forEach { (enabled, path) ->
                 if (enabled) {
                     it.dependsOn(path)
@@ -461,42 +478,22 @@ public class QualityManager(
         }
     }
 
-    private fun resolveCheckstyleConfigFile(): RegularFile {
-        val checkstyleConfigPath = "config/checkstyle/checkstyle.xml"
+    private fun resolveConfigFile(
+        toolName: String,
+        fileName: String,
+    ): RegularFile {
+        val configPath = "config/$toolName/$fileName"
         val userConfig =
             project.layout.projectDirectory
-                .file(checkstyleConfigPath)
+                .file(configPath)
 
         if (userConfig.asFile.exists()) {
             return userConfig
         }
 
         val resourceUrl =
-            javaClass.classLoader.getResource("defaults/checkstyle/checkstyle.xml")
-                ?: error("Missing built-in checkstyle.xml in plugin resources. This is a bug.")
-
-        userConfig.asFile.parentFile.mkdirs()
-
-        resourceUrl
-            .openStream()
-            .use { input -> userConfig.asFile.outputStream().use { output -> input.copyTo(output) } }
-
-        return userConfig
-    }
-
-    private fun resolveCheckstyleSuppressionFile(): RegularFile {
-        val checkstyleConfigPath = "config/checkstyle/suppressions.xml"
-        val userConfig =
-            project.layout.projectDirectory
-                .file(checkstyleConfigPath)
-
-        if (userConfig.asFile.exists()) {
-            return userConfig
-        }
-
-        val resourceUrl =
-            javaClass.classLoader.getResource("defaults/checkstyle/suppressions.xml")
-                ?: error("Missing built-in suppressions.xml in plugin resources. This is a bug.")
+            javaClass.classLoader.getResource("defaults/$toolName/$fileName")
+                ?: error("Missing built-in $toolName config file in plugin resources: $fileName. This is a bug.")
 
         userConfig.asFile.parentFile.mkdirs()
 

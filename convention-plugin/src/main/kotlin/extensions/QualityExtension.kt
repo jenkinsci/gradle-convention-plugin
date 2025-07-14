@@ -13,20 +13,20 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package extensions
 
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import constants.ConfigurationConstants
-import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
-import org.gradle.api.provider.SetProperty
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.*
 import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
@@ -36,49 +36,45 @@ import javax.inject.Inject
 public open class QualityExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val checkstyle: CheckstyleExtension =
-            project.objects.newInstance(CheckstyleExtension::class.java, libs, project)
+            objects.newInstance(CheckstyleExtension::class.java, libs)
         public val codenarc: CodenarcExtension =
-            project.objects.newInstance(CodenarcExtension::class.java, project, libs)
+            objects.newInstance(CodenarcExtension::class.java, libs)
         public val spotbugs: SpotbugsExtension =
-            project.objects.newInstance(
+            objects.newInstance(
                 SpotbugsExtension::class.java,
-                project,
                 libs,
             )
-        public val pmd: PmdExtension = project.objects.newInstance(PmdExtension::class.java, project, libs)
+        public val pmd: PmdExtension = objects.newInstance(PmdExtension::class.java, libs)
         public val jacoco: JacocoExtension =
-            project.objects.newInstance(
+            objects.newInstance(
                 JacocoExtension::class.java,
-                project,
                 libs,
             )
         public val detekt: DetektExtension =
-            project.objects.newInstance(
+            objects.newInstance(
                 DetektExtension::class.java,
-                project,
                 libs,
             )
         public val spotless: SpotlessExtension =
-            project.objects.newInstance(
+            objects.newInstance(
                 SpotlessExtension::class.java,
-                project,
                 libs,
             )
         public val owaspDependencyCheck: OwaspDependencyCheckExtension =
-            project.objects.newInstance(
+            objects.newInstance(
                 OwaspDependencyCheckExtension::class.java,
-                project,
             )
         public val versions: GradleVersionExtension =
-            project.objects.newInstance(GradleVersionExtension::class.java, project)
-        public val pitest: PitestExtension = project.objects.newInstance(PitestExtension::class.java, project, libs)
-        public val kover: KoverExtension = project.objects.newInstance(KoverExtension::class.java, project)
-        public val eslint: EslintExtension = project.objects.newInstance(EslintExtension::class.java, project)
-        public val dokka: DokkaExtension = project.objects.newInstance(DokkaExtension::class.java, project)
+            objects.newInstance(GradleVersionExtension::class.java)
+        public val pitest: PitestExtension = objects.newInstance(PitestExtension::class.java, libs)
+        public val kover: KoverExtension = objects.newInstance(KoverExtension::class.java)
+        public val eslint: EslintExtension = objects.newInstance(EslintExtension::class.java)
+        public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -117,119 +113,121 @@ public open class QualityExtension
     }
 
 private fun <T : Any> gradleProperty(
-    project: Project,
+    providers: ProviderFactory,
     key: String,
     converter: (String) -> T,
-): Provider<T> = project.providers.gradleProperty(key).map(converter)
+): Provider<T> = providers.gradleProperty(key).map(converter)
 
 private fun gradleProperty(
-    project: Project,
+    providers: ProviderFactory,
     key: String,
-) = project.providers.gradleProperty(key)
+) = providers.gradleProperty(key)
 
-public open class CheckstyleExtension
-    @Inject
-    constructor(
-        libs: VersionCatalog,
-        project: Project,
-    ) {
-        public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
-                gradleProperty(
-                    project,
-                    ConfigurationConstants.CHECKSTYLE_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
-            )
-        public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
-                gradleProperty(
-                    project,
-                    ConfigurationConstants.CHECKSTYLE_VERSION,
-                ).orElse(libs.findVersion("checkstyle").get().requiredVersion),
-            )
-        public val failOnViolation: Property<Boolean> = project.objects.property<Boolean>().convention(true)
-        public val configFile: RegularFileProperty = project.objects.fileProperty()
-    }
+public open class CheckstyleExtension(
+    libs: VersionCatalog,
+    objects: ObjectFactory,
+    providers: ProviderFactory,
+) {
+    public val enabled: Property<Boolean> =
+        objects.property<Boolean>().convention(
+            gradleProperty(
+                providers,
+                ConfigurationConstants.CHECKSTYLE_ENABLED,
+                String::toBoolean,
+            ).orElse(true),
+        )
+    public val toolVersion: Property<String> =
+        objects.property<String>().convention(
+            gradleProperty(
+                providers,
+                ConfigurationConstants.CHECKSTYLE_VERSION,
+            ).orElse(libs.findVersion("checkstyle").get().requiredVersion),
+        )
+    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+    public val configFile: RegularFileProperty = objects.fileProperty()
+}
 
 public open class SpotbugsExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.SPOTBUGS_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
+            objects.property<String>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.SPOTBUGS_VERSION,
                 ).orElse(libs.findVersion("spotbugsTool").get().requiredVersion),
             )
-        public val effortLevel: Property<Effort> = project.objects.property<Effort>().convention(Effort.MAX)
-        public val reportLevel: Property<Confidence> = project.objects.property<Confidence>().convention(Confidence.LOW)
-        public val excludeFilterFile: RegularFileProperty = project.objects.fileProperty()
+        public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
+        public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
+        public val excludeFilterFile: RegularFileProperty = objects.fileProperty()
     }
 
 public open class PmdExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.PMD_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
-                gradleProperty(project, ConfigurationConstants.PMD_VERSION).orElse(
+            objects.property<String>().convention(
+                gradleProperty(providers, ConfigurationConstants.PMD_VERSION).orElse(
                     libs.findVersion("pmd").get().requiredVersion,
                 ),
             )
-        public val enableCPD: Property<Boolean> = project.objects.property<Boolean>().convention(false)
-        public val consoleOutput: Property<Boolean> = project.objects.property<Boolean>().convention(true)
-        public val failOnViolation: Property<Boolean> = project.objects.property<Boolean>().convention(true)
-        public val ruleSetFiles: RegularFileProperty = project.objects.fileProperty()
+        public val enableCPD: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val ruleSetFiles: RegularFileProperty = objects.fileProperty()
     }
 
 public open class JacocoExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.JACOCO_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
-                gradleProperty(project, ConfigurationConstants.JACOCO_VERSION).orElse(
+            objects.property<String>().convention(
+                gradleProperty(providers, ConfigurationConstants.JACOCO_VERSION).orElse(
                     libs.findVersion("jacoco").get().requiredVersion,
                 ),
             )
         public val minimumCodeCoverage: Property<Double> =
-            project.objects.property<Double>().convention(
+            objects.property<Double>().convention(
                 QualityExtension.DEFAULT_CODE_COVERAGE_THRESHOLD,
             )
         public val excludes: ListProperty<String> =
-            project.objects.listProperty<String>().convention(
+            objects.listProperty<String>().convention(
                 listOf(
                     "**/generated/**",
                     "**/Messages.class",
@@ -243,43 +241,45 @@ public open class JacocoExtension
 public open class DetektExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.DETEKT_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
-                gradleProperty(project, ConfigurationConstants.DETEKT_VERSION).orElse(
+            objects.property<String>().convention(
+                gradleProperty(providers, ConfigurationConstants.DETEKT_VERSION).orElse(
                     libs.findVersion("detekt").get().requiredVersion,
                 ),
             )
-        public val autoCorrect: Property<Boolean> = project.objects.property<Boolean>().convention(false)
-        public val failOnViolation: Property<Boolean> = project.objects.property<Boolean>().convention(false)
+        public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val source: ListProperty<String> =
-            project.objects.listProperty<String>().convention(
+            objects.listProperty<String>().convention(
                 listOf("src/main/java", "src/main/kotlin"),
             )
-        public val configFile: RegularFileProperty = project.objects.fileProperty()
-        public val baseline: RegularFileProperty = project.objects.fileProperty()
+        public val configFile: RegularFileProperty = objects.fileProperty()
+        public val baseline: RegularFileProperty = objects.fileProperty()
     }
 
 public open class SpotlessExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.SPOTLESS_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
@@ -289,38 +289,40 @@ public open class SpotlessExtension
 public open class OwaspDependencyCheckExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        layout: ProjectLayout,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.OWASP_ENABLED,
                     String::toBoolean,
                 ).orElse(false),
             )
         public val failOnCvss: Property<Float> =
-            project.objects.property<Float>().convention(QualityExtension.DEFAULT_OWASP_THRESHOLD)
+            objects.property<Float>().convention(QualityExtension.DEFAULT_OWASP_THRESHOLD)
         public val formats: ListProperty<String> =
-            project.objects.listProperty<String>().convention(
+            objects.listProperty<String>().convention(
                 setOf("XML", "HTML", "SARIF"),
             )
         public val dataDirectory: DirectoryProperty =
-            project.objects.directoryProperty().convention(
-                project.layout.projectDirectory.dir(".gradle/dependency-check-data"),
+            objects.directoryProperty().convention(
+                layout.projectDirectory.dir(".gradle/dependency-check-data"),
             )
         public val outputDirectory: DirectoryProperty =
-            project.objects.directoryProperty().convention(
-                project.layout.buildDirectory.dir("reports/dependency-check"),
+            objects.directoryProperty().convention(
+                layout.buildDirectory.dir("reports/dependency-check"),
             )
         public val suppressionFiles: ListProperty<RegularFile> =
-            project.objects
+            objects
                 .listProperty<RegularFile>()
                 .convention(
                     emptyList(),
                 )
         public val scanConfigurations: ListProperty<String> =
-            project.objects.listProperty<String>().convention(
+            objects.listProperty<String>().convention(
                 listOf("runtimeClasspath", "compileClasspath"),
             )
     }
@@ -328,122 +330,129 @@ public open class OwaspDependencyCheckExtension
 public open class PitestExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.PITEST_ENABLED,
                     String::toBoolean,
                 ).orElse(false),
             )
         public val pitVersion: Property<String> =
-            project.objects.property<String>().convention(
-                gradleProperty(project, ConfigurationConstants.PITEST_VERSION).orElse(
+            objects.property<String>().convention(
+                gradleProperty(providers, ConfigurationConstants.PITEST_VERSION).orElse(
                     libs.findVersion("pit").get().requiredVersion,
                 ),
             )
-        public val threads: Property<Int> = project.objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
-        public val targetClasses: ListProperty<String> = project.objects.listProperty<String>().convention(listOf("*"))
+        public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
+        public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))
         public val excludedClasses: ListProperty<String> =
-            project.objects.listProperty<String>().convention(listOf("*Test*"))
+            objects.listProperty<String>().convention(listOf("*Test*"))
         public val mutationThreshold: Property<Int> =
-            project.objects.property<Int>().convention(
+            objects.property<Int>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.PITEST_MUTATION_THRESHOLD,
                     String::toInt,
                 ).orElse(QualityExtension.DEFAULT_MUTATION_THRESHOLD),
             )
         public val outputFormats: ListProperty<String> =
-            project.objects.listProperty<String>().convention(
+            objects.listProperty<String>().convention(
                 listOf("XML", "HTML"),
             )
-        public val mutators: SetProperty<String> = project.objects.setProperty<String>().convention(setOf("DEFAULT"))
+        public val mutators: SetProperty<String> = objects.setProperty<String>().convention(setOf("DEFAULT"))
     }
 
 public open class GradleVersionExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
     ) {
-        public val enabled: Property<Boolean> = project.objects.property<Boolean>().convention(true)
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
     }
 
 public open class KoverExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.KOVER_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val coverageThreshold: Property<Int> =
-            project.objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
+            objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
     }
 
 public open class EslintExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.ESLINT_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val autofix: Property<Boolean> = project.objects.property<Boolean>().convention(false)
-        public val configFile: RegularFileProperty = project.objects.fileProperty()
+        public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val configFile: RegularFileProperty = objects.fileProperty()
     }
 
 public open class DokkaExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        layout: ProjectLayout,
+        providers: ProviderFactory,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.DOKKA_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val outputDirectory: DirectoryProperty =
-            project.objects.directoryProperty().convention(project.layout.buildDirectory.dir("dokka/html"))
+            objects.directoryProperty().convention(layout.buildDirectory.dir("dokka/html"))
     }
 
 public open class CodenarcExtension
     @Inject
     constructor(
-        project: Project,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            project.objects.property<Boolean>().convention(
+            objects.property<Boolean>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.CODENARC_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
-            project.objects.property<String>().convention(
+            objects.property<String>().convention(
                 gradleProperty(
-                    project,
+                    providers,
                     ConfigurationConstants.CODENARC_VERSION,
                 ).orElse(libs.findVersion("codenarc").get().requiredVersion),
             )
-        public val failOnViolation: Property<Boolean> = project.objects.property<Boolean>().convention(true)
-        public val configFile: RegularFileProperty = project.objects.fileProperty()
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val configFile: RegularFileProperty = objects.fileProperty()
     }

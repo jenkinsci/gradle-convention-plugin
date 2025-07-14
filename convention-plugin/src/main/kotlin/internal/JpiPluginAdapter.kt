@@ -31,10 +31,6 @@ public class JpiPluginAdapter(
         project.extensions.getByType<JpiExtension>()
     }
 
-    init {
-        project.pluginManager.apply("java")
-    }
-
     public fun applyAndConfigure() {
         project.pluginManager.apply("org.jenkins-ci.jpi")
 

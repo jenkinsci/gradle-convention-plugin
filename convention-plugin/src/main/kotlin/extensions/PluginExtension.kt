@@ -13,6 +13,8 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package extensions
 
 import DeveloperExtension
@@ -20,12 +22,8 @@ import DevelopersExtension
 import constants.ConfigurationConstants
 import constants.UrlConstants
 import model.JenkinsPluginDependency
-import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
-import org.gradle.api.provider.SetProperty
+import org.gradle.api.provider.*
 import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
@@ -36,16 +34,17 @@ import javax.inject.Inject
 public open class PluginExtension
     @Inject
     constructor(
-        private val project: Project,
+        private val objects: ObjectFactory,
+        private val providers: ProviderFactory,
+        projectName: String,
+        projectDescription: Provider<String>,
     ) {
-        private val objects: ObjectFactory = project.objects
-
         private fun <T : Any> gradleProperty(
             key: String,
             converter: (String) -> T,
-        ): Provider<T> = project.providers.gradleProperty(key).map(converter)
+        ): Provider<T> = providers.gradleProperty(key).map(converter)
 
-        private fun gradleProperty(key: String) = project.providers.gradleProperty(key)
+        private fun gradleProperty(key: String) = providers.gradleProperty(key)
 
         public val jenkinsVersion: Property<String> =
             objects.property<String>().convention(
@@ -57,7 +56,7 @@ public open class PluginExtension
         public val pluginId: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.PLUGIN_ID).orElse(
-                    project.name.removePrefix("jenkins-").removeSuffix("-plugin"),
+                    projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
                 ),
             )
 
@@ -72,9 +71,7 @@ public open class PluginExtension
 
         public val humanReadableName: Property<String> =
             objects.property<String>().convention(
-                project.provider {
-                    project.description ?: project.name
-                },
+                projectDescription.orElse(projectName),
             )
 
         public val homePage: Property<URI> = objects.property<URI>()

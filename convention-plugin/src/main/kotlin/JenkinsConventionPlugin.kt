@@ -22,32 +22,31 @@ import extensions.QualityExtension
 import internal.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.newInstance
 import utils.GradleVersionUtils
 import utils.libs
-import javax.inject.Inject
 
-public class JenkinsConventionPlugin
-    @Inject
-    constructor() : Plugin<Project> {
-        override fun apply(project: Project) {
-            with(project) {
-                GradleVersionUtils.verifyGradleVersion()
+public class JenkinsConventionPlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        with(project) {
+            GradleVersionUtils.verifyGradleVersion()
 
-                val pluginExtension =
-                    extensions.create<PluginExtension>(
-                        PluginMetadata.EXTENSION_NAME,
-                        project,
-                    )
-                val bomExtension = project.extensions.create<BomExtension>("bom", project, libs)
-                val qualityExtension = project.extensions.create<QualityExtension>("quality", project, libs)
+            val pluginExtension =
+                objects.newInstance<PluginExtension>(project.name, project.provider { project.description })
+            extensions.add(PluginMetadata.EXTENSION_NAME, pluginExtension)
 
-                RepositoryManager(project).configure()
-                JavaConventionManager(project).configure()
-                KotlinConventionManager(project, libs).configure()
-                JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
-                BomManager(project, bomExtension).configure()
-                QualityManager(project, qualityExtension).apply()
-            }
+            val bomExtension = objects.newInstance<BomExtension>(libs)
+            extensions.add("bom", bomExtension)
+
+            val qualityExtension = objects.newInstance<QualityExtension>(libs)
+            extensions.add("quality", qualityExtension)
+
+            JavaConventionManager(project).configure()
+            KotlinConventionManager(project, libs).configure()
+            GroovyConventionManager(project, libs).configure()
+            JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
+            BomManager(project, bomExtension).configure()
+            QualityManager(project, qualityExtension).apply()
         }
     }
+}
