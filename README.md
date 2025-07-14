@@ -4,44 +4,133 @@
 
 A Gradle convention plugin for developing Jenkins plugins with modern practices.
 
+# Purpose
+
+The Jenkins Gradle Convention Plugin simplifies and standardizes the development of Jenkins plugins using Gradle. It integrates Jenkins best practices, modern Gradle conventions, and idiomatic Kotlin DSL to provide a robust and developer-friendly build system.
+
+This plugin is designed for:
+
+Jenkins plugin developers looking to move beyond traditional Maven-based workflows.
+Gradle users seeking a streamlined and compliant Jenkins plugin development experience.
+
 ## Features
 
-- **Modern build system** - Uses the latest Gradle features including convention plugins and Kotlin DSL
-- **Dependency management** - First-class support for Jenkins Bill of Materials
-- **Best Practices** - Enforces Jenkins plugin development best practices
+- **Modern Build System**: Leverages the latest Gradle features, including configuration caching, build caching, and Kotlin DSL.
+- **Dependency Management**: First-class support for Jenkins Bill of Materials (BOM).
+- **Quality Tools Integration**: SpotBugs, PMD, Checkstyle, OWASP Dependency Check, and more.
+- **Code Style Enforcement**: Built-in support for Kotlin and Java code formatting via Spotless.
+- **Testing Enhancements**: PIT mutation testing, JaCoCo code coverage, and compatibility tests for Jenkins versions.
 
 This plugin builds upon the [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin) while adding modern Gradle practices and enhanced features.
 
-## Project Structure
+## How to Apply
 
-`convention-plugin` - Core plugin functionality
+To use the Jenkins Gradle Convention Plugin in your project, follow these steps:
 
-## How to use
+### Step 1: Add the Plugin to Your `build.gradle.kts`
 
-### 1. Publish the Convention Plugin to Maven Local
+Add the plugin to your Gradle project using the `plugins {}` block:
 
-```sh
-./gradlew :convention-plugin:publishToMavenLocal --no-daemon --no-configuration-cache
+```kotlin
+plugins {
+    id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "<latest-version>"
+}
 ```
 
-### 2. Build and Test the Consumer Jenkins Plugin
+Replace `<latest-version>` with the latest version of the plugin available on the Gradle Plugin Portal.
+
+### Step 2: Version Catalog Requirements
+
+In the root `settings.gradle.kts` of the project. Specify the version catalog:
+
+```kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        create("libs") {
+            from("io.github.aaravmahajanofficial:version-catalog:<latest-version>")
+        }
+    }
+}
+```
+
+Replace `<latest-version>` with the latest version of the plugin available on the GitHub Releases.
+
+### Step 3: Configure the Plugin
+
+The plugin provides a highly configurable DSL for Jenkins plugin development. Example configuration:
+
+```kotlin
+jenkinsConvention {
+    homePage = uri("https://wiki.jenkins-ci.org/display/JENKINS/YourPlugin")
+    githubUrl = uri("https://github.com/jenkinsci/your-plugin.git")
+    pluginLabels = listOf("security", "static-analysis")
+
+    developer {
+        id = "exampleDev"
+        name = "Example Developer"
+        website = uri("https://example.com")
+        roles = setOf("dev", "contributor")
+        email = "example@example.com"
+        organization = "Example Inc."
+    }
+
+    quality {
+        useSpotBugs = true
+        useDetekt = true
+    }
+
+    bom {
+        useCoreBom = true
+    }
+}
+```
+
+### Step 4: Run the Build
+
+Execute the following commands to build and test your Jenkins plugin:
 
 ```sh
-./gradlew :test-plugin:clean build check --no-configuration-cache --stacktrace
+./gradlew clean build --no-configuration-cache
 ```
 
 **Notes:**
-- Always run the `publishToMavenLocal` command after making changes to the convention plugin, so your consumer project picks up the latest version.
 - The `--no-configuration-cache` flag ensures a clean build and avoids issues when developing plugins.
 - The `--stacktrace` flag provides detailed error output for troubleshooting.
 
-## Style Guidelines
+## Configuration Options
 
-### Kotlin Style Guide
-- Follow the [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
-- Use the provided `.editorconfig` for consistent formatting
-- Use meaningful and descriptive names for classes, methods, variables
-- Keep methods small and focused on a single responsibility
+The plugin provides several extensions to customize your build:
+- **QualityExtension**: Configure code quality tools like SpotBugs, Detekt, PMD, etc.
+- **BomExtension**: Manage dependencies using Jenkins BOMs.
+- **PluginExtension**: Set plugin metadata, developers, licenses, and more.
+
+### Quality Tools Example
+
+```kotlin
+jenkinsConvention {
+    quality {
+        useSpotBugs = true
+        useDetekt = true
+        detekt {
+            autoCorrect = true
+        }
+    }
+}
+```
+
+### BOM Management Example
+
+```kotlin
+jenkinsConvention {
+    bom {
+        useCoreBom = true
+        useJacksonBom = true
+    }
+}
+```
 
 ## License
 
