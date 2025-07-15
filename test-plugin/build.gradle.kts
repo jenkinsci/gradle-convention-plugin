@@ -52,7 +52,7 @@ jenkinsConvention {
 dependencies {
     // Project specific BOM-managed dependencies
     // Non-BOM dependencies
-    implementation("org.eclipse.jgit:org.eclipse.jgit:6.8.0.202311291450-r")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:6.10.1.202505221210-r")
     implementation("org.codehaus.plexus:plexus-utils:3.6.0")
     implementation("org.iq80.snappy:snappy:0.5")
     compileOnly("com.intellij:annotations:12.0")
