@@ -56,6 +56,6 @@ dependencies {
     implementation("org.codehaus.plexus:plexus-utils:3.6.0")
     implementation("org.iq80.snappy:snappy:0.5")
     compileOnly("com.intellij:annotations:12.0")
-    testImplementation("org.eclipse.sisu:org.eclipse.sisu.plexus:0.0.0.M5")
+    testImplementation("org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.5")
     testImplementation("org.jmockit:jmockit:1.16")
 }
