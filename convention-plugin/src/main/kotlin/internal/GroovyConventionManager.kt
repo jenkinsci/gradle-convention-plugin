@@ -33,12 +33,12 @@ public class GroovyConventionManager constructor(
                 it.groovyOptions.encoding = "UTF-8"
                 it.groovyOptions.optimizationOptions?.put("indy", true)
                 it.options.release.set(JAVA_VERSION)
-                it.options.compilerArgs.addAll(listOf("-parameters", "-Xjsr305=strict"))
+                it.options.compilerArgs.addAll(listOf("-parameters"))
             }
 
             project.dependencies {
-                add("implementation", platform(libs.findLibrary("groovy-bom").get()))
-                add("implementation", libs.findLibrary("groovy").get())
+                add("compileOnly", platform(libs.findLibrary("groovy-bom").get()))
+                add("compileOnly", libs.findLibrary("groovy").get())
             }
         }
     }

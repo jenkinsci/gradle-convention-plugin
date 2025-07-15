@@ -32,8 +32,12 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             GradleVersionUtils.verifyGradleVersion()
 
             val pluginExtension =
-                objects.newInstance<PluginExtension>(project.name, project.provider { project.description })
-            extensions.add(PluginMetadata.EXTENSION_NAME, pluginExtension)
+                extensions.create(
+                    PluginMetadata.EXTENSION_NAME,
+                    PluginExtension::class.java,
+                    project.name,
+                    project.provider { project.description },
+                )
 
             val bomExtension = objects.newInstance<BomExtension>(libs)
             extensions.add("bom", bomExtension)
@@ -42,8 +46,13 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             extensions.add("quality", qualityExtension)
 
             JavaConventionManager(project).configure()
-            KotlinConventionManager(project, libs).configure()
-            GroovyConventionManager(project, libs).configure()
+            project.plugins.withId("org.jetbrains.kotlin.jvm") {
+                KotlinConventionManager(project, libs).configure()
+            }
+
+            project.plugins.withId("groovy") {
+                GroovyConventionManager(project, libs).configure()
+            }
             JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
             BomManager(project, bomExtension).configure()
             QualityManager(project, qualityExtension).apply()

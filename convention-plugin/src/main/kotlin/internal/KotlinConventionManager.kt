@@ -36,7 +36,7 @@ public class KotlinConventionManager(
         project.plugins.withType<KotlinPluginWrapper>().configureEach {
             project.configure<KotlinJvmProjectExtension> {
                 jvmToolchain(JAVA_VERSION)
-                explicitApi()
+//                explicitApi()
             }
 
             project.tasks.withType<KotlinCompile>().configureEach {
@@ -53,9 +53,9 @@ public class KotlinConventionManager(
             }
 
             project.dependencies {
-                add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-                add("implementation", libs.findLibrary("kotlin-stdlib").get())
-                add("implementation", libs.findLibrary("kotlin-reflect").get())
+                add("compileOnly", platform(libs.findLibrary("kotlin-bom").get()))
+                add("compileOnly", libs.findLibrary("kotlin-stdlib").get())
+                add("compileOnly", libs.findLibrary("kotlin-reflect").get())
 
                 add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
             }

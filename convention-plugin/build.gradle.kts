@@ -70,3 +70,7 @@ gradlePlugin {
         }
     }
 }
+
+tasks.register("publishToLocal") {
+    dependsOn("publishToMavenLocal")
+}

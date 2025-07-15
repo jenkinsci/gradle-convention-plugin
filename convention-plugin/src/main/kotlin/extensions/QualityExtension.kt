@@ -136,7 +136,7 @@ public open class CheckstyleExtension
                     providers,
                     ConfigurationConstants.CHECKSTYLE_ENABLED,
                     String::toBoolean,
-                ).orElse(true),
+                ).orElse(false),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
@@ -285,7 +285,7 @@ public open class SpotlessExtension
                     providers,
                     ConfigurationConstants.SPOTLESS_ENABLED,
                     String::toBoolean,
-                ).orElse(true),
+                ).orElse(false),
             )
     }
 

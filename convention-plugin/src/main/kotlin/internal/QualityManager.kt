@@ -242,10 +242,8 @@ public class QualityManager(
             buildUponDefaultConfig = true
             isIgnoreFailures = !qualityExtension.detekt.failOnViolation.get()
             source.setFrom(qualityExtension.detekt.source)
-            config.setFrom(listOfNotNull(qualityExtension.detekt.configFile.asFile.orNull))
-            baseline =
-                qualityExtension.detekt.baseline.orNull
-                    ?.asFile
+            config.setFrom(resolveConfigFile("detekt", "detekt.yml").asFile)
+            baseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
             parallel = true
         }
         project.tasks.withType<Detekt>().configureEach { detekt ->

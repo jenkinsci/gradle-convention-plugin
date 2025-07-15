@@ -1,0 +1,30 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id "org.gradle.toolchains.foojay-resolver-convention" version "1.0.0"
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+
+        maven {
+            name = "Jenkins"
+            url = uri("https://repo.jenkins-ci.org/public/")
+        }
+    }
+
+    versionCatalogs {
+        libs {
+            from("io.github.aaravmahajanofficial:version-catalog:0.1.2-alpha")
+        }
+    }
+}
+
+rootProject.name = "groovy-plugin"
