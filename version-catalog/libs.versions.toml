@@ -25,7 +25,7 @@ mockito-bom = "5.18.0"
 testcontainers-bom = "1.21.3"
 
 # Quality
-spotbugs = "6.2.1"
+spotbugs = "6.2.2"
 spotbugsTool = "4.9.3"
 detekt = "1.23.8"
 spotless = "7.0.4"
