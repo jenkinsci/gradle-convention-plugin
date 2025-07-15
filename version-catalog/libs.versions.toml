@@ -52,6 +52,10 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
+# Groovy
+groovy-bom = { module = "org.apache.groovy:groovy-bom", version.ref = "groovy-bom" }
+groovy = { module = "org.apache.groovy:groovy", version.ref = "groovy-bom" }
+
 # Jenkins
 jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
 jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }

@@ -123,29 +123,31 @@ private fun gradleProperty(
     key: String,
 ) = providers.gradleProperty(key)
 
-public open class CheckstyleExtension(
-    libs: VersionCatalog,
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(
-                providers,
-                ConfigurationConstants.CHECKSTYLE_ENABLED,
-                String::toBoolean,
-            ).orElse(true),
-        )
-    public val toolVersion: Property<String> =
-        objects.property<String>().convention(
-            gradleProperty(
-                providers,
-                ConfigurationConstants.CHECKSTYLE_VERSION,
-            ).orElse(libs.findVersion("checkstyle").get().requiredVersion),
-        )
-    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val configFile: RegularFileProperty = objects.fileProperty()
-}
+public open class CheckstyleExtension
+    @Inject
+    constructor(
+        libs: VersionCatalog,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    ConfigurationConstants.CHECKSTYLE_ENABLED,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        public val toolVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(
+                    providers,
+                    ConfigurationConstants.CHECKSTYLE_VERSION,
+                ).orElse(libs.findVersion("checkstyle").get().requiredVersion),
+            )
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val configFile: RegularFileProperty = objects.fileProperty()
+    }
 
 public open class SpotbugsExtension
     @Inject
@@ -171,6 +173,7 @@ public open class SpotbugsExtension
             )
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
+        public val failOnError: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val excludeFilterFile: RegularFileProperty = objects.fileProperty()
     }
 
@@ -406,7 +409,7 @@ public open class EslintExtension
                     providers,
                     ConfigurationConstants.ESLINT_ENABLED,
                     String::toBoolean,
-                ).orElse(true),
+                ).orElse(false),
             )
         public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val configFile: RegularFileProperty = objects.fileProperty()
