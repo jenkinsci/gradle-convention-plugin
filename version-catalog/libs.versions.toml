@@ -42,7 +42,7 @@ codenarc = "3.6.0"
 node-gradle = "7.1.0"
 
 # Publishing
-maven-gradle-publish-plugin = "0.33.0"
+maven-gradle-publish-plugin = "0.34.0"
 
 [libraries]
 # Kotlin and Gradle
