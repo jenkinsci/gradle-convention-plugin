@@ -106,11 +106,6 @@ public class QualityManager(
 
         project.configure<CodeNarcExtension> {
             toolVersion = qualityExtension.codenarc.toolVersion.get()
-            configFile =
-                resolveConfigFile(
-                    toolName = "codenarc",
-                    "rules.groovy",
-                ).asFile
             isIgnoreFailures = !qualityExtension.codenarc.failOnViolation.get()
         }
         project.tasks.withType<CodeNarc>().configureEach { task ->
@@ -119,15 +114,15 @@ public class QualityManager(
                 it.xml.required.set(true)
                 it.html.required.set(true)
             }
-//            task.configFile =
-//                resolveConfigFile(
-//                    toolName = "codenarc",
-//                    if (task.name.contains("Test", ignoreCase = true)) {
-//                        "rules-test.groovy"
-//                    } else {
-//                        "rules.groovy"
-//                    },
-//                ).asFile
+            task.configFile =
+                resolveConfigFile(
+                    toolName = "codenarc",
+                    if (task.name.contains("Test", ignoreCase = true)) {
+                        "rules-test.groovy"
+                    } else {
+                        "rules.groovy"
+                    },
+                ).asFile
         }
     }
 
@@ -140,6 +135,7 @@ public class QualityManager(
             toolVersion.set(qualityExtension.spotbugs.toolVersion.get())
             effort.set(qualityExtension.spotbugs.effortLevel.get())
             reportLevel.set(qualityExtension.spotbugs.reportLevel.get())
+            ignoreFailures.set(!qualityExtension.spotbugs.failOnError.get())
             excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml").asFile)
         }
 
@@ -418,22 +414,27 @@ public class QualityManager(
             group = "Verification"
             description = "Run ESLint on frontend sources."
 
+            dependsOn("npmInstall")
+
             val configFile =
                 qualityExtension.eslint.configFile.orNull
                     ?.asFile
                     ?.absolutePath
 
-            val baseArgs = mutableListOf("run", "lint")
-
-            if (qualityExtension.eslint.autofix.get()) {
-                baseArgs.add("--fix")
+            doFirst {
+                val argsList = mutableListOf("run", "lint")
+                if (qualityExtension.eslint.autofix.get()) argsList += "--fix"
+                configFile?.let { argsList += listOf("--config", it) }
+                args.set(argsList)
             }
-
-            configFile?.let {
-                baseArgs.addAll(listOf("--config", it))
-            }
-
-            args.set(baseArgs)
+            inputs.files(
+                project.fileTree("src/main/js"),
+                project.file("src/main/ts"),
+                project.file("src/main/webapp"),
+                project.file("package.json"),
+                project.file("package-lock.json"),
+            )
+            outputs.dir(project.file("build/eslint-reports"))
         }
     }
 
@@ -450,7 +451,7 @@ public class QualityManager(
     private fun hasFrontendCode(): Boolean {
         if (project.file("package.json").exists()) return true
 
-        val frontendDirs = listOf("src/main/js", "src/main/ts")
+        val frontendDirs = listOf("src/main/js", "src/main/ts", "src/main/webapp")
         return frontendDirs.any { project.fileTree(it).files.isNotEmpty() }
     }
 

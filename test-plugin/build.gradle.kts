@@ -53,7 +53,7 @@ dependencies {
     // Project specific BOM-managed dependencies
     // Non-BOM dependencies
     implementation("org.eclipse.jgit:org.eclipse.jgit:6.8.0.202311291450-r")
-    implementation("org.codehaus.plexus:plexus-utils:3.5.1")
+    implementation("org.codehaus.plexus:plexus-utils:3.6.0")
     implementation("org.iq80.snappy:snappy:0.5")
     compileOnly("com.intellij:annotations:12.0")
     testImplementation("org.eclipse.sisu:org.eclipse.sisu.plexus:0.0.0.M5")
