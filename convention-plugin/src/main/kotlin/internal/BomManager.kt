@@ -42,7 +42,7 @@ public class BomManager(
         testOnly: Boolean = false,
     ) {
         if (enabled.get()) {
-            val platformDependency = platform("$coordinates:${version.get()}")
+            val platformDependency = enforcedPlatform("$coordinates:${version.get()}")
             if (!testOnly) {
                 add("implementation", platformDependency)
             }
@@ -67,6 +67,9 @@ public class BomManager(
         applyBomIfEnabled(bomExtension.useJettyBom, BOMCoordinates.JETTY_BOM, bomExtension.jettyBomVersion)
         applyBomIfEnabled(bomExtension.useNettyBom, BOMCoordinates.NETTY_BOM, bomExtension.nettyBomVersion)
         applyBomIfEnabled(bomExtension.useSlf4jBom, BOMCoordinates.SLF4J_BOM, bomExtension.slf4jBomVersion)
+        applyBomIfEnabled(bomExtension.useGuavaBom, BOMCoordinates.GUAVA_BOOM, bomExtension.guavaBomVersion)
+        applyBomIfEnabled(bomExtension.useLog4jBom, BOMCoordinates.LOG4J_BOM, bomExtension.log4jBomVersion)
+        applyBomIfEnabled(bomExtension.useVertxBom, BOMCoordinates.VERTX_BOM, bomExtension.vertxBomVersion)
     }
 
     private fun DependencyHandler.configureTestingBom() {
@@ -92,7 +95,7 @@ public class BomManager(
 
     private fun DependencyHandler.configureCustomBoms() {
         bomExtension.customBoms.get().forEach { (coordinates, version) ->
-            val platformDependency = platform("$coordinates:$version")
+            val platformDependency = enforcedPlatform("$coordinates:$version")
             add("implementation", platformDependency)
             add("testImplementation", platformDependency)
         }
@@ -106,6 +109,9 @@ public class BomManager(
         const val JETTY_BOM = "org.eclipse.jetty:jetty-bom"
         const val SLF4J_BOM = "org.slf4j:slf4j-bom"
         const val NETTY_BOM = "io.netty:netty-bom"
+        const val GUAVA_BOOM = "com.google.guava:guava-bom"
+        const val LOG4J_BOM = "org.apache.logging.log4j:log4j-bom"
+        const val VERTX_BOM = "io.vertx:vertx-stack-depchain"
         const val MOCKITO_BOM = "org.mockito:mockito-bom"
         const val TESTCONTAINERS_BOM = "org.testcontainers:testcontainers-bom"
         const val GROOVY_BOM = "org.apache.groovy:groovy-bom"
