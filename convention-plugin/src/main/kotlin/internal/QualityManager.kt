@@ -280,7 +280,7 @@ public class QualityManager(
             java {
                 it.target("src/*/java/**/*.java")
                 it.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
-                it.googleJavaFormat()
+                it.palantirJavaFormat()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
                 it.removeUnusedImports()

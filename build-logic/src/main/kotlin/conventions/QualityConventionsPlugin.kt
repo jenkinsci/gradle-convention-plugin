@@ -64,7 +64,7 @@ private fun Project.configureSpotless() {
             )
         }
         java {
-            googleJavaFormat()
+            palantirJavaFormat()
             target("src/*/java/**/*.java")
             targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
             trimTrailingWhitespace()
