@@ -22,7 +22,7 @@ import extensions.QualityExtension
 import internal.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.newInstance
+import org.gradle.kotlin.dsl.create
 import utils.GradleVersionUtils
 import utils.libs
 
@@ -39,11 +39,10 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     project.provider { project.description },
                 )
 
-            val bomExtension = objects.newInstance<BomExtension>(libs)
-            extensions.add("bom", bomExtension)
+            val bomExtension: BomExtension = extensions.create<BomExtension>(PluginMetadata.BOM_EXTENSION, libs)
 
-            val qualityExtension = objects.newInstance<QualityExtension>(libs)
-            extensions.add("quality", qualityExtension)
+            val qualityExtension: QualityExtension =
+                extensions.create<QualityExtension>(PluginMetadata.QUALITY_EXTENSION, libs)
 
             JavaConventionManager(project).configure()
             project.plugins.withId("org.jetbrains.kotlin.jvm") {

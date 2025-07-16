@@ -26,7 +26,7 @@ public object GradleVersionUtils {
 
         if (currentVersion < requiredVersion) {
             throw GradleException(
-                "${PluginMetadata.DISPLAY_NAME} requires Gradle ${PluginMetadata.VERSION} or higher. " +
+                "${PluginMetadata.DISPLAY_NAME} requires Gradle ${PluginMetadata.MIN_GRADLE_VERSION} or higher. " +
                     "Current version is ${currentVersion.version}. Please upgrade your Gradle version.",
             )
         }
