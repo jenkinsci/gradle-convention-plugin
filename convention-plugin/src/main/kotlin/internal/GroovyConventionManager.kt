@@ -23,7 +23,7 @@ import org.gradle.kotlin.dsl.withType
 
 private const val JAVA_VERSION = 17
 
-public class GroovyConventionManager constructor(
+public class GroovyConventionManager(
     private val project: Project,
     private val libs: VersionCatalog,
 ) {

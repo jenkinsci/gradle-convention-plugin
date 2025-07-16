@@ -152,6 +152,47 @@ public open class BomExtension
                 ),
             )
 
+        public val useGuavaBom: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    ConfigurationConstants.USE_GUAVA_VERSION,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        public val guavaBomVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(ConfigurationConstants.GUAVA_BOM_VERSION).orElse(
+                    versionFromCatalogOrFail("guava-bom"),
+                ),
+            )
+        public val useLog4jBom: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    ConfigurationConstants.USE_LOG4J_VERSION,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        public val log4jBomVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(ConfigurationConstants.LOG4J_BOM_VERSION).orElse(
+                    versionFromCatalogOrFail("apache-log4j-bom"),
+                ),
+            )
+
+        public val useVertxBom: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    ConfigurationConstants.USE_VERTX_VERSION,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        public val vertxBomVersion: Property<String> =
+            objects.property<String>().convention(
+                gradleProperty(ConfigurationConstants.VERTX_BOM_VERSION).orElse(
+                    versionFromCatalogOrFail("vertx-bom"),
+                ),
+            )
+
         // Testing BOM
         public val useJunitBom: Property<Boolean> =
             objects.property<Boolean>().convention(
