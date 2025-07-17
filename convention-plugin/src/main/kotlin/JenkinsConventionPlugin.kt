@@ -16,13 +16,10 @@
 @file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports")
 
 import constants.PluginMetadata
-import extensions.BomExtension
 import extensions.PluginExtension
-import extensions.QualityExtension
 import internal.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.create
 import utils.GradleVersionUtils
 import utils.libs
 
@@ -37,24 +34,28 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     PluginExtension::class.java,
                     project.name,
                     project.provider { project.description },
+                    libs,
                 )
-
-            val bomExtension: BomExtension = extensions.create<BomExtension>(PluginMetadata.BOM_EXTENSION, libs)
-
-            val qualityExtension: QualityExtension =
-                extensions.create<QualityExtension>(PluginMetadata.QUALITY_EXTENSION, libs)
 
             JavaConventionManager(project).configure()
             project.plugins.withId("org.jetbrains.kotlin.jvm") {
                 KotlinConventionManager(project, libs).configure()
             }
-
             project.plugins.withId("groovy") {
                 GroovyConventionManager(project, libs).configure()
             }
+
             JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
-            BomManager(project, bomExtension).configure()
-            QualityManager(project, qualityExtension).apply()
+
+            project.afterEvaluate {
+                try {
+                    BomManager(project, pluginExtension).configure()
+                    BundleManager(project, pluginExtension).configure()
+                    QualityManager(project, pluginExtension).apply()
+                } catch (e: IllegalStateException) {
+                    error("Failed to configure Jenkins convention plugin: ${e.message}")
+                }
+            }
         }
     }
 }
