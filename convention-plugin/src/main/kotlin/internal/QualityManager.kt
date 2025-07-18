@@ -106,8 +106,10 @@ public class QualityManager(
     }
 
     private fun configureCodenarc() {
+        val hasGroovy = project.plugins.hasPlugin("groovy")
         if (!pluginExtension.qualityExtension.codenarc.enabled
-                .getOrElse(false)
+                .getOrElse(false) ||
+            !hasGroovy
         ) {
             return
         }

@@ -447,7 +447,7 @@ public open class CodenarcExtension
                     providers,
                     ConfigurationConstants.CODENARC_ENABLED,
                     String::toBoolean,
-                ).orElse(true),
+                ).orElse(false),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
