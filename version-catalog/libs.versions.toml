@@ -10,7 +10,7 @@ plugin-publish = "1.3.1"
 jenkins-bom = "5015.vb_52d36583443"
 jenkins-core = "2.519"
 jenkins-stapler = "1997.v356365fb_929e"
-jenkins-gradle-jpi2 = "0.54.0"
+jenkins-gradle-jpi2 = "0.55.0"
 
 # Ecosystem BOMs
 groovy-bom = "4.0.27"
