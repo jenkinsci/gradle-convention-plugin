@@ -21,7 +21,7 @@ import DeveloperExtension
 import DevelopersExtension
 import constants.ConfigurationConstants
 import constants.UrlConstants
-import model.JenkinsPluginDependency
+import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.*
 import org.gradle.kotlin.dsl.listProperty
@@ -38,29 +38,35 @@ public open class PluginExtension
         private val providers: ProviderFactory,
         projectName: String,
         projectDescription: Provider<String>,
+        libs: VersionCatalog,
     ) {
-        private fun <T : Any> gradleProperty(
-            key: String,
-            converter: (String) -> T,
-        ): Provider<T> = providers.gradleProperty(key).map(converter)
+        public val bomExtension: BomExtension = objects.newInstance<BomExtension>(libs)
 
-        private fun gradleProperty(key: String) = providers.gradleProperty(key)
+        public val qualityExtension: QualityExtension = objects.newInstance<QualityExtension>(libs)
+
+        public fun bom(action: BomExtension.() -> Unit) {
+            bomExtension.apply(action)
+        }
+
+        public fun quality(action: QualityExtension.() -> Unit) {
+            qualityExtension.apply(action)
+        }
 
         public val jenkinsVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(
                     ConfigurationConstants.JENKINS_VERSION,
-                ).orElse("2.504.3"),
+                ).orElse(libs.findVersion("jenkins-core").get().requiredVersion),
             )
 
-        public val pluginId: Property<String> =
+        public val artifactId: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.PLUGIN_ID).orElse(
                     projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
                 ),
             )
 
-        public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
+        public val pluginId: Property<String> = objects.property<String>().convention(artifactId)
 
         public val groupId: Property<String> =
             objects.property<String>().convention(
@@ -107,14 +113,6 @@ public open class PluginExtension
 
         public val githubUrl: Property<URI> = objects.property<URI>()
 
-        public val pluginDevelopers: ListProperty<DeveloperExtension> =
-            objects
-                .listProperty<DeveloperExtension>()
-
-        public val pluginLicenses: ListProperty<LicenseExtension> = objects.listProperty<LicenseExtension>()
-
-        public val pluginType: Property<PluginType> = objects.property<PluginType>().convention(PluginType.MISC)
-
         public val generateTests: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
@@ -145,23 +143,19 @@ public open class PluginExtension
                     ),
                 )
 
-        public val pluginDependencies: ListProperty<JenkinsPluginDependency> =
-            objects.listProperty<JenkinsPluginDependency>()
-
         public val pluginLabels: ListProperty<String> = objects.listProperty<String>().convention(emptySet())
 
-        public enum class PluginType {
-            BUILD,
-            SCM,
-            NOTIFICATION,
-            DEPLOYMENT,
-            SECURITY,
-            PIPELINE,
-            TESTING,
-            INTEGRATION,
-            ADMINISTRATION,
-            MISC,
-        }
+//        public val pluginBundles: BundleExtension = objects.newInstance<BundleExtension>()
+//
+//        public fun bundles(action: BundleExtension.() -> Unit) {
+//            pluginBundles.apply(action)
+//        }
+
+        public val pluginDevelopers: ListProperty<DeveloperExtension> =
+            objects
+                .listProperty<DeveloperExtension>()
+
+        public val pluginLicenses: ListProperty<LicenseExtension> = objects.listProperty<LicenseExtension>()
 
         public fun developers(configure: DevelopersExtension.() -> Unit) {
             DevelopersExtension(objects, pluginDevelopers).apply(configure)
@@ -171,21 +165,12 @@ public open class PluginExtension
             LicensesExtension(objects, pluginLicenses).apply(configure)
         }
 
-        public fun dependency(
-            pluginId: String,
-            action: JenkinsPluginDependency.() -> Unit,
-        ) {
-            val dependency =
-                objects.newInstance<JenkinsPluginDependency>().apply {
-                    this.pluginId.set(pluginId)
-                }
-            action(dependency)
-            pluginDependencies.add(dependency)
-        }
+        private fun <T : Any> gradleProperty(
+            key: String,
+            converter: (String) -> T,
+        ): Provider<T> = providers.gradleProperty(key).map(converter)
 
-        public fun dependency(configure: JenkinsPluginDependency.() -> Unit) {
-            pluginDependencies.add(objects.newInstance<JenkinsPluginDependency>().apply(configure))
-        }
+        private fun gradleProperty(key: String) = providers.gradleProperty(key)
 
         public fun validate() {
             require(githubUrl.isPresent && githubUrl.toString().isNotBlank()) { "githubUrl must be set" }

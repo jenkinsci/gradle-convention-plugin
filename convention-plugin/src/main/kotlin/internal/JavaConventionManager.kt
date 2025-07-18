@@ -29,7 +29,7 @@ public class JavaConventionManager(
     private val project: Project,
 ) {
     public fun configure() {
-        project.pluginManager.apply("java-library")
+        project.pluginManager.apply("java")
 
         project.configure<JavaPluginExtension> {
             toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))

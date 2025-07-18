@@ -27,7 +27,7 @@ import com.github.gradle.node.npm.task.NpmTask
 import com.github.spotbugs.snom.SpotBugsExtension
 import com.github.spotbugs.snom.SpotBugsPlugin
 import com.github.spotbugs.snom.SpotBugsTask
-import extensions.QualityExtension
+import extensions.PluginExtension
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
 import io.gitlab.arturbosch.detekt.Detekt
@@ -56,36 +56,42 @@ import org.owasp.dependencycheck.gradle.tasks.Analyze
 
 public class QualityManager(
     private val project: Project,
-    private val qualityExtension: QualityExtension,
+    private val pluginExtension: PluginExtension,
 ) {
     public fun apply() {
-        project.afterEvaluate {
-            configureSpotless()
-            configureCheckstyle()
-            configureCodenarc()
-            configureSpotBugs()
-            configurePmd()
-            configureJacoco()
-            configureDetekt()
-            configurePitMutation()
-            configureKoverExtension()
-            configureOwaspDependencyCheck()
-            configureGradleVersionPlugin()
-            configureEsLint()
-            configureDokka()
-            configureCheckTask()
-        }
+        configureSpotless()
+        configureCheckstyle()
+        configureCodenarc()
+        configureSpotBugs()
+        configurePmd()
+        configureJacoco()
+        configureDetekt()
+        configurePitMutation()
+        configureKoverExtension()
+        configureOwaspDependencyCheck()
+        configureGradleVersionPlugin()
+        configureEsLint()
+        configureDokka()
+        configureCheckTask()
     }
 
     private fun configureCheckstyle() {
-        if (!qualityExtension.checkstyle.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.checkstyle.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(CheckstylePlugin::class.java)
 
         project.configure<CheckstyleExtension> {
-            toolVersion = qualityExtension.checkstyle.toolVersion.get()
+            toolVersion =
+                pluginExtension.qualityExtension.checkstyle.toolVersion
+                    .get()
             configFile = resolveConfigFile("checkstyle", "checkstyle.xml").asFile
-            isIgnoreFailures = !qualityExtension.checkstyle.failOnViolation.get()
+            isIgnoreFailures =
+                !pluginExtension.qualityExtension.checkstyle.failOnViolation
+                    .get()
 
             resolveConfigFile("checkstyle", "suppressions.xml")
         }
@@ -100,13 +106,21 @@ public class QualityManager(
     }
 
     private fun configureCodenarc() {
-        if (!qualityExtension.codenarc.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.codenarc.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(CodeNarcPlugin::class.java)
 
         project.configure<CodeNarcExtension> {
-            toolVersion = qualityExtension.codenarc.toolVersion.get()
-            isIgnoreFailures = !qualityExtension.codenarc.failOnViolation.get()
+            toolVersion =
+                pluginExtension.qualityExtension.codenarc.toolVersion
+                    .get()
+            isIgnoreFailures =
+                !pluginExtension.qualityExtension.codenarc.failOnViolation
+                    .get()
         }
         project.tasks.withType<CodeNarc>().configureEach { task ->
             task.group = "Verification"
@@ -127,15 +141,31 @@ public class QualityManager(
     }
 
     private fun configureSpotBugs() {
-        if (!qualityExtension.spotbugs.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.spotbugs.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(SpotBugsPlugin::class.java)
 
         project.configure<SpotBugsExtension> {
-            toolVersion.set(qualityExtension.spotbugs.toolVersion.get())
-            effort.set(qualityExtension.spotbugs.effortLevel.get())
-            reportLevel.set(qualityExtension.spotbugs.reportLevel.get())
-            ignoreFailures.set(!qualityExtension.spotbugs.failOnError.get())
+            toolVersion.set(
+                pluginExtension.qualityExtension.spotbugs.toolVersion
+                    .get(),
+            )
+            effort.set(
+                pluginExtension.qualityExtension.spotbugs.effortLevel
+                    .get(),
+            )
+            reportLevel.set(
+                pluginExtension.qualityExtension.spotbugs.reportLevel
+                    .get(),
+            )
+            ignoreFailures.set(
+                !pluginExtension.qualityExtension.spotbugs.failOnError
+                    .get(),
+            )
             excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml").asFile)
         }
 
@@ -153,17 +183,27 @@ public class QualityManager(
     }
 
     private fun configurePmd() {
-        if (!qualityExtension.pmd.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.pmd.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(PmdPlugin::class.java)
 
         project.configure<PmdExtension> {
-            toolVersion = qualityExtension.pmd.toolVersion.get()
-            qualityExtension.pmd.ruleSetFiles.orNull?.let {
+            toolVersion =
+                pluginExtension.qualityExtension.pmd.toolVersion
+                    .get()
+            pluginExtension.qualityExtension.pmd.ruleSetFiles.orNull?.let {
                 ruleSetFiles = project.files(it.asFile)
             }
-            isConsoleOutput = qualityExtension.pmd.consoleOutput.get()
-            isIgnoreFailures = !qualityExtension.pmd.failOnViolation.get()
+            isConsoleOutput =
+                pluginExtension.qualityExtension.pmd.consoleOutput
+                    .get()
+            isIgnoreFailures =
+                !pluginExtension.qualityExtension.pmd.failOnViolation
+                    .get()
         }
         project.tasks.withType<Pmd>().configureEach { task ->
             task.group = "Verification"
@@ -172,7 +212,9 @@ public class QualityManager(
                 it.html.required.set(true)
             }
         }
-        if (qualityExtension.pmd.enableCPD.getOrElse(false)) {
+        if (pluginExtension.qualityExtension.pmd.enableCPD
+                .getOrElse(false)
+        ) {
             project.tasks.register("cpdCheck") {
                 it.group = "Verification"
                 it.description = "Run CPD copy-paste-detection"
@@ -183,12 +225,19 @@ public class QualityManager(
 
     private fun configureJacoco() {
         val hasJava = project.plugins.hasPlugin("java") || project.plugins.hasPlugin("java-library")
-        if (!qualityExtension.jacoco.enabled.getOrElse(false) || !hasJava) return
+        if (!pluginExtension.qualityExtension.jacoco.enabled
+                .getOrElse(false) ||
+            !hasJava
+        ) {
+            return
+        }
 
         project.pluginManager.apply(JacocoPlugin::class.java)
 
         project.configure<JacocoPluginExtension> {
-            toolVersion = qualityExtension.jacoco.toolVersion.get()
+            toolVersion =
+                pluginExtension.qualityExtension.jacoco.toolVersion
+                    .get()
         }
         project.tasks.withType<Test>().configureEach { t ->
             t.finalizedBy("jacocoTestReport")
@@ -201,7 +250,9 @@ public class QualityManager(
                 it.csv.required.set(false)
             }
 
-            val allExcludes = qualityExtension.jacoco.excludes.get()
+            val allExcludes =
+                pluginExtension.qualityExtension.jacoco.excludes
+                    .get()
             val classDirectories =
                 project
                     .fileTree(
@@ -217,12 +268,14 @@ public class QualityManager(
             t.dependsOn("jacocoTestReport")
             t.violationRules { rules ->
                 rules.rule { rule ->
-                    rule.excludes = qualityExtension.jacoco.excludes.get()
+                    rule.excludes =
+                        pluginExtension.qualityExtension.jacoco.excludes
+                            .get()
                     rule.limit {
                         it.counter = "LINE"
                         it.value = "COVEREDRATIO"
                         it.minimum =
-                            qualityExtension.jacoco.minimumCodeCoverage
+                            pluginExtension.qualityExtension.jacoco.minimumCodeCoverage
                                 .get()
                                 .toBigDecimal()
                     }
@@ -232,16 +285,26 @@ public class QualityManager(
     }
 
     private fun configureDetekt() {
-        if (!qualityExtension.detekt.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.detekt.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(DetektPlugin::class.java)
 
         project.configure<DetektExtension> {
-            toolVersion = qualityExtension.detekt.toolVersion.get()
-            autoCorrect = qualityExtension.detekt.autoCorrect.get()
+            toolVersion =
+                pluginExtension.qualityExtension.detekt.toolVersion
+                    .get()
+            autoCorrect =
+                pluginExtension.qualityExtension.detekt.autoCorrect
+                    .get()
             buildUponDefaultConfig = true
-            isIgnoreFailures = !qualityExtension.detekt.failOnViolation.get()
-            source.setFrom(qualityExtension.detekt.source)
+            isIgnoreFailures =
+                !pluginExtension.qualityExtension.detekt.failOnViolation
+                    .get()
+            source.setFrom(pluginExtension.qualityExtension.detekt.source)
             config.setFrom(resolveConfigFile("detekt", "detekt.yml").asFile)
             baseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
             parallel = true
@@ -256,7 +319,11 @@ public class QualityManager(
     }
 
     private fun configureSpotless() {
-        if (!qualityExtension.spotless.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.spotless.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(SpotlessPlugin::class.java)
 
@@ -280,7 +347,7 @@ public class QualityManager(
             java {
                 it.target("src/*/java/**/*.java")
                 it.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
-                it.googleJavaFormat()
+                it.palantirJavaFormat()
                 it.trimTrailingWhitespace()
                 it.endWithNewline()
                 it.removeUnusedImports()
@@ -318,48 +385,69 @@ public class QualityManager(
     }
 
     private fun configureOwaspDependencyCheck() {
-        if (!qualityExtension.owaspDependencyCheck.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.owaspDependencyCheck.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         // Apply plugin immediately if not already applied
         project.pluginManager.apply(DependencyCheckPlugin::class.java)
 
         project.configure<DependencyCheckExtension> {
-            failBuildOnCVSS = qualityExtension.owaspDependencyCheck.failOnCvss.get()
-            formats = qualityExtension.owaspDependencyCheck.formats.get()
+            failBuildOnCVSS =
+                pluginExtension.qualityExtension.owaspDependencyCheck.failOnCvss
+                    .get()
+            formats =
+                pluginExtension.qualityExtension.owaspDependencyCheck.formats
+                    .get()
             suppressionFiles =
-                qualityExtension.owaspDependencyCheck.suppressionFiles
+                pluginExtension.qualityExtension.owaspDependencyCheck.suppressionFiles
                     .get()
                     .map { it.asFile.absolutePath }
             outputDirectory =
-                qualityExtension.owaspDependencyCheck.outputDirectory
+                pluginExtension.qualityExtension.owaspDependencyCheck.outputDirectory
                     .get()
                     .asFile.absolutePath
             data.directory =
-                qualityExtension.owaspDependencyCheck.dataDirectory
+                pluginExtension.qualityExtension.owaspDependencyCheck.dataDirectory
                     .get()
                     .asFile.absolutePath
-            scanConfigurations = qualityExtension.owaspDependencyCheck.scanConfigurations.get()
+            scanConfigurations =
+                pluginExtension.qualityExtension.owaspDependencyCheck.scanConfigurations
+                    .get()
         }
     }
 
     private fun configurePitMutation() {
-        if (!qualityExtension.pitest.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.pitest.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(PitestPlugin::class.java)
 
         project.configure<PitestPluginExtension> {
-            threads.set(qualityExtension.pitest.threads)
-            pitestVersion.set(qualityExtension.pitest.pitVersion.get())
-            targetClasses.set(qualityExtension.pitest.targetClasses)
-            excludedClasses.set(qualityExtension.pitest.excludedClasses)
-            mutationThreshold.set(qualityExtension.pitest.mutationThreshold)
-            outputFormats.set(qualityExtension.pitest.outputFormats)
-            mutators.set(qualityExtension.pitest.mutators)
+            threads.set(pluginExtension.qualityExtension.pitest.threads)
+            pitestVersion.set(
+                pluginExtension.qualityExtension.pitest.pitVersion
+                    .get(),
+            )
+            targetClasses.set(pluginExtension.qualityExtension.pitest.targetClasses)
+            excludedClasses.set(pluginExtension.qualityExtension.pitest.excludedClasses)
+            mutationThreshold.set(pluginExtension.qualityExtension.pitest.mutationThreshold)
+            outputFormats.set(pluginExtension.qualityExtension.pitest.outputFormats)
+            mutators.set(pluginExtension.qualityExtension.pitest.mutators)
         }
     }
 
     private fun configureGradleVersionPlugin() {
-        if (!qualityExtension.versions.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.versions.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(VersionsPlugin::class.java)
 
@@ -378,7 +466,11 @@ public class QualityManager(
     }
 
     private fun configureKoverExtension() {
-        if (!qualityExtension.kover.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.kover.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(KoverGradlePlugin::class.java)
 
@@ -395,7 +487,7 @@ public class QualityManager(
                 rep.verify { verify ->
                     verify.rule { rule ->
                         rule.bound {
-                            it.minValue.set(qualityExtension.kover.coverageThreshold)
+                            it.minValue.set(pluginExtension.qualityExtension.kover.coverageThreshold)
                         }
                     }
                 }
@@ -404,7 +496,12 @@ public class QualityManager(
     }
 
     private fun configureEsLint() {
-        if (!qualityExtension.eslint.enabled.getOrElse(false) || !hasFrontendCode()) return
+        if (!pluginExtension.qualityExtension.eslint.enabled
+                .getOrElse(false) ||
+            !hasFrontendCode()
+        ) {
+            return
+        }
 
         project.pluginManager.apply(NodePlugin::class.java)
 
@@ -415,13 +512,17 @@ public class QualityManager(
             dependsOn("npmInstall")
 
             val configFile =
-                qualityExtension.eslint.configFile.orNull
+                pluginExtension.qualityExtension.eslint.configFile.orNull
                     ?.asFile
                     ?.absolutePath
 
             doFirst {
                 val argsList = mutableListOf("run", "lint")
-                if (qualityExtension.eslint.autofix.get()) argsList += "--fix"
+                if (pluginExtension.qualityExtension.eslint.autofix
+                        .get()
+                ) {
+                    argsList += "--fix"
+                }
                 configFile?.let { argsList += listOf("--config", it) }
                 args.set(argsList)
             }
@@ -437,12 +538,16 @@ public class QualityManager(
     }
 
     private fun configureDokka() {
-        if (!qualityExtension.dokka.enabled.getOrElse(false)) return
+        if (!pluginExtension.qualityExtension.dokka.enabled
+                .getOrElse(false)
+        ) {
+            return
+        }
 
         project.pluginManager.apply(DokkaPlugin::class.java)
 
         project.tasks.named("dokkaHtml").configure { task ->
-            task.outputs.dir(qualityExtension.dokka.outputDirectory)
+            task.outputs.dir(pluginExtension.qualityExtension.dokka.outputDirectory)
         }
     }
 
@@ -456,18 +561,39 @@ public class QualityManager(
     private fun configureCheckTask() {
         project.tasks.named("check").configure {
             listOf(
-                qualityExtension.checkstyle.enabled.getOrElse(false) to project.tasks.withType<Checkstyle>(),
-                qualityExtension.codenarc.enabled.getOrElse(false) to project.tasks.withType<CodeNarc>(),
-                qualityExtension.spotbugs.enabled.getOrElse(false) to project.tasks.withType<SpotBugsTask>(),
-                qualityExtension.pmd.enabled.getOrElse(false) to project.tasks.withType<Pmd>(),
-                qualityExtension.spotless.enabled.getOrElse(false) to project.tasks.withType<SpotlessCheck>(),
-                qualityExtension.detekt.enabled.getOrElse(false) to project.tasks.withType<Detekt>(),
-                qualityExtension.owaspDependencyCheck.enabled.getOrElse(false) to project.tasks.withType<Analyze>(),
-                (qualityExtension.jacoco.enabled.getOrElse(false)) to
+                pluginExtension.qualityExtension.checkstyle.enabled
+                    .getOrElse(false) to
+                    project.tasks.withType<Checkstyle>(),
+                pluginExtension.qualityExtension.codenarc.enabled.getOrElse(
+                    false,
+                ) to project.tasks.withType<CodeNarc>(),
+                pluginExtension.qualityExtension.spotbugs.enabled
+                    .getOrElse(false) to
+                    project.tasks.withType<SpotBugsTask>(),
+                pluginExtension.qualityExtension.pmd.enabled
+                    .getOrElse(false) to project.tasks.withType<Pmd>(),
+                pluginExtension.qualityExtension.spotless.enabled
+                    .getOrElse(false) to
+                    project.tasks.withType<SpotlessCheck>(),
+                pluginExtension.qualityExtension.detekt.enabled
+                    .getOrElse(false) to project.tasks.withType<Detekt>(),
+                pluginExtension.qualityExtension.owaspDependencyCheck.enabled
+                    .getOrElse(false) to
+                    project.tasks.withType<Analyze>(),
+                (
+                    pluginExtension.qualityExtension.jacoco.enabled
+                        .getOrElse(false)
+                ) to
                     project.tasks.withType<JacocoCoverageVerification>(),
-                qualityExtension.kover.enabled.getOrElse(false) to "koverVerify",
-                qualityExtension.pitest.enabled.getOrElse(false) to "pitest",
-                (qualityExtension.eslint.enabled.getOrElse(false) && project.tasks.findByName("eslint") != null) to
+                pluginExtension.qualityExtension.kover.enabled
+                    .getOrElse(false) to "koverVerify",
+                pluginExtension.qualityExtension.pitest.enabled
+                    .getOrElse(false) to "pitest",
+                (
+                    pluginExtension.qualityExtension.eslint.enabled
+                        .getOrElse(false) &&
+                        project.tasks.findByName("eslint") != null
+                ) to
                     "eslint",
             ).forEach { (enabled, path) ->
                 if (enabled) {
