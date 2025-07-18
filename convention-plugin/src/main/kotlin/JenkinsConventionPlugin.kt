@@ -50,7 +50,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             project.afterEvaluate {
                 try {
                     BomManager(project, pluginExtension).configure()
-                    BundleManager(project, pluginExtension).configure()
+//                    BundleManager(project, pluginExtension).configure()
                     QualityManager(project, pluginExtension).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")

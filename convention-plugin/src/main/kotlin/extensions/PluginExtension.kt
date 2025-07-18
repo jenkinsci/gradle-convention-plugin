@@ -59,14 +59,14 @@ public open class PluginExtension
                 ).orElse(libs.findVersion("jenkins-core").get().requiredVersion),
             )
 
-        public val pluginId: Property<String> =
+        public val artifactId: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(ConfigurationConstants.PLUGIN_ID).orElse(
                     projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
                 ),
             )
 
-        public val artifactId: Property<String> = objects.property<String>().convention(pluginId)
+        public val pluginId: Property<String> = objects.property<String>().convention(artifactId)
 
         public val groupId: Property<String> =
             objects.property<String>().convention(
