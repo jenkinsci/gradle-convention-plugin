@@ -24,7 +24,7 @@ apache-log4j-bom = "2.25.1"
 vertx-bom = "3.5.1"
 
 # Testing BOMs
-junit-bom = "5.13.2"
+junit-bom = "5.13.3"
 mockito-bom = "5.18.0"
 testContainers-bom = "1.21.3"
 
