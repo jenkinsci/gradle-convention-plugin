@@ -237,7 +237,7 @@ public open class GuavaBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.GUAVA_VERSION,
+                    ConfigurationConstants.GUAVA_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -257,7 +257,7 @@ public open class Log4JBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.LOG4J_VERSION,
+                    ConfigurationConstants.LOG4J_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -277,7 +277,7 @@ public open class VertxBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.VERTX_VERSION,
+                    ConfigurationConstants.VERTX_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )

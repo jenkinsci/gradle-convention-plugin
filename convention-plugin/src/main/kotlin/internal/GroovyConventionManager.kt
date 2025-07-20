@@ -16,16 +16,13 @@
 package internal
 
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.tasks.compile.GroovyCompile
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
 private const val JAVA_VERSION = 17
 
 public class GroovyConventionManager(
     private val project: Project,
-    private val libs: VersionCatalog,
 ) {
     public fun configure() {
         project.plugins.withId("groovy") {
@@ -34,11 +31,6 @@ public class GroovyConventionManager(
                 it.groovyOptions.optimizationOptions?.put("indy", true)
                 it.options.release.set(JAVA_VERSION)
                 it.options.compilerArgs.addAll(listOf("-parameters"))
-            }
-
-            project.dependencies {
-                add("compileOnly", platform(libs.findLibrary("groovy-bom").get()))
-                add("compileOnly", libs.findLibrary("groovy").get())
             }
         }
     }
