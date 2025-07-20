@@ -145,12 +145,6 @@ public open class PluginExtension
 
         public val pluginLabels: ListProperty<String> = objects.listProperty<String>().convention(emptySet())
 
-//        public val pluginBundles: BundleExtension = objects.newInstance<BundleExtension>()
-//
-//        public fun bundles(action: BundleExtension.() -> Unit) {
-//            pluginBundles.apply(action)
-//        }
-
         public val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects
                 .listProperty<DeveloperExtension>()

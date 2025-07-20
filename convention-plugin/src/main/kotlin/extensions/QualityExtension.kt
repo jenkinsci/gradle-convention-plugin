@@ -26,10 +26,16 @@ import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.*
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
+import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
+import utils.gradleProperty
+import utils.versionFromCatalogOrFail
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
@@ -40,41 +46,19 @@ public open class QualityExtension
         providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
-        public val checkstyle: CheckstyleExtension =
-            objects.newInstance(CheckstyleExtension::class.java, libs)
-        public val codenarc: CodenarcExtension =
-            objects.newInstance(CodenarcExtension::class.java, libs)
-        public val spotbugs: SpotbugsExtension =
-            objects.newInstance(
-                SpotbugsExtension::class.java,
-                libs,
-            )
-        public val pmd: PmdExtension = objects.newInstance(PmdExtension::class.java, libs)
-        public val jacoco: JacocoExtension =
-            objects.newInstance(
-                JacocoExtension::class.java,
-                libs,
-            )
-        public val detekt: DetektExtension =
-            objects.newInstance(
-                DetektExtension::class.java,
-                libs,
-            )
-        public val spotless: SpotlessExtension =
-            objects.newInstance(
-                SpotlessExtension::class.java,
-                libs,
-            )
-        public val owaspDependencyCheck: OwaspDependencyCheckExtension =
-            objects.newInstance(
-                OwaspDependencyCheckExtension::class.java,
-            )
-        public val versions: GradleVersionExtension =
-            objects.newInstance(GradleVersionExtension::class.java)
-        public val pitest: PitestExtension = objects.newInstance(PitestExtension::class.java, libs)
-        public val kover: KoverExtension = objects.newInstance(KoverExtension::class.java)
-        public val eslint: EslintExtension = objects.newInstance(EslintExtension::class.java)
-        public val dokka: DokkaExtension = objects.newInstance(DokkaExtension::class.java)
+        public val checkstyle: CheckstyleExtension = objects.newInstance(libs)
+        public val codenarc: CodenarcExtension = objects.newInstance(libs)
+        public val spotbugs: SpotbugsExtension = objects.newInstance(libs)
+        public val pmd: PmdExtension = objects.newInstance(libs)
+        public val jacoco: JacocoExtension = objects.newInstance(libs)
+        public val detekt: DetektExtension = objects.newInstance(libs)
+        public val spotless: SpotlessExtension = objects.newInstance(libs)
+        public val owaspDependencyCheck: OwaspDependencyCheckExtension = objects.newInstance()
+        public val versions: GradleVersionExtension = objects.newInstance()
+        public val pitest: PitestExtension = objects.newInstance(libs)
+        public val kover: KoverExtension = objects.newInstance()
+        public val eslint: EslintExtension = objects.newInstance()
+        public val dokka: DokkaExtension = objects.newInstance()
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -112,17 +96,6 @@ public open class QualityExtension
         }
     }
 
-private fun <T : Any> gradleProperty(
-    providers: ProviderFactory,
-    key: String,
-    converter: (String) -> T,
-): Provider<T> = providers.gradleProperty(key).map(converter)
-
-private fun gradleProperty(
-    providers: ProviderFactory,
-    key: String,
-) = providers.gradleProperty(key)
-
 public open class CheckstyleExtension
     @Inject
     constructor(
@@ -143,7 +116,7 @@ public open class CheckstyleExtension
                 gradleProperty(
                     providers,
                     ConfigurationConstants.CHECKSTYLE_VERSION,
-                ).orElse(libs.findVersion("checkstyle").get().requiredVersion),
+                ).orElse(versionFromCatalogOrFail(libs, "checkstyle")),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val configFile: RegularFileProperty = objects.fileProperty()
@@ -169,7 +142,7 @@ public open class SpotbugsExtension
                 gradleProperty(
                     providers,
                     ConfigurationConstants.SPOTBUGS_VERSION,
-                ).orElse(libs.findVersion("spotbugsTool").get().requiredVersion),
+                ).orElse(versionFromCatalogOrFail(libs, "spotbugsTool")),
             )
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
@@ -195,7 +168,7 @@ public open class PmdExtension
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(providers, ConfigurationConstants.PMD_VERSION).orElse(
-                    libs.findVersion("pmd").get().requiredVersion,
+                    versionFromCatalogOrFail(libs, "pmd"),
                 ),
             )
         public val enableCPD: Property<Boolean> = objects.property<Boolean>().convention(false)
@@ -222,7 +195,7 @@ public open class JacocoExtension
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(providers, ConfigurationConstants.JACOCO_VERSION).orElse(
-                    libs.findVersion("jacoco").get().requiredVersion,
+                    versionFromCatalogOrFail(libs, "jacoco"),
                 ),
             )
         public val minimumCodeCoverage: Property<Double> =
@@ -259,7 +232,7 @@ public open class DetektExtension
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(providers, ConfigurationConstants.DETEKT_VERSION).orElse(
-                    libs.findVersion("detekt").get().requiredVersion,
+                    versionFromCatalogOrFail(libs, "detekt"),
                 ),
             )
         public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
@@ -348,7 +321,7 @@ public open class PitestExtension
         public val pitVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(providers, ConfigurationConstants.PITEST_VERSION).orElse(
-                    libs.findVersion("pit").get().requiredVersion,
+                    versionFromCatalogOrFail(libs, "pit"),
                 ),
             )
         public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
@@ -454,8 +427,12 @@ public open class CodenarcExtension
                 gradleProperty(
                     providers,
                     ConfigurationConstants.CODENARC_VERSION,
-                ).orElse(libs.findVersion("codenarc").get().requiredVersion),
+                ).orElse(
+                    versionFromCatalogOrFail(libs, "codenarc"),
+                ),
             )
+
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+
         public val configFile: RegularFileProperty = objects.fileProperty()
     }

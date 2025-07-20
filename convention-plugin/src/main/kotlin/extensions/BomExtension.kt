@@ -16,222 +16,342 @@
 package extensions
 
 import constants.ConfigurationConstants
+import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
-import org.gradle.kotlin.dsl.mapProperty
+import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
+import utils.gradleProperty
+import utils.libraryFromCatalog
 import javax.inject.Inject
-import kotlin.jvm.optionals.getOrElse
 
+@Suppress("TooManyFunctions")
 public open class BomExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        private val providers: ProviderFactory,
-        private val libs: VersionCatalog,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
     ) {
-        private fun <T : Any> gradleProperty(
-            key: String,
-            converter: (String) -> T,
-        ): Provider<T> = providers.gradleProperty(key).map(converter)
+        public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
+        public val groovy: GroovyBomExtension = objects.newInstance(libs)
+        public val jackson: JacksonBomExtension = objects.newInstance(libs)
+        public val spring: SpringBomExtension = objects.newInstance(libs)
+        public val netty: NettyBomExtension = objects.newInstance(libs)
+        public val slf4j: SLF4JBomExtension = objects.newInstance(libs)
+        public val jetty: JettyBomExtension = objects.newInstance(libs)
+        public val guava: GuavaBomExtension = objects.newInstance(libs)
+        public val log4j: Log4JBomExtension = objects.newInstance(libs)
+        public val vertx: VertxBomExtension = objects.newInstance(libs)
+        public val junit: JUnitBomExtension = objects.newInstance(libs)
+        public val mockito: MockitoBomExtension = objects.newInstance(libs)
+        public val testContainers: TestcontainersBomExtension = objects.newInstance(libs)
+        public val customBoms: NamedDomainObjectContainer<CustomBomsExtension> =
+            objects.domainObjectContainer(CustomBomsExtension::class.java)
 
-        public fun gradleProperty(key: String): Provider<String> = providers.gradleProperty(key)
+        public fun jenkins(action: JenkinsBomExtension.() -> Unit): Unit = action(jenkins)
 
-        private fun versionFromCatalogOrFail(alias: String): String =
-            libs
-                .findVersion(alias)
-                .getOrElse {
-                    error(
-                        "Version '$alias' missing from version catalog. Please update 'libs.versions.toml'.",
-                    )
-                }.requiredVersion
+        public fun groovy(action: GroovyBomExtension.() -> Unit): Unit = action(groovy)
 
-        // Jenkins BOM
-        public val useCoreBom: Property<Boolean> =
+        public fun jackson(action: JacksonBomExtension.() -> Unit): Unit = action(jackson)
+
+        public fun spring(action: SpringBomExtension.() -> Unit): Unit = action(spring)
+
+        public fun netty(action: NettyBomExtension.() -> Unit): Unit = action(netty)
+
+        public fun slf4j(action: SLF4JBomExtension.() -> Unit): Unit = action(slf4j)
+
+        public fun jetty(action: JettyBomExtension.() -> Unit): Unit = action(jetty)
+
+        public fun guava(action: GuavaBomExtension.() -> Unit): Unit = action(guava)
+
+        public fun log4j(action: Log4JBomExtension.() -> Unit): Unit = action(log4j)
+
+        public fun vertx(action: VertxBomExtension.() -> Unit): Unit = action(vertx)
+
+        public fun junit(action: JUnitBomExtension.() -> Unit): Unit = action(junit)
+
+        public fun mockito(action: MockitoBomExtension.() -> Unit): Unit = action(mockito)
+
+        public fun testContainers(action: TestcontainersBomExtension.() -> Unit): Unit = action(testContainers)
+
+        public fun customBoms(action: NamedDomainObjectContainer<CustomBomsExtension>.() -> Unit): Unit =
+            action(customBoms)
+    }
+
+public open class JenkinsBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_CORE_BOM,
+                    providers,
+                    ConfigurationConstants.JENKINS_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val bomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.CORE_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("jenkins-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "jenkins-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        // Ecosystem BOM
-        public val useCommonBoms: Property<Boolean> = objects.property<Boolean>().convention(true)
-
-        public val useGroovyBom: Property<Boolean> =
+public open class GroovyBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_GROOVY_BOM,
+                    providers,
+                    ConfigurationConstants.GROOVY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val groovyBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.GROOVY_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("groovy-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "groovy-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useJacksonBom: Property<Boolean> =
+public open class JacksonBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_JACKSON_BOM,
+                    providers,
+                    ConfigurationConstants.JACKSON_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val jacksonBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.JACKSON_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("jackson-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "jackson-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useSpringBom: Property<Boolean> =
+public open class SpringBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_SPRING_BOM,
+                    providers,
+                    ConfigurationConstants.SPRING_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val springBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.SPRING_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("spring-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "spring-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useNettyBom: Property<Boolean> =
+public open class NettyBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_NETTY_BOM,
+                    providers,
+                    ConfigurationConstants.NETTY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val nettyBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.NETTY_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("netty-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "netty-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useSlf4jBom: Property<Boolean> =
+public open class SLF4JBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_SLF4J_BOM,
+                    providers,
+                    ConfigurationConstants.SLF4J_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val slf4jBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.SLF4J_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("slf4j-bom"),
-                ),
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(
+                libs,
+                "slf4j-bom-coordinates",
             )
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useJettyBom: Property<Boolean> =
+public open class JettyBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_JETTY_BOM,
+                    providers,
+                    ConfigurationConstants.JETTY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val jettyBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.JETTY_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("jetty-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "jetty-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useGuavaBom: Property<Boolean> =
+public open class GuavaBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_GUAVA_VERSION,
+                    providers,
+                    ConfigurationConstants.GUAVA_VERSION,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val guavaBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.GUAVA_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("guava-bom"),
-                ),
-            )
-        public val useLog4jBom: Property<Boolean> =
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "guava-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
+
+public open class Log4JBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_LOG4J_VERSION,
+                    providers,
+                    ConfigurationConstants.LOG4J_VERSION,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val log4jBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.LOG4J_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("apache-log4j-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "log4j-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useVertxBom: Property<Boolean> =
+public open class VertxBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_VERTX_VERSION,
+                    providers,
+                    ConfigurationConstants.VERTX_VERSION,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val vertxBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.VERTX_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("vertx-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "vertx-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        // Testing BOM
-        public val useJunitBom: Property<Boolean> =
+public open class JUnitBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_JUNIT_BOM,
+                    providers,
+                    ConfigurationConstants.JUNIT_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val junitBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.JUNIT_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("junit-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "junit-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useMockitoBom: Property<Boolean> =
+public open class MockitoBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects
                 .property<Boolean>()
-                .convention(gradleProperty(ConfigurationConstants.USE_MOCKITO_BOM, String::toBoolean).orElse(true))
-        public val mockitoBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.MOCKITO_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("mockito-bom"),
-                ),
-            )
+                .convention(
+                    gradleProperty(providers, ConfigurationConstants.MOCKITO_BOM, String::toBoolean).orElse(true),
+                )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "mockito-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val useTestcontainersBom: Property<Boolean> =
+public open class TestcontainersBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
-                    ConfigurationConstants.USE_TESTCONTAINERS_BOM,
+                    providers,
+                    ConfigurationConstants.TESTCONTAINERS_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val testcontainersBomVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.TESTCONTAINERS_BOM_VERSION).orElse(
-                    versionFromCatalogOrFail("testcontainers-bom"),
-                ),
-            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "testContainers-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+    }
 
-        public val customBoms: MapProperty<String, String> = objects.mapProperty<String, String>()
+public open class CustomBomsExtension
+    @Inject
+    constructor(
+        public val name: String,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val coordinates: Property<String> = objects.property<String>()
+        public val version: Property<String> = objects.property<String>()
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
     }
