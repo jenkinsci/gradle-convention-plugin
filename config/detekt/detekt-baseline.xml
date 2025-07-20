@@ -2,10 +2,10 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
     <ID>LongMethod:QualityManager.kt$QualityManager$private fun configureSpotless()</ID>
     <ID>WildcardImport:JenkinsConventionPlugin.kt$import internal.*</ID>
     <ID>WildcardImport:PluginExtension.kt$import org.gradle.api.provider.*</ID>
-    <ID>WildcardImport:QualityExtension.kt$import org.gradle.api.provider.*</ID>
     <ID>WildcardImport:QualityManager.kt$import org.gradle.api.plugins.quality.*</ID>
   </CurrentIssues>
 </SmellBaseline>

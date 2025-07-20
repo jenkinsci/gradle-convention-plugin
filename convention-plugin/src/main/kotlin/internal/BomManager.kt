@@ -16,10 +16,11 @@
 package internal
 
 import extensions.PluginExtension
-import internal.BomManager.BOMCoordinates.JENKINS_BOM
 import org.gradle.api.Project
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.dependencies
 
 public class BomManager(
@@ -28,128 +29,109 @@ public class BomManager(
 ) {
     public fun configure() {
         project.dependencies {
-            configureCoreBom()
             configureCommonBoms()
-            configureTestingBom()
             configureCustomBoms()
         }
     }
 
-    private fun DependencyHandler.applyBomIfEnabled(
-        enabled: Property<Boolean>,
-        coordinates: String,
-        version: Property<String>,
-        testOnly: Boolean = false,
-    ) {
-        if (enabled.get()) {
-            val platformDependency = enforcedPlatform("$coordinates:${version.get()}")
-            if (!testOnly) {
-                add("implementation", platformDependency)
-            }
-            add("testImplementation", platformDependency)
-        }
-    }
-
-    private fun DependencyHandler.configureCoreBom() {
-        applyBomIfEnabled(
-            pluginExtension.bomExtension.useCoreBom,
-            JENKINS_BOM,
-            pluginExtension.bomExtension.bomVersion,
-        )
-    }
-
     private fun DependencyHandler.configureCommonBoms() {
-        if (!pluginExtension.bomExtension.useCommonBoms.get()) return
-
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useGroovyBom,
-            BOMCoordinates.GROOVY_BOM,
-            pluginExtension.bomExtension.groovyBomVersion,
+            pluginExtension.bomExtension.jenkins.enabled,
+            pluginExtension.bomExtension.jenkins.coordinates,
+            pluginExtension.bomExtension.jenkins.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useJacksonBom,
-            BOMCoordinates.JACKSON_BOM,
-            pluginExtension.bomExtension.jacksonBomVersion,
+            pluginExtension.bomExtension.groovy.enabled,
+            pluginExtension.bomExtension.groovy.coordinates,
+            pluginExtension.bomExtension.groovy.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useSpringBom,
-            BOMCoordinates.SPRING_BOM,
-            pluginExtension.bomExtension.springBomVersion,
+            pluginExtension.bomExtension.jackson.enabled,
+            pluginExtension.bomExtension.jackson.coordinates,
+            pluginExtension.bomExtension.jackson.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useJettyBom,
-            BOMCoordinates.JETTY_BOM,
-            pluginExtension.bomExtension.jettyBomVersion,
+            pluginExtension.bomExtension.spring.enabled,
+            pluginExtension.bomExtension.spring.coordinates,
+            pluginExtension.bomExtension.spring.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useNettyBom,
-            BOMCoordinates.NETTY_BOM,
-            pluginExtension.bomExtension.nettyBomVersion,
+            pluginExtension.bomExtension.jetty.enabled,
+            pluginExtension.bomExtension.jetty.coordinates,
+            pluginExtension.bomExtension.jetty.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useSlf4jBom,
-            BOMCoordinates.SLF4J_BOM,
-            pluginExtension.bomExtension.slf4jBomVersion,
+            pluginExtension.bomExtension.netty.enabled,
+            pluginExtension.bomExtension.netty.coordinates,
+            pluginExtension.bomExtension.netty.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useGuavaBom,
-            BOMCoordinates.GUAVA_BOOM,
-            pluginExtension.bomExtension.guavaBomVersion,
+            pluginExtension.bomExtension.slf4j.enabled,
+            pluginExtension.bomExtension.slf4j.coordinates,
+            pluginExtension.bomExtension.slf4j.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useLog4jBom,
-            BOMCoordinates.LOG4J_BOM,
-            pluginExtension.bomExtension.log4jBomVersion,
+            pluginExtension.bomExtension.guava.enabled,
+            pluginExtension.bomExtension.guava.coordinates,
+            pluginExtension.bomExtension.guava.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useVertxBom,
-            BOMCoordinates.VERTX_BOM,
-            pluginExtension.bomExtension.vertxBomVersion,
-        )
-    }
-
-    private fun DependencyHandler.configureTestingBom() {
-        applyBomIfEnabled(
-            pluginExtension.bomExtension.useJunitBom,
-            BOMCoordinates.JUNIT_BOM,
-            pluginExtension.bomExtension.junitBomVersion,
-            testOnly = true,
+            pluginExtension.bomExtension.log4j.enabled,
+            pluginExtension.bomExtension.log4j.coordinates,
+            pluginExtension.bomExtension.log4j.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useMockitoBom,
-            BOMCoordinates.MOCKITO_BOM,
-            pluginExtension.bomExtension.mockitoBomVersion,
-            testOnly = true,
+            pluginExtension.bomExtension.vertx.enabled,
+            pluginExtension.bomExtension.vertx.coordinates,
+            pluginExtension.bomExtension.vertx.testOnly,
         )
         applyBomIfEnabled(
-            pluginExtension.bomExtension.useTestcontainersBom,
-            BOMCoordinates.TESTCONTAINERS_BOM,
-            pluginExtension.bomExtension.testcontainersBomVersion,
-            testOnly = true,
+            pluginExtension.bomExtension.junit.enabled,
+            pluginExtension.bomExtension.junit.coordinates,
+            pluginExtension.bomExtension.junit.testOnly,
+        )
+        applyBomIfEnabled(
+            pluginExtension.bomExtension.mockito.enabled,
+            pluginExtension.bomExtension.mockito.coordinates,
+            pluginExtension.bomExtension.mockito.testOnly,
+        )
+        applyBomIfEnabled(
+            pluginExtension.bomExtension.testContainers.enabled,
+            pluginExtension.bomExtension.testContainers.coordinates,
+            pluginExtension.bomExtension.testContainers.testOnly,
         )
     }
 
     private fun DependencyHandler.configureCustomBoms() {
-        pluginExtension.bomExtension.customBoms.get().forEach { (coordinates, version) ->
+        pluginExtension.bomExtension.customBoms.all { bom ->
+            val coordinates = bom.coordinates.orNull
+            val version = bom.version.orNull
+
+            require(!coordinates.isNullOrBlank()) {
+                "Missing coordinates for BOM '${bom.name}'."
+            }
+
+            require(!version.isNullOrBlank()) {
+                "Missing version for BOM '${bom.name}'."
+            }
+
             val platformDependency = enforcedPlatform("$coordinates:$version")
             add("implementation", platformDependency)
             add("testImplementation", platformDependency)
         }
     }
 
-    private object BOMCoordinates {
-        const val JENKINS_BOM = "io.jenkins.tools.bom:bom-2.504.x"
-        const val SPRING_BOM = "org.springframework:spring-framework-bom"
-        const val JACKSON_BOM = "com.fasterxml.jackson:jackson-bom"
-        const val JUNIT_BOM = "org.junit:junit-bom"
-        const val JETTY_BOM = "org.eclipse.jetty:jetty-bom"
-        const val SLF4J_BOM = "org.slf4j:slf4j-bom"
-        const val NETTY_BOM = "io.netty:netty-bom"
-        const val GUAVA_BOOM = "com.google.guava:guava-bom"
-        const val LOG4J_BOM = "org.apache.logging.log4j:log4j-bom"
-        const val VERTX_BOM = "io.vertx:vertx-stack-depchain"
-        const val MOCKITO_BOM = "org.mockito:mockito-bom"
-        const val TESTCONTAINERS_BOM = "org.testcontainers:testcontainers-bom"
-        const val GROOVY_BOM = "org.apache.groovy:groovy-bom"
+    private fun DependencyHandler.applyBomIfEnabled(
+        enabled: Property<Boolean>,
+        coordinates: Provider<MinimalExternalModuleDependency>,
+        testOnly: Property<Boolean>,
+    ) {
+        if (enabled.getOrElse(true)) {
+            val platformDependency = enforcedPlatform(coordinates.get())
+            if (!testOnly.getOrElse(false)) {
+                add("implementation", platformDependency)
+            }
+            add("testImplementation", platformDependency)
+        }
     }
 }

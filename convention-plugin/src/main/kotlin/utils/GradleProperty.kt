@@ -15,24 +15,16 @@
  */
 package utils
 
-import org.gradle.api.artifacts.MinimalExternalModuleDependency
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.provider.Provider
-import kotlin.jvm.optionals.getOrElse
+import org.gradle.api.provider.ProviderFactory
 
-internal fun versionFromCatalogOrFail(
-    libs: VersionCatalog,
-    alias: String,
-): String =
-    libs
-        .findVersion(alias)
-        .getOrElse {
-            error(
-                "Version '$alias' missing from version catalog. Please update 'libs.versions.toml'.",
-            )
-        }.requiredVersion
+internal fun <T : Any> gradleProperty(
+    providers: ProviderFactory,
+    key: String,
+    converter: (String) -> T,
+): Provider<T> = providers.gradleProperty(key).map(converter)
 
-internal fun libraryFromCatalog(
-    libs: VersionCatalog,
-    alias: String,
-): Provider<MinimalExternalModuleDependency> = libs.findLibrary(alias).get()
+internal fun gradleProperty(
+    providers: ProviderFactory,
+    key: String,
+): Provider<String> = providers.gradleProperty(key)
