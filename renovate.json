@@ -4,5 +4,13 @@
     "config:recommended"
   ],
   "automerge": true,
-  "automergeType": "branch"
+  "automergeType": "branch",
+  "prConcurrentLimit": 1,
+  "prHourlyLimit": 0,
+  "packageRules": [
+    {
+      "groupName": "all-dependencies",
+      "matchPackageNames": ".*"
+    }
+  ]
 }
