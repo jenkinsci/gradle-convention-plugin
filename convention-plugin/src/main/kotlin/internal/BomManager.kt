@@ -100,6 +100,11 @@ public class BomManager(
             pluginExtension.bomExtension.testContainers.coordinates,
             pluginExtension.bomExtension.testContainers.testOnly,
         )
+        applyBomIfEnabled(
+            pluginExtension.bomExtension.spock.enabled,
+            pluginExtension.bomExtension.spock.coordinates,
+            pluginExtension.bomExtension.spock.testOnly,
+        )
     }
 
     private fun DependencyHandler.configureCustomBoms() {

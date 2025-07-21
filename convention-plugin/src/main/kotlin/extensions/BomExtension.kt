@@ -50,6 +50,7 @@ public open class BomExtension
         public val junit: JUnitBomExtension = objects.newInstance(libs)
         public val mockito: MockitoBomExtension = objects.newInstance(libs)
         public val testContainers: TestcontainersBomExtension = objects.newInstance(libs)
+        public val spock: SpockBomExtension = objects.newInstance(libs)
         public val customBoms: NamedDomainObjectContainer<CustomBomsExtension> =
             objects.domainObjectContainer(CustomBomsExtension::class.java)
 
@@ -303,7 +304,7 @@ public open class JUnitBomExtension
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "junit-bom-coordinates")
-        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
     }
 
 public open class MockitoBomExtension
@@ -321,7 +322,7 @@ public open class MockitoBomExtension
                 )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "mockito-bom-coordinates")
-        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
     }
 
 public open class TestcontainersBomExtension
@@ -341,7 +342,27 @@ public open class TestcontainersBomExtension
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "testContainers-bom-coordinates")
-        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
+    }
+
+public open class SpockBomExtension
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    ConfigurationConstants.SPOCK_BOM,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "spock-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
     }
 
 public open class CustomBomsExtension

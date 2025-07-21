@@ -44,6 +44,7 @@ public object ConfigurationConstants {
     public const val JUNIT_BOM: String = "$BOM_PREFIX.junit.enabled"
     public const val MOCKITO_BOM: String = "$BOM_PREFIX.mockito.enabled"
     public const val TESTCONTAINERS_BOM: String = "$BOM_PREFIX.testContainers.enabled"
+    public const val SPOCK_BOM: String = "$BOM_PREFIX.spock.enabled"
 
     // Quality
     public const val CHECKSTYLE_ENABLED: String = "$QUALITY_PREFIX.checkstyle.enabled"

@@ -27,6 +27,7 @@ vertx-bom = "5.0.1"
 junit-bom = "5.13.3"
 mockito-bom = "5.18.0"
 testContainers-bom = "1.21.3"
+spock-bom = "2.4-M6-groovy-4.0"
 
 # Quality
 spotbugs = "6.2.2"
@@ -79,6 +80,7 @@ vertx-bom-coordinates = { module = "io.vertx:vertx-stack-depchain", version.ref 
 mockito-bom-coordinates = { module = "org.mockito:mockito-bom", version.ref = "mockito-bom" }
 testContainers-bom-coordinates = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainers-bom" }
 groovy-bom-coordinates = { module = "org.apache.groovy:groovy-bom", version.ref = "groovy-bom" }
+spock-bom-coordinates = { module = "org.spockframework:spock-bom", version.ref = "spock-bom" }
 
 # Quality
 spotless-gradle-plugin = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
