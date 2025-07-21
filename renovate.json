@@ -10,7 +10,7 @@
   "packageRules": [
     {
       "groupName": "all-dependencies",
-      "matchPackageNames": ".*"
+      "matchPackagePatterns": [".*"]
     }
   ]
 }
