@@ -40,13 +40,13 @@ public open class PluginExtension
         projectDescription: Provider<String>,
         libs: VersionCatalog,
     ) {
-        public val bomExtension: BomExtension = objects.newInstance<BomExtension>(libs)
+//        public val bomExtension: BomExtension = objects.newInstance<BomExtension>(libs)
 
         public val qualityExtension: QualityExtension = objects.newInstance<QualityExtension>(libs)
 
-        public fun bom(action: BomExtension.() -> Unit) {
-            bomExtension.apply(action)
-        }
+//        public fun bom(action: BomExtension.() -> Unit) {
+//            bomExtension.apply(action)
+//        }
 
         public fun quality(action: QualityExtension.() -> Unit) {
             qualityExtension.apply(action)

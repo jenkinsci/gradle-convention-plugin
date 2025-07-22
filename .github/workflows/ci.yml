@@ -32,3 +32,10 @@ jobs:
         run: |
           ./gradlew clean build --no-daemon --stacktrace
 
+      - name: Build the "git-automerger-plugin"
+        run: |
+          cd ./examples/git-automerger-plugin && ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace
+
+      - name: Build the "templating-engine-plugin"
+        run: |
+          cd ./examples/templating-engine-plugin && ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace

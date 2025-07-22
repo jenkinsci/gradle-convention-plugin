@@ -20,6 +20,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
@@ -37,7 +38,18 @@ public open class BomExtension
         providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
-        public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
+        public val jenkinsExtension: JenkinsBomExtension =
+            objects.newInstance(
+                JenkinsBomExtension::class.java,
+                objects,
+                providers,
+                libs,
+            )
+
+        init {
+            (this as ExtensionAware).extensions.add("jenkins", jenkinsExtension)
+        }
+
         public val groovy: GroovyBomExtension = objects.newInstance(libs)
         public val jackson: JacksonBomExtension = objects.newInstance(libs)
         public val spring: SpringBomExtension = objects.newInstance(libs)
@@ -54,34 +66,36 @@ public open class BomExtension
         public val customBoms: NamedDomainObjectContainer<CustomBomsExtension> =
             objects.domainObjectContainer(CustomBomsExtension::class.java)
 
-        public fun jenkins(action: JenkinsBomExtension.() -> Unit): Unit = action(jenkins)
+        public fun jenkins(action: JenkinsBomExtension.() -> Unit): JenkinsBomExtension = jenkinsExtension.apply(action)
 
-        public fun groovy(action: GroovyBomExtension.() -> Unit): Unit = action(groovy)
+        public fun groovy(action: GroovyBomExtension.() -> Unit): GroovyBomExtension = groovy.apply(action)
 
-        public fun jackson(action: JacksonBomExtension.() -> Unit): Unit = action(jackson)
+        public fun jackson(action: JacksonBomExtension.() -> Unit): JacksonBomExtension = jackson.apply(action)
 
-        public fun spring(action: SpringBomExtension.() -> Unit): Unit = action(spring)
+        public fun spring(action: SpringBomExtension.() -> Unit): SpringBomExtension = spring.apply(action)
 
-        public fun netty(action: NettyBomExtension.() -> Unit): Unit = action(netty)
+        public fun netty(action: NettyBomExtension.() -> Unit): NettyBomExtension = netty.apply(action)
 
-        public fun slf4j(action: SLF4JBomExtension.() -> Unit): Unit = action(slf4j)
+        public fun slf4j(action: SLF4JBomExtension.() -> Unit): SLF4JBomExtension = slf4j.apply(action)
 
-        public fun jetty(action: JettyBomExtension.() -> Unit): Unit = action(jetty)
+        public fun jetty(action: JettyBomExtension.() -> Unit): JettyBomExtension = jetty.apply(action)
 
-        public fun guava(action: GuavaBomExtension.() -> Unit): Unit = action(guava)
+        public fun guava(action: GuavaBomExtension.() -> Unit): GuavaBomExtension = guava.apply(action)
 
-        public fun log4j(action: Log4JBomExtension.() -> Unit): Unit = action(log4j)
+        public fun log4j(action: Log4JBomExtension.() -> Unit): Log4JBomExtension = log4j.apply(action)
 
-        public fun vertx(action: VertxBomExtension.() -> Unit): Unit = action(vertx)
+        public fun vertx(action: VertxBomExtension.() -> Unit): VertxBomExtension = vertx.apply(action)
 
-        public fun junit(action: JUnitBomExtension.() -> Unit): Unit = action(junit)
+        public fun junit(action: JUnitBomExtension.() -> Unit): JUnitBomExtension = junit.apply(action)
 
-        public fun mockito(action: MockitoBomExtension.() -> Unit): Unit = action(mockito)
+        public fun mockito(action: MockitoBomExtension.() -> Unit): MockitoBomExtension = mockito.apply(action)
 
-        public fun testContainers(action: TestcontainersBomExtension.() -> Unit): Unit = action(testContainers)
+        public fun testContainers(action: TestcontainersBomExtension.() -> Unit): TestcontainersBomExtension =
+            testContainers.apply(action)
 
-        public fun customBoms(action: NamedDomainObjectContainer<CustomBomsExtension>.() -> Unit): Unit =
-            action(customBoms)
+        public fun customBoms(
+            action: NamedDomainObjectContainer<CustomBomsExtension>.() -> Unit,
+        ): NamedDomainObjectContainer<CustomBomsExtension> = customBoms.apply(action)
     }
 
 public open class JenkinsBomExtension
@@ -102,6 +116,15 @@ public open class JenkinsBomExtension
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "jenkins-bom-coordinates")
         public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+
+        // testing for Groovy DSL
+        public fun setEnabled(value: Boolean) {
+            enabled.set(value)
+        }
+
+        public fun getEnabled() {
+            enabled.get()
+        }
     }
 
 public open class GroovyBomExtension
