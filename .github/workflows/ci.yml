@@ -32,3 +32,14 @@ jobs:
         run: |
           ./gradlew clean build --no-daemon --stacktrace
 
+      - name: Publish to Maven Local
+        run: |
+          ./gradlew publishtoLocal
+
+      - name: Build the "git-automerger-plugin"
+        run: |
+          cd ./examples/git-automerger-plugin && chmod +x gradlew && ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace
+
+      - name: Build the "templating-engine-plugin"
+        run: |
+          cd ./examples/templating-engine-plugin && chmod +x gradlew && ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace

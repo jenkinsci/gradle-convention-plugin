@@ -1,0 +1,82 @@
+plugins {
+    id 'groovy'
+    id 'io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin' version '0.2.1-alpha'
+}
+
+description = 'Allows users to create tool-agnostic, templated pipelines to be shared by multiple teams'
+
+jenkinsConvention {
+    bom {
+        jenkins {
+//            enabled.set(true)
+            enabled = true
+        }
+    }
+}
+dependencies {
+    // plugin dependencies
+    implementation 'org.jenkins-ci.plugins.workflow:workflow-multibranch'
+    implementation 'org.jenkins-ci.plugins.workflow:workflow-api'
+    implementation 'org.jenkins-ci.plugins:branch-api'
+    implementation 'org.jenkins-ci.plugins:scm-api'
+    implementation 'org.jenkins-ci.plugins:junit'
+    implementation 'org.jenkins-ci.plugins:script-security'
+    implementation 'org.jenkinsci.plugins:pipeline-model-definition'
+    implementation 'org.jenkins-ci.modules:sshd'
+    implementation 'org.jgrapht:jgrapht-core:1.4.0'
+
+    // unit test dependencies
+    testImplementation 'junit:junit'
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.jenkins-ci.main:jenkins-test-harness'
+
+    // test plugins
+    testImplementation 'org.jenkins-ci.plugins.workflow:workflow-support'
+    testImplementation 'org.jenkins-ci.plugins:scm-api'
+    testImplementation 'org.jenkins-ci.plugins:git'
+    testImplementation 'org.jenkins-ci.plugins:token-macro'
+    testImplementation 'org.jenkins-ci.plugins:matrix-project'
+    testImplementation 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.6'
+    testImplementation 'org.jenkins-ci.plugins.workflow:workflow-step-api'
+    testImplementation 'org.jenkins-ci.plugins.workflow:workflow-job'
+    testImplementation 'org.jenkins-ci.plugins.workflow:workflow-basic-steps'
+}
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs([])
+        }
+        groovy {
+            setSrcDirs(["src/main/groovy", "src/main/java"])
+            exclude '**/package-info.groovy'
+        }
+    }
+}
+
+tasks.withType(CodeNarc).configureEach {
+    enabled = false
+}
+
+
+//jenkinsPlugin {
+//    jenkinsVersion.set('2.387.3')
+//    pluginId.set('templating-engine')
+//    humanReadableName.set('Templating Engine')
+//    homePage.set(uri('https://github.com/jenkinsci/templating-engine-plugin'))
+//    generateTests.set(true)
+//    configureRepositories = false
+//    configurePublishing = true
+//    developers {
+//        developer {
+//            id 'steven-terrana'
+//            name 'Steven Terrana'
+//            email 'terrana_steven@bah.com'
+//        }
+//        developer {
+//            id 'carlosokieffebah'
+//            name 'Carlos Okieffe'
+//            email 'okieffe_carlos@bah.com'
+//        }
+//    }
+//}

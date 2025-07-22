@@ -1,0 +1,14 @@
+bin
+build
+docs/html
+.settings
+.project
+.classpath
+.gradle
+.idea
+.vscode/ 
+.scannerwork/
+target/
+.DS_Store
+node_modules
+site/
