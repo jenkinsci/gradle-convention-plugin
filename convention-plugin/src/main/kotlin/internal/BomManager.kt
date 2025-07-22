@@ -41,9 +41,9 @@ public class BomManager(
             bomExtension.jenkinsExtension.testOnly,
         )
         applyBomIfEnabled(
-            bomExtension.groovyExtension.enabled,
-            bomExtension.groovyExtension.coordinates,
-            bomExtension.groovyExtension.testOnly,
+            bomExtension.groovy.enabled,
+            bomExtension.groovy.coordinates,
+            bomExtension.groovy.testOnly,
         )
         applyBomIfEnabled(
             bomExtension.jackson.enabled,
