@@ -8,12 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build-test-analyze:
+    name: Build & analyze
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v3
@@ -28,9 +31,18 @@ jobs:
       - name: Grant executable permissions for gradlew
         run: chmod +x gradlew
 
-      - name: Clean and build
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Clean, build & analyze with SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./gradlew clean build --no-daemon --stacktrace
+          ./gradlew clean build sonar --no-daemon --stacktrace --info
 
       - name: Publish to Maven Local
         run: |

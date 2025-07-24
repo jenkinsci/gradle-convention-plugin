@@ -45,6 +45,7 @@ jacoco = "0.8.13"
 pmd = "7.0.0"
 codenarc = "3.6.0"
 node-gradle = "7.1.0"
+sonar-cloud = "6.2.0.5505"
 
 # Testing
 junit = "5.13.4"
@@ -102,7 +103,7 @@ dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", vers
 # Testing
 junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-launcher-gradle-plugin = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-launcher" }
-kotest-gradle-plugin = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
+kotest-gradle-plugin = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -113,6 +114,7 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 maven-gradle-publish-plugin = { id = "com.vanniktech.maven.publish", version.ref = "maven-gradle-publish-plugin" }
+sonar-cloud-plugin = { id = "org.sonarqube", version.ref = "sonar-cloud" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect"]
