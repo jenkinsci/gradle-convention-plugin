@@ -27,7 +27,6 @@ import com.github.gradle.node.npm.task.NpmTask
 import com.github.spotbugs.snom.SpotBugsExtension
 import com.github.spotbugs.snom.SpotBugsPlugin
 import com.github.spotbugs.snom.SpotBugsTask
-import extensions.PluginExtension
 import extensions.QualityExtension
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
@@ -57,10 +56,8 @@ import org.owasp.dependencycheck.gradle.tasks.Analyze
 
 public class QualityManager(
     private val project: Project,
-    pluginExtension: PluginExtension,
+    private val quality: QualityExtension,
 ) {
-    public val quality: QualityExtension = pluginExtension.qualityExtension
-
     public fun apply() {
         configureSpotless()
         configureCheckstyle()
@@ -243,10 +240,10 @@ public class QualityManager(
         }
         project.tasks.withType<JacocoReport>().configureEach { jacocoReport ->
             jacocoReport.dependsOn(project.tasks.withType<Test>())
-            jacocoReport.reports {
-                it.xml.required.set(true)
-                it.html.required.set(true)
-                it.csv.required.set(false)
+            jacocoReport.reports { t ->
+                t.xml.required.set(true)
+                t.html.required.set(true)
+                t.csv.required.set(false)
             }
 
             val allExcludes = quality.jacoco.excludes.get()

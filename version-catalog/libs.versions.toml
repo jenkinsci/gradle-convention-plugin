@@ -46,6 +46,11 @@ pmd = "7.0.0"
 codenarc = "3.6.0"
 node-gradle = "7.1.0"
 
+# Testing
+junit = "5.13.4"
+junit-launcher = "1.13.4"
+kotest = "5.9.1"
+
 # Publishing
 maven-gradle-publish-plugin = "0.34.0"
 
@@ -93,6 +98,11 @@ benmanes-versions-gradle-plugin = { module = "com.github.ben-manes:gradle-versio
 owasp-depcheck-gradle-plugin = { module = "org.owasp:dependency-check-gradle", version.ref = "owaspCheck" }
 node-gradle-plugin = { module = "com.github.node-gradle:gradle-node-plugin", version.ref = "node-gradle" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+
+# Testing
+junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-launcher-gradle-plugin = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-launcher" }
+kotest-gradle-plugin = {module = "io.kotest:kotest-assertions-core", version.ref = "kotest"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

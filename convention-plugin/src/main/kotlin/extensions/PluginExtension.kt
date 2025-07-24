@@ -40,16 +40,16 @@ public open class PluginExtension
         projectDescription: Provider<String>,
         libs: VersionCatalog,
     ) {
-//        public val bomExtension: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
 
-        public val qualityExtension: QualityExtension = objects.newInstance<QualityExtension>(libs)
+        public fun bom(action: BomExtension.() -> Unit) {
+            bom.apply(action)
+        }
 
-//        public fun bom(action: BomExtension.() -> Unit) {
-//            bomExtension.apply(action)
-//        }
+        public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
 
         public fun quality(action: QualityExtension.() -> Unit) {
-            qualityExtension.apply(action)
+            quality.apply(action)
         }
 
         public val jenkinsVersion: Property<String> =
@@ -61,7 +61,7 @@ public open class PluginExtension
 
         public val artifactId: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.PLUGIN_ID).orElse(
+                gradleProperty(ConfigurationConstants.ARTIFACT_ID).orElse(
                     projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
                 ),
             )

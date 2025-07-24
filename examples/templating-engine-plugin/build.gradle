@@ -9,7 +9,7 @@ jenkinsConvention {
     bom {
         jenkins {
 //            enabled.set(true)
-            enabled = true
+//            enabled = true
         }
     }
 }

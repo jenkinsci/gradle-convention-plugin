@@ -26,11 +26,11 @@ public class GroovyConventionManager(
 ) {
     public fun configure() {
         project.plugins.withId("groovy") {
-            project.tasks.withType<GroovyCompile>().configureEach {
-                it.groovyOptions.encoding = "UTF-8"
-                it.groovyOptions.optimizationOptions?.put("indy", true)
-                it.options.release.set(JAVA_VERSION)
-                it.options.compilerArgs.addAll(listOf("-parameters"))
+            project.tasks.withType<GroovyCompile>().configureEach { t ->
+                t.groovyOptions.encoding = "UTF-8"
+                t.groovyOptions.optimizationOptions?.put("indy", true)
+                t.options.release.set(JAVA_VERSION)
+                t.options.compilerArgs.addAll(listOf("-parameters"))
             }
         }
     }
