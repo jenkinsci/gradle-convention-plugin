@@ -109,7 +109,7 @@ public open class CheckstyleExtension
                     providers,
                     ConfigurationConstants.CHECKSTYLE_ENABLED,
                     String::toBoolean,
-                ).orElse(false),
+                ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(

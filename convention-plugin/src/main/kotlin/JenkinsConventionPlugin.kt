@@ -16,7 +16,6 @@
 @file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports")
 
 import constants.PluginMetadata
-import extensions.BomExtension
 import extensions.PluginExtension
 import internal.*
 import org.gradle.api.Plugin
@@ -42,23 +41,16 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     libs,
                 )
 
-            val bomExtension =
-                extensions.create(PluginMetadata.BOM_EXTENSION, BomExtension::class.java, objects, providers, libs)
-
             JavaConventionManager(project).configure()
-            project.plugins.withId("org.jetbrains.kotlin.jvm") {
-                KotlinConventionManager(project, libs).configure()
-            }
-            project.plugins.withId("groovy") {
-                GroovyConventionManager(project).configure()
-            }
+            KotlinConventionManager(project, libs).configure()
+            GroovyConventionManager(project).configure()
 
             JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
 
             project.afterEvaluate {
                 try {
-                    BomManager(project, bomExtension).configure()
-                    QualityManager(project, pluginExtension).apply()
+                    BomManager(project, pluginExtension.bom).configure()
+                    QualityManager(project, pluginExtension.quality).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }
@@ -75,6 +67,17 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 add("testImplementation", "org.jenkins-ci.plugins.workflow:workflow-cps")
                 add("testImplementation", "org.jenkins-ci.plugins.workflow:workflow-basic-steps")
                 add("implementation", "org.eclipse.jgit:org.eclipse.jgit:7.2.1.202505142326-r")
+            }
+
+            tasks.register("jenkinsConventionPluginInfo") { t ->
+                group = "Help"
+                description = "Prints the convention plugin configuration."
+
+                t.doLast {
+                    val extension = project.extensions.getByType<PluginExtension>()
+
+                    println("artifactId: ${extension.artifactId.orNull}")
+                }
             }
         }
     }

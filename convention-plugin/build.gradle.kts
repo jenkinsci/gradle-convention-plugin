@@ -13,6 +13,8 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id("conventions.kotlin")
     id("conventions.quality")
@@ -23,6 +25,22 @@ description = "Gradle plugin that provides conventions for developing Jenkins pl
 
 group = project.property("group") as String
 version = project.property("version") as String
+
+// integration test setup
+sourceSets {
+    create("integrationTest") {
+        kotlin {
+            compileClasspath += sourceSets.main.get().output
+            runtimeClasspath += sourceSets.main.get().output
+        }
+    }
+}
+
+val integrationTestImplementation: Configuration by configurations.getting {
+    extendsFrom(configurations.implementation.get())
+}
+
+val integrationTestRuntimeOnly by configurations.getting
 
 dependencies {
     compileOnly(gradleApi())
@@ -46,6 +64,13 @@ dependencies {
     implementation(libs.ktlint.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
+
+    // integration test dependencies
+    integrationTestImplementation(gradleTestKit())
+    integrationTestImplementation(libs.junit.gradle.plugin)
+    integrationTestImplementation(libs.kotest.gradle.plugin)
+    integrationTestRuntimeOnly(libs.junit.launcher.gradle.plugin)
+    implementation(kotlin("test"))
 }
 
 gradlePlugin {
@@ -71,6 +96,38 @@ gradlePlugin {
     }
 }
 
+val integrationTest by tasks.registering(Test::class) {
+    description = "Runs integration tests."
+    group = "Verification"
+
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+    shouldRunAfter("test")
+
+    // plugin metadata
+    val pluginMetadata = tasks.named("pluginUnderTestMetadata")
+    dependsOn(pluginMetadata)
+    classpath += files(pluginMetadata.get().outputs.files)
+
+    useJUnitPlatform()
+
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = TestExceptionFormat.FULL
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}
+
+tasks.check {
+    dependsOn(integrationTest)
+}
+
 tasks.register("publishToLocal") {
     dependsOn("publishToMavenLocal")
+}
+
+tasks.named("build") {
+    finalizedBy("publishToLocal")
 }

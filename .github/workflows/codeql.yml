@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java', 'kotlin' ]
+        language: [ 'java-kotlin' ]
 
     steps:
       - name: Checkout Repository
@@ -37,21 +37,14 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17.0.15'
+          java-version: '17'
           cache: 'gradle'
-
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/wrapper
-          key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: gradle-wrapper-${{ runner.os }}-
 
       - name: Grant executable permissions for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon --no-configuration-cache --console=plain --stacktrace --info
+        run: ./gradlew clean build --no-daemon --stacktrace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

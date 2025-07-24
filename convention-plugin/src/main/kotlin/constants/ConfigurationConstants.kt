@@ -22,7 +22,7 @@ public object ConfigurationConstants {
 
     // Jenkins
     public const val JENKINS_VERSION: String = "$PLUGIN_PREFIX.jenkinsVersion"
-    public const val PLUGIN_ID: String = "$PLUGIN_PREFIX.pluginId"
+    public const val ARTIFACT_ID: String = "$PLUGIN_PREFIX.artifactId"
     public const val GROUP_ID: String = "$PLUGIN_PREFIX.groupId"
     public const val DESCRIPTION: String = "$PLUGIN_PREFIX.description"
     public const val MINIMUM_JENKINS_VERSION: String = "$PLUGIN_PREFIX.minimumJenkinsCoreVersion"
