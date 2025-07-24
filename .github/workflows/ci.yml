@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-test-analyze:
     name: Build & analyze
     runs-on: ubuntu-latest
 
