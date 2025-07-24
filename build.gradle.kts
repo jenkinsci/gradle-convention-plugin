@@ -22,7 +22,7 @@ plugins {
 
 sonar {
     properties {
-        property("sonar.projectKey", "aaravmahajanofficial_convention-plugin-gradle-jenkins")
+        property("sonar.projectKey", "aaravmahajanofficial_jenkins-gradle-convention-plugin")
         property("sonar.organization", "aaravmahajanofficial")
         property("sonar.host.url", "https://sonarcloud.io")
     }
