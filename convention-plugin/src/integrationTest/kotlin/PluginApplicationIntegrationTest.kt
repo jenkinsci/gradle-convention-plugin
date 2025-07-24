@@ -66,8 +66,8 @@ class PluginApplicationIntegrationTest {
                 .runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
-        result.output shouldNotContain ("FAILED")
-        result.output shouldNotContain ("Exception")
+        result.output shouldNotContain "FAILED"
+        result.output shouldNotContain "Exception"
     }
 
     @Test
