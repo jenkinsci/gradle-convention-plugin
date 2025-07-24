@@ -37,15 +37,8 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17.0.15'
+          java-version: '17'
           cache: 'gradle'
-
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/wrapper
-          key: gradle-wrapper-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-          restore-keys: gradle-wrapper-${{ runner.os }}-
 
       - name: Grant executable permissions for gradlew
         run: chmod +x gradlew
