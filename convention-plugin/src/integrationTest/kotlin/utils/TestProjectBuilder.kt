@@ -52,7 +52,7 @@ class TestProjectBuilder(
     fun withGradleProperties(properties: Map<String, String>): TestProjectBuilder {
         val content =
             properties.entries
-                .joinToString("/n") { "${it.key}=${it.value}" }
+                .joinToString("\n") { "${it.key}=${it.value}" }
         File(projectDir, "gradle.properties").writeText(content)
         return this
     }
