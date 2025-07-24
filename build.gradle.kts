@@ -15,8 +15,17 @@
  */
 plugins {
     base
-    alias(libs.plugins.maven.gradle.publish.plugin) apply false
     alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.maven.gradle.publish.plugin) apply false
+    alias(libs.plugins.sonar.cloud.plugin)
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "aaravmahajanofficial_convention-plugin-gradle-jenkins")
+        property("sonar.organization", "aaravmahajanofficial")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 tasks.named<Wrapper>("wrapper") {
