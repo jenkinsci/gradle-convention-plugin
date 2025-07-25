@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Sources
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -32,7 +32,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: gradle
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
