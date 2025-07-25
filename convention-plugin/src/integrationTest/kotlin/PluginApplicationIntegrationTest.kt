@@ -25,7 +25,7 @@ import org.junit.jupiter.api.TestInstance
 import utils.TestProjectBuilder
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@DisplayName("Plugin Application Integration Tests!")
+@DisplayName("Plugin Application Integration Tests")
 class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
@@ -105,7 +105,7 @@ class PluginApplicationIntegrationTest {
                 .runGradle("jenkinsConventionPluginInfo")
 
         result.task(":jenkinsConventionPluginInfo")?.outcome shouldBe TaskOutcome.SUCCESS
-        result.output shouldContain "property-plugin-test"
+        result.output shouldContain "test-plugin"
     }
 
     @Test
@@ -215,8 +215,8 @@ class PluginApplicationIntegrationTest {
         ${basicPluginConfiguration()}
         """.trimIndent()
 
-    private fun basicPluginConfiguration(): String {
-        return """
+    private fun basicPluginConfiguration(): String =
+        """
         jenkinsConvention {
             artifactId = "test-plugin"
             humanReadableName = "Test Plugin"
@@ -238,5 +238,4 @@ class PluginApplicationIntegrationTest {
             }
         }
         """.trimIndent()
-    }
 }
