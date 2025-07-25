@@ -215,8 +215,8 @@ class PluginApplicationIntegrationTest {
         ${basicPluginConfiguration()}
         """.trimIndent()
 
-    private fun basicPluginConfiguration() {
-        """
+    private fun basicPluginConfiguration(): String {
+        return """
         jenkinsConvention {
             artifactId = "test-plugin"
             humanReadableName = "Test Plugin"
