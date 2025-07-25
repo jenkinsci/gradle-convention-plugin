@@ -21,7 +21,7 @@ import java.io.File
 import java.nio.file.Files
 
 class TestProjectBuilder(
-    private val projectDir: File,
+    val projectDir: File,
 ) {
     init {
         projectDir.mkdirs()
@@ -59,75 +59,222 @@ class TestProjectBuilder(
 
     fun withJavaSource(
         packageName: String = "com.example",
-        className: String = "TestClass",
+        className: String = "JavaTestClass",
+        content: String? = null,
     ): TestProjectBuilder {
         val sourceDir = File(projectDir, "src/main/java/${packageName.replace('.', '/')}")
         sourceDir.mkdirs()
 
-        File(sourceDir, "$className.java").writeText(
-            """
-            package $packageName
+        val javaContent =
+            content
+                ?:
+                    """
+                    package $packageName
 
-            public class $className {
-                public String getMessage() {
-                    return "Hello from $className :)"
-                }
-            }
+                    public class $className {
+                        public String getMessage() {
+                            return "Hello from $className :)"
+                        }
+                    }
 
-            """.trimIndent(),
-        )
+                    """.trimIndent()
+
+        File(sourceDir, "$className.java").writeText(javaContent)
+        return this
+    }
+
+    fun withKotlinSource(
+        packageName: String = "com.example",
+        className: String = "KotlinTestClass",
+        content: String? = null,
+    ): TestProjectBuilder {
+        val sourceDir = File(projectDir, "src/main/kotlin/${packageName.replace('.', '/')}")
+        sourceDir.mkdirs()
+
+        val kotlinContent =
+            content
+                ?:
+                    """
+                    package $packageName
+
+                    public class $className {
+                        public fun getMessage(): String = "Hello from $className :)"
+                    }
+
+                    """.trimIndent()
+
+        File(sourceDir, "$className.kt").writeText(kotlinContent)
         return this
     }
 
     fun withTestSource(
         packageName: String = "com.example",
         className: String = "TestClassTest",
+        language: String = "java",
     ): TestProjectBuilder {
-        val testDir = File(projectDir, "src/test/java/${packageName.replace('.', '/')}")
+        val testDir =
+            when (language) {
+                "kotlin" -> File(projectDir, "src/test/kotlin/${packageName.replace('.', '/')}")
+                else -> File(projectDir, "src/test/java/${packageName.replace('.', '/')}")
+            }
         testDir.mkdirs()
 
-        File(testDir, "$className.java").writeText(
-            """
-            package $packageName
+        val testContent =
+            when (language) {
+                "kotlin" ->
+                    """
+                    package $packageName
 
-            import org.junit.jupiter.api.Test;
-            import static org.junit.jupiter.api.Assertions.*;
+                    import org.junit.jupiter.api.Test;
+                    import static org.junit.jupiter.api.Assertions.*;
 
-            public class $className {
-                @Test
-                public void testGetMessage() {
-                    TestClass testClass = new TestClass();
-                    assertEquals("Hello from TestClass", testClass.getMessage());
-                }
+                    public class $className {
+                        @Test
+                        fun testGetMessage() {
+                            val testClass = TestClass()
+                            assertEquals("Hello from TestClass", testClass.getMessage());
+                        }
+                    }
+
+                    """.trimIndent()
+
+                else ->
+                    """
+                    package $packageName
+
+                    import org.junit.jupiter.api.Test;
+                    import static org.junit.jupiter.api.Assertions.*;
+
+                    public class $className {
+                        @Test
+                        public void testGetMessage() {
+                            TestClass testClass = new TestClass();
+                            assertEquals("Hello from TestClass", testClass.getMessage());
+                        }
+                    }
+
+                    """.trimIndent()
             }
 
-            """.trimIndent(),
-        )
+        val fileExtension =
+            when (language) {
+                "kotlin" -> "kt"
+                else -> "java"
+            }
+
+        File(testDir, "$className.$fileExtension").writeText(testContent)
         return this
     }
 
-    fun runGradle(vararg tasks: String): BuildResult =
-        GradleRunner
-            .create()
-            .withProjectDir(
-                projectDir,
-            ).withArguments(tasks.toList() + "--stacktrace" + "--info")
-            .withPluginClasspath()
-            .withDebug(true)
-            .build()
+    fun withJellyFile(path: String = "src/main/resources/index.jelly"): TestProjectBuilder {
+        val jellyDir = File(projectDir, path).parentFile
+        jellyDir.mkdirs()
 
-    fun runGradleAndFail(vararg tasks: String): BuildResult =
-        GradleRunner
-            .create()
-            .withProjectDir(
-                projectDir,
-            ).withArguments(tasks.toList() + "--stacktrace")
-            .withPluginClasspath()
-            .buildAndFail()
+        val jellyContent =
+            """
+            <?jelly escape-by-default='true'?>
+            <div>
+                <p>Hello Jenkins Plugin!</p>
+            </div>
+            """.trimIndent()
+
+        File(projectDir, path).writeText(jellyContent)
+        return this
+    }
+
+    fun withConfigFile(
+        toolName: String,
+        fileName: String,
+        content: String,
+    ): TestProjectBuilder {
+        val configDir = File(projectDir, "config/$toolName")
+        configDir.parentFile.mkdirs()
+        File(configDir, fileName).writeText(content)
+        return this
+    }
+
+    fun withPackageJson(content: String? = null): TestProjectBuilder {
+        val packageJsonContent =
+            content
+                ?:
+                    """
+                    {
+                        "name": "test-plugin-frontend",
+                        "version": "1.0.0",
+                        "scripts": {
+                            "lint": "eslint src/main/js/**/*.js"
+                        },
+                        "devDependencies": {
+                            "eslint": "^8.0.0"
+                        }
+                    }
+                    """.trimIndent()
+
+        File(projectDir, "package.json").writeText(packageJsonContent)
+        return this
+    }
+
+    fun withJavaScriptSource(path: String = "src/main/js/main.js"): TestProjectBuilder {
+        val jsDir = File(projectDir, path).parentFile
+        jsDir.mkdirs()
+
+        val jsContent =
+            """
+            function hello() {
+                console.log("Hello from Jenkins Plugin JS!");
+            }
+            """.trimIndent()
+
+        File(projectDir, path).writeText(jsContent)
+        return this
+    }
+
+    fun withSubProject(
+        name: String,
+        action: TestProjectBuilder.() -> Unit,
+    ): TestProjectBuilder {
+        val subProjectDir = File(projectDir, name)
+
+        TestProjectBuilder(subProjectDir).action()
+
+        val settingsFile = File(projectDir, "settings.gradle.kts")
+        if (settingsFile.exists()) {
+            settingsFile.writeText("${settingsFile.readText()}\ninclude(\":$name\")")
+        }
+
+        return this
+    }
+
+    fun runGradle(vararg tasks: String): BuildResult = runGradle(tasks.toList())
+
+    fun runGradle(
+        tasks: List<String>,
+        arguments: List<String> = emptyList(),
+        expectFailure: Boolean = false,
+    ): BuildResult {
+        val allArgs =
+            tasks + arguments + "--stacktrace" + "--info"
+
+        val runner =
+            GradleRunner
+                .create()
+                .withProjectDir(projectDir)
+                .withArguments(allArgs)
+                .withPluginClasspath()
+                .withDebug(true)
+
+        return if (expectFailure) {
+            runner.buildAndFail()
+        } else {
+            runner.build()
+        }
+    }
+
+    fun runGradleAndFail(vararg tasks: String): BuildResult = runGradle(tasks.toList(), expectFailure = true)
 
     companion object {
-        fun create(): TestProjectBuilder {
-            val tempDir = Files.createTempDirectory("gradle-test-").toFile()
+        fun create(name: String = "test-project"): TestProjectBuilder {
+            val tempDir = Files.createTempDirectory("gradle-test-$name").toFile()
             tempDir.deleteOnExit()
             return TestProjectBuilder(tempDir)
         }
