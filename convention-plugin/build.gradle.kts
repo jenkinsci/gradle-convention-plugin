@@ -100,6 +100,8 @@ val integrationTest by tasks.registering(Test::class) {
     description = "Runs integration tests."
     group = "Verification"
 
+    dependsOn("classes")
+
     testClassesDirs = sourceSets["integrationTest"].output.classesDirs
     classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter("test")
