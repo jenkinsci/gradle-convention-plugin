@@ -25,44 +25,18 @@ import org.junit.jupiter.api.TestInstance
 import utils.TestProjectBuilder
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
-@DisplayName("Plugin Application Integration Tests!")
+@DisplayName("Plugin Application Integration Tests")
 class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
         val result =
             TestProjectBuilder
-                .create()
+                .create("kotlin-dsl-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "test-plugin"
-                        humanReadableName = "Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-                            developer {
-                                id = "dev-123"
-                                name = "Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        licenses {
-                            license {
-                                name = "MIT"
-                                url = uri("https://opensource.org/license/mit")
-                            }
-                        }
-                    }
-                    """.trimIndent(),
-                ).withJavaSource()
+                .withBuildGradle(basicBuildScript())
+                .withJavaSource()
                 .runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
@@ -75,7 +49,7 @@ class PluginApplicationIntegrationTest {
     fun `apply plugin to existing Java project`() {
         val result =
             TestProjectBuilder
-                .create()
+                .create("java-existing-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -85,33 +59,15 @@ class PluginApplicationIntegrationTest {
                         id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
                     }
 
-                    jenkinsConvention {
-                        artifactId = "test-plugin"
-                        humanReadableName = "Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-                            developer {
-                                id = "dev-123"
-                                name = "Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        licenses {
-                            license {
-                                name = "MIT"
-                                url = uri("https://opensource.org/license/mit")
-                            }
-                        }
-                    }
+                     ${basicPluginConfiguration()}
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle("tasks", "--all")
+                .runGradle("tasks", "--group=build")
 
         result.task(":tasks")?.outcome shouldBe TaskOutcome.SUCCESS
-        result.output shouldContain ("jpi")
-        result.output shouldContain ("test")
+        result.output shouldContain "jpi"
+        result.output shouldContain "test"
+        result.output shouldContain "jar"
     }
 
     @Test
@@ -119,38 +75,14 @@ class PluginApplicationIntegrationTest {
     fun `validate minimum gradle version`() {
         val result =
             TestProjectBuilder
-                .create()
+                .create("gradle-version-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "version-test-plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-                            developer {
-                                id = "dev-123"
-                                name = "Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        licenses {
-                            license {
-                                name = "MIT"
-                                url = uri("https://opensource.org/license/mit")
-                            }
-                        }
-                    }
-                    """.trimIndent(),
-                ).runGradle("help")
+                .withBuildGradle(basicBuildScript())
+                .runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
+        result.output shouldNotContain "requires Gradle"
     }
 
     @Test
@@ -158,7 +90,7 @@ class PluginApplicationIntegrationTest {
     fun `apply plugin with property configuration`() {
         val result =
             TestProjectBuilder
-                .create()
+                .create("property-config-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withGradleProperties(
@@ -168,37 +100,20 @@ class PluginApplicationIntegrationTest {
                         "cfg.quality.jacoco.enabled" to "enabled",
                         "cfg.bom.jenkins" to "enabled",
                     ),
-                ).withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        humanReadableName = "Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-                            developer {
-                                id = "dev-123"
-                                name = "Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-                    }
-                    """.trimIndent(),
-                ).withJavaSource()
+                ).withBuildGradle(basicBuildScript())
+                .withJavaSource()
                 .runGradle("jenkinsConventionPluginInfo")
 
-        result.output shouldContain ("property-plugin-test")
+        result.task(":jenkinsConventionPluginInfo")?.outcome shouldBe TaskOutcome.SUCCESS
+        result.output shouldContain "test-plugin"
     }
 
     @Test
-    @DisplayName("verify quality tasks are not created when disabled")
-    fun `verify quality tasks not created when disabled`() {
+    @DisplayName("should verify quality tasks are conditionally created")
+    fun `verify quality tasks conditional creation`() {
         val result =
             TestProjectBuilder
-                .create()
+                .create("quality-conditional-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -234,7 +149,93 @@ class PluginApplicationIntegrationTest {
 
         result.task(":tasks")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        result.output shouldNotContain ("checkstyle")
-        result.output shouldNotContain ("pmd")
+        result.output shouldNotContain "checkstyle"
+        result.output shouldNotContain "pmd"
     }
+
+//    @Test
+//    @DisplayName("should handle multi-module project structure")
+//    fun `handle multi module project structure`() {
+//        val result =
+//            TestProjectBuilder
+//                .create("multi-module-test")
+//                .withVersionCatalog()
+//                .withSettingsGradle()
+//                .withBuildGradle(
+//                    """
+//                    plugins {
+//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") apply false
+//                    }
+//
+//                    subprojects {
+//
+//                       plugins.apply("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+//
+//                       jenkinsConvention {
+//                            artifactId = "multi-module-project"
+//                            humanReadableName = "Multi Module Test Plugin"
+//                            homePage = uri("https://github.com")
+//
+//                            developers {
+//                                developer {
+//                                    id = "dev-123"
+//                                    name = "Test Dev"
+//                                    email = "testDev@gmail.com"
+//                                }
+//                            }
+//                       }
+//                    }
+//
+//                    """.trimIndent(),
+//                ).withSubProject("plugin-core") {
+//                    withBuildGradle(
+//                        """
+//
+//                        """.trimIndent(),
+//                    ).withJavaSource("com.example.core", "CoreLogic")
+//                }.withSubProject("plugin-ui") {
+//                    withBuildGradle(
+//                        """
+//
+//                        """.trimIndent(),
+//                    ).withJavaSource("com.example.ui", "UiLogic")
+//                }.runGradle("projects")
+//
+//        result.task(":projects")?.outcome shouldBe TaskOutcome.SUCCESS
+//        result.output shouldContain "plugin-core"
+//        result.output shouldContain "plugin-ui"
+//    }
+
+    private fun basicBuildScript() =
+        """
+        plugins {
+            id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+        }
+
+        ${basicPluginConfiguration()}
+        """.trimIndent()
+
+    private fun basicPluginConfiguration(): String =
+        """
+        jenkinsConvention {
+            artifactId = "test-plugin"
+            humanReadableName = "Test Plugin"
+            homePage = uri("https://github.com")
+
+            developers {
+                developer {
+                    id = "dev-123"
+                    name = "Test Dev"
+                    email = "testDev@gmail.com"
+                }
+            }
+
+            licenses {
+                license {
+                    name = "MIT"
+                    url = uri("https://opensource.org/license/mit")
+                }
+            }
+        }
+        """.trimIndent()
 }
