@@ -128,7 +128,7 @@ class TestProjectBuilder(
                     import org.junit.jupiter.api.Test
                     import org.junit.jupiter.api.Assertions.*;
 
-                    public class $className {
+                    class $className {
                         @Test
                         fun testGetMessage() {
                             val testClass = TestClass()
