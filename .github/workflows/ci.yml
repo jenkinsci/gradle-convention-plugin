@@ -52,16 +52,16 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./gradlew clean build sonar --no-daemon --stacktrace --info -Pkotlin.incremental=false
+          ./gradlew clean build sonar --stacktrace --info
 
       - name: Publish to Maven Local
         run: |
-          ./gradlew publishToLocal --no-daemon
+          ./gradlew publishToLocal
 
       - name: Build Git Automerger Plugin Example
         run: |
           cd ./examples/git-automerger-plugin
-          ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace
+          ./gradlew clean build --no-configuration-cache -x test --stacktrace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
