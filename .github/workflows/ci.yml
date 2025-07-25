@@ -33,9 +33,6 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
