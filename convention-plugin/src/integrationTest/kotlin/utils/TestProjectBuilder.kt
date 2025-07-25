@@ -132,7 +132,7 @@ class TestProjectBuilder(
                         @Test
                         fun testGetMessage() {
                             val testClass = TestClass()
-                            assertEquals("Hello from TestClass", testClass.getMessage());
+                            assertEquals("Hello from TestClass", testClass.getMessage())
                         }
                     }
 
