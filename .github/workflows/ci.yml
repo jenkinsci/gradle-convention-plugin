@@ -1,8 +1,4 @@
 name: CI
-permissions:
-  contents: read
-  packages: write
-  actions: read
 
 on:
   push:
@@ -11,13 +7,19 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  actions: read
+  security-events: write
+
 jobs:
   build-test-analyze:
-    name: Build & analyze
+    name: Build & Analyze
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -25,24 +27,29 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v4
 
-      - name: Set up JDK 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
           cache: gradle
 
-      - name: Grant executable permissions for gradlew
-        run: chmod +x gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Cache SonarQube packages
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java-kotlin
+
+      - name: Cache SonarQube Packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Clean, build & analyze with SonarQube
+      - name: Build & Analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
@@ -50,8 +57,12 @@ jobs:
 
       - name: Publish to Maven Local
         run: |
-          ./gradlew publishtoLocal
+          ./gradlew publishToLocal --no-daemon
 
-      - name: Build the "git-automerger-plugin"
+      - name: Build Git Automerger Plugin Example
         run: |
-          cd ./examples/git-automerger-plugin && chmod +x gradlew && ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace
+          cd ./examples/git-automerger-plugin
+          ./gradlew clean build --no-daemon --no-configuration-cache -x test --stacktrace
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
