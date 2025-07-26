@@ -1,0 +1,299 @@
+/*
+ * Copyright 2025 Aarav Mahajan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+@file:Suppress("FunctionName")
+
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import utils.TestProjectBuilder
+
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@DisplayName("Bom Management Integration Tests")
+class BomManagementIntegrationTest {
+    @Test
+    @DisplayName("should apply predefined BOMs correctly")
+    fun `apply all predefined boms correctly`() {
+        val result =
+            TestProjectBuilder
+                .create("all-boms-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicBuildScript())
+                .withJavaSource()
+                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain
+            "io.jenkins.tools.bom:bom-2.504.x:{strictly 5015.vb_52d36583443} -> 5015.vb_52d36583443"
+        result.output shouldContain "org.apache.groovy:groovy-bom:{strictly 4.0.27} -> 4.0.27"
+        result.output shouldContain "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2"
+        result.output shouldContain "org.springframework:spring-framework-bom:{strictly 6.2.9} -> 6.2.9"
+        result.output shouldContain "io.netty:netty-bom:{strictly 4.2.3.Final} -> 4.2.3.Final"
+        result.output shouldContain "org.slf4j:slf4j-bom:{strictly 2.0.17} -> 2.0.17"
+        result.output shouldContain "org.eclipse.jetty:jetty-bom:{strictly 12.0.23} -> 12.0.23"
+        result.output shouldContain "com.google.guava:guava-bom:{strictly 33.4.8-jre} -> 33.4.8-jre"
+        result.output shouldContain "org.apache.logging.log4j:log4j-bom:{strictly 2.25.1} -> 2.25.1"
+        result.output shouldContain "io.vertx:vertx-stack-depchain:{strictly 5.0.1} -> 5.0.1"
+
+        // test-only boms must not be present
+        result.output shouldNotContain "org.junit:junit-bom"
+        result.output shouldNotContain "org.mockito:mockito-bom"
+        result.output shouldNotContain "org.testcontainers:testcontainers-bom"
+        result.output shouldNotContain "org.spockframework:spock-bom"
+    }
+
+    @Test
+    @DisplayName("should handle test-only BOMs correctly")
+    fun `handle test-only boms correctly`() {
+        val result =
+            TestProjectBuilder
+                .create("all-boms-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicBuildScript())
+                .withJavaSource()
+                .runGradle("dependencies", "--configuration=testRuntimeClasspath")
+
+        result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain "org.junit:junit-bom:{strictly 5.13.4} -> 5.13.4"
+        result.output shouldContain "org.mockito:mockito-bom:{strictly 5.18.0} -> 5.18.0"
+        result.output shouldContain "org.testcontainers:testcontainers-bom:{strictly 1.21.3} -> 1.21.3"
+        result.output shouldContain "org.spockframework:spock-bom:{strictly 2.4-M6-groovy-4.0} -> 2.4-M6-groovy-4.0"
+    }
+
+    @Test
+    @DisplayName("should apply custom BOM")
+    fun `apply custom bom`() {
+        val result =
+            TestProjectBuilder
+                .create("custom-boms-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    jenkinsConvention {
+                        artifactId = "Bom-test-plugin"
+                        humanReadableName = "Bom Test Plugin"
+                        homePage = uri("https://github.com")
+
+                        developers {
+
+                            developer {
+                                id = "bom-dev-123"
+                                name = "Bom-Test Dev"
+                                email = "testDev@gmail.com"
+                            }
+                        }
+
+                        bom {
+                            customBoms {
+                                create("aws-bom") {
+                                    coordinates = "com.amazonaws:aws-java-sdk-bom"
+                                    version = "1.12.788"
+                                    testOnly = false
+                                }
+                            }
+                        }
+
+                    }
+                    """.trimIndent(),
+                ).withJavaSource()
+                .withTestSource()
+                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain "com.amazonaws:aws-java-sdk-bom:{strictly 1.12.788} -> 1.12.788"
+    }
+
+    @Test
+    @DisplayName("should fail with clear error when coordinates are missing in custom BOM")
+    fun `fail on custom bom missing coordinates`() {
+        val result =
+            TestProjectBuilder
+                .create("custom-boms-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    jenkinsConvention {
+                        artifactId = "Bom-test-plugin"
+                        humanReadableName = "Bom Test Plugin"
+                        homePage = uri("https://github.com")
+
+                        developers {
+
+                            developer {
+                                id = "bom-dev-123"
+                                name = "Bom-Test Dev"
+                                email = "testDev@gmail.com"
+                            }
+                        }
+
+                        bom {
+                            customBoms {
+                                create("aws-bom") {
+                                    version = "1.12.788"
+                                    testOnly = false
+                                }
+                            }
+                        }
+
+                    }
+                    """.trimIndent(),
+                ).withJavaSource()
+                .runGradle(listOf("help"), expectFailure = true)
+
+        result.output shouldContain "Missing coordinates for BOM 'aws-bom'."
+    }
+
+    @Test
+    @DisplayName("should fail with clear error when version is missing in custom BOM")
+    fun `fail on custom bom missing version`() {
+        val result =
+            TestProjectBuilder
+                .create("custom-boms-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    jenkinsConvention {
+                        artifactId = "Bom-test-plugin"
+                        humanReadableName = "Bom Test Plugin"
+                        homePage = uri("https://github.com")
+
+                        developers {
+
+                            developer {
+                                id = "bom-dev-123"
+                                name = "Bom-Test Dev"
+                                email = "testDev@gmail.com"
+                            }
+                        }
+
+                        bom {
+                            customBoms {
+                                create("aws-bom") {
+                                    coordinates = "com.amazonaws:aws-java-sdk-bom"
+                                    testOnly = false
+                                }
+                            }
+                        }
+
+                    }
+                    """.trimIndent(),
+                ).withJavaSource()
+                .runGradle(listOf("help"), expectFailure = true)
+
+        result.output shouldContain "Missing version for BOM 'aws-bom'."
+    }
+
+    @Test
+    @DisplayName("should handle bom conflicts gracefully")
+    fun `handle bom conflicts gracefully`() {
+        val result =
+            TestProjectBuilder
+                .create("boms-conflict-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    ${basicBuildScript()}
+
+                    dependencies {
+                        implementation("org.springframework.boot:spring-boot-starter-json:2.7.8")
+                        implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
+                    }
+                    """.trimIndent(),
+                ).withJavaSource()
+                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2"
+        result.output shouldContain "com.fasterxml.jackson.core:jackson-core:2.19.2"
+    }
+
+    @Test
+    @DisplayName("should disable boms via properties")
+    fun `disable boms via properties`() {
+        val result =
+            TestProjectBuilder
+                .create("disable-boms-properties-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withGradleProperties(
+                    mapOf(
+                        "cfg.bom.jenkins.enabled" to "false",
+                        "cfg.bom.jackson.enabled" to "false",
+                        "cfg.bom.spring.enabled" to "false",
+                    ),
+                ).withBuildGradle(basicBuildScript())
+                .withJavaSource()
+                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldNotContain "io.jenkins.tools.bom:bom-2.504.x"
+        result.output shouldNotContain "com.fasterxml.jackson:jackson-bom"
+        result.output shouldNotContain "org.springframework:spring-framework-bom"
+    }
+
+    private fun basicBuildScript() =
+        """
+        plugins {
+            id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+        }
+
+        ${basicPluginConfiguration()}
+        """.trimIndent()
+
+    private fun basicPluginConfiguration(): String =
+        """
+        jenkinsConvention {
+            artifactId = "Bom-test-plugin"
+            humanReadableName = "Bom Test Plugin"
+            homePage = uri("https://github.com")
+
+            developers {
+
+                developer {
+                    id = "bom-dev-123"
+                    name = "Bom-Test Dev"
+                    email = "testDev@gmail.com"
+                }
+            }
+        }
+        """.trimIndent()
+}

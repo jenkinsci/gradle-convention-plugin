@@ -36,9 +36,9 @@ public class BomManager(
 
     private fun DependencyHandler.configureCommonBoms() {
         applyBomIfEnabled(
-            bomExtension.jenkinsExtension.enabled,
-            bomExtension.jenkinsExtension.coordinates,
-            bomExtension.jenkinsExtension.testOnly,
+            bomExtension.jenkins.enabled,
+            bomExtension.jenkins.coordinates,
+            bomExtension.jenkins.testOnly,
         )
         applyBomIfEnabled(
             bomExtension.groovy.enabled,
