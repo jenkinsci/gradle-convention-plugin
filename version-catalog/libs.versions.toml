@@ -45,7 +45,6 @@ jacoco = "0.8.13"
 pmd = "7.0.0"
 codenarc = "3.6.0"
 node-gradle = "7.1.0"
-sonar-cloud = "6.2.0.5505"
 
 # Testing
 junit = "5.13.4"
@@ -114,7 +113,3 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 maven-gradle-publish-plugin = { id = "com.vanniktech.maven.publish", version.ref = "maven-gradle-publish-plugin" }
-sonar-cloud-plugin = { id = "org.sonarqube", version.ref = "sonar-cloud" }
-
-[bundles]
-kotlin = ["kotlin-stdlib", "kotlin-reflect"]

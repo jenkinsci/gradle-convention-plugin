@@ -41,27 +41,18 @@ jobs:
         with:
           languages: java-kotlin
 
-      - name: Cache SonarQube Packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Build & Analyze with SonarQube
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Build & Test
         run: |
-          ./gradlew clean build sonar --stacktrace --info --debug
+          ./gradlew clean build --no-daemon --stacktrace
 
       - name: Publish to Maven Local
         run: |
-          ./gradlew publishToLocal
+          ./gradlew publishToLocal --no-daemon --stacktrace
 
       - name: Build Git Automerger Plugin Example
         run: |
           cd ./examples/git-automerger-plugin
-          ./gradlew clean build --no-configuration-cache -x test --stacktrace
+          ./gradlew clean build --no-configuration-cache -x test --no-daemon --stacktrace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
