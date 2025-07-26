@@ -20,7 +20,6 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
@@ -38,18 +37,7 @@ public open class BomExtension
         providers: ProviderFactory,
         libs: VersionCatalog,
     ) {
-        public val jenkinsExtension: JenkinsBomExtension =
-            objects.newInstance(
-                JenkinsBomExtension::class.java,
-                objects,
-                providers,
-                libs,
-            )
-
-        init {
-            (this as ExtensionAware).extensions.add("jenkins", jenkinsExtension)
-        }
-
+        public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
         public val groovy: GroovyBomExtension = objects.newInstance(libs)
         public val jackson: JacksonBomExtension = objects.newInstance(libs)
         public val spring: SpringBomExtension = objects.newInstance(libs)
@@ -66,7 +54,7 @@ public open class BomExtension
         public val customBoms: NamedDomainObjectContainer<CustomBomsExtension> =
             objects.domainObjectContainer(CustomBomsExtension::class.java)
 
-        public fun jenkins(action: JenkinsBomExtension.() -> Unit): JenkinsBomExtension = jenkinsExtension.apply(action)
+        public fun jenkins(action: JenkinsBomExtension.() -> Unit): JenkinsBomExtension = jenkins.apply(action)
 
         public fun groovy(action: GroovyBomExtension.() -> Unit): GroovyBomExtension = groovy.apply(action)
 
@@ -116,15 +104,6 @@ public open class JenkinsBomExtension
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "jenkins-bom-coordinates")
         public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
-
-        // testing for Groovy DSL
-        public fun setEnabled(value: Boolean) {
-            enabled.set(value)
-        }
-
-        public fun getEnabled() {
-            enabled.get()
-        }
     }
 
 public open class GroovyBomExtension
