@@ -41,23 +41,34 @@ class BomManagementIntegrationTest {
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        result.output shouldContain
-            "io.jenkins.tools.bom:bom-2.504.x:{strictly 5015.vb_52d36583443} -> 5015.vb_52d36583443"
-        result.output shouldContain "org.apache.groovy:groovy-bom:{strictly 4.0.27} -> 4.0.27"
-        result.output shouldContain "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2"
-        result.output shouldContain "org.springframework:spring-framework-bom:{strictly 6.2.9} -> 6.2.9"
-        result.output shouldContain "io.netty:netty-bom:{strictly 4.2.3.Final} -> 4.2.3.Final"
-        result.output shouldContain "org.slf4j:slf4j-bom:{strictly 2.0.17} -> 2.0.17"
-        result.output shouldContain "org.eclipse.jetty:jetty-bom:{strictly 12.0.23} -> 12.0.23"
-        result.output shouldContain "com.google.guava:guava-bom:{strictly 33.4.8-jre} -> 33.4.8-jre"
-        result.output shouldContain "org.apache.logging.log4j:log4j-bom:{strictly 2.25.1} -> 2.25.1"
-        result.output shouldContain "io.vertx:vertx-stack-depchain:{strictly 5.0.1} -> 5.0.1"
+        val expectedBoms = listOf(
+            "io.jenkins.tools.bom:bom-2.504.x:{strictly 5015.vb_52d36583443} -> 5015.vb_52d36583443",
+            "org.springframework:spring-framework-bom:{strictly 6.2.9} -> 6.2.9",
+            "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2",
+            "org.apache.groovy:groovy-bom:{strictly 4.0.27} -> 4.0.27",
+            "io.netty:netty-bom:{strictly 4.2.3.Final} -> 4.2.3.Final",
+            "org.slf4j:slf4j-bom:{strictly 2.0.17} -> 2.0.17",
+            "org.eclipse.jetty:jetty-bom:{strictly 12.0.23} -> 12.0.23",
+            "com.google.guava:guava-bom:{strictly 33.4.8-jre} -> 33.4.8-jre",
+            "org.apache.logging.log4j:log4j-bom:{strictly 2.25.1} -> 2.25.1",
+            "io.vertx:vertx-stack-depchain:{strictly 5.0.1} -> 5.0.1"
+        )
+
+        expectedBoms.forEach { bom ->
+            result.output shouldContain bom
+        }
 
         // test-only boms must not be present
-        result.output shouldNotContain "org.junit:junit-bom"
-        result.output shouldNotContain "org.mockito:mockito-bom"
-        result.output shouldNotContain "org.testcontainers:testcontainers-bom"
-        result.output shouldNotContain "org.spockframework:spock-bom"
+        val testBoms = listOf(
+            "org.junit:junit-bom",
+            "org.mockito:mockito-bom",
+            "org.testcontainers:testcontainers-bom",
+            "org.spockframework:spock-bom"
+        )
+        testBoms.forEach { bom ->
+            result.output shouldNotContain bom
+        }
+
     }
 
     @Test
