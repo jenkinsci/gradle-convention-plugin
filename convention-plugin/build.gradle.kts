@@ -98,9 +98,6 @@ gradlePlugin {
 
 val integrationTest by tasks.registering(Test::class) {
 
-    systemProperty("kotlin.incremental.compilation", "false")
-    systemProperty("kotlin.incremental", "false")
-
     description = "Runs integration tests."
     group = "Verification"
 
