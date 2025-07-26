@@ -23,6 +23,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import utils.TestProjectBuilder
+import utils.basicBuildScript
+import utils.basicPluginConfiguration
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Plugin Application Integration Tests")
@@ -205,37 +207,4 @@ class PluginApplicationIntegrationTest {
 //        result.output shouldContain "plugin-core"
 //        result.output shouldContain "plugin-ui"
 //    }
-
-    private fun basicBuildScript() =
-        """
-        plugins {
-            id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-        }
-
-        ${basicPluginConfiguration()}
-        """.trimIndent()
-
-    private fun basicPluginConfiguration(): String =
-        """
-        jenkinsConvention {
-            artifactId = "test-plugin"
-            humanReadableName = "Test Plugin"
-            homePage = uri("https://github.com")
-
-            developers {
-                developer {
-                    id = "dev-123"
-                    name = "Test Dev"
-                    email = "testDev@gmail.com"
-                }
-            }
-
-            licenses {
-                license {
-                    name = "MIT"
-                    url = uri("https://opensource.org/license/mit")
-                }
-            }
-        }
-        """.trimIndent()
 }
