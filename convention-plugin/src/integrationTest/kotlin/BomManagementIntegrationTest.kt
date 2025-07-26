@@ -23,6 +23,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import utils.TestProjectBuilder
+import utils.basicBuildScript
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Bom Management Integration Tests")
@@ -281,31 +282,4 @@ class BomManagementIntegrationTest {
         result.output shouldNotContain "com.fasterxml.jackson:jackson-bom"
         result.output shouldNotContain "org.springframework:spring-framework-bom"
     }
-
-    private fun basicBuildScript() =
-        """
-        plugins {
-            id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-        }
-
-        ${basicPluginConfiguration()}
-        """.trimIndent()
-
-    private fun basicPluginConfiguration(): String =
-        """
-        jenkinsConvention {
-            artifactId = "Bom-test-plugin"
-            humanReadableName = "Bom Test Plugin"
-            homePage = uri("https://github.com")
-
-            developers {
-
-                developer {
-                    id = "bom-dev-123"
-                    name = "Bom-Test Dev"
-                    email = "testDev@gmail.com"
-                }
-            }
-        }
-        """.trimIndent()
 }
