@@ -43,7 +43,7 @@ jobs:
 
       - name: Build & Test
         run: |
-          ./gradlew clean build --no-daemon --stacktrace -Dkotlin.incremental.classpath.diff.enabled=false
+          ./gradlew clean build --no-build-cache --no-daemon --stacktrace
 
       - name: Publish to Maven Local
         run: |

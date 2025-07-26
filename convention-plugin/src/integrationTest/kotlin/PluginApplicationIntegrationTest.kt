@@ -37,7 +37,7 @@ class PluginApplicationIntegrationTest {
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("clean", "help")
+                .runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldNotContain "FAILED"
@@ -79,7 +79,7 @@ class PluginApplicationIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
-                .runGradle("clean", "help")
+                .runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldNotContain "requires Gradle"
@@ -102,7 +102,7 @@ class PluginApplicationIntegrationTest {
                     ),
                 ).withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("clean", "jenkinsConventionPluginInfo")
+                .runGradle("jenkinsConventionPluginInfo")
 
         result.task(":jenkinsConventionPluginInfo")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldContain "test-plugin"
