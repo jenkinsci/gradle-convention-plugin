@@ -38,10 +38,18 @@ public class KotlinConventionManager(
 //                explicitApi()
             }
 
+            val kotlinVersion =
+                libs
+                    .findVersion("kotlin")
+                    .get()
+                    .requiredVersion
+                    .split(".")
+                    .let { "${it[0]}.${it[1]}" }
+
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
-                    languageVersion.set(KotlinVersion.KOTLIN_2_2)
-                    apiVersion.set(KotlinVersion.KOTLIN_2_2)
+                    languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
                     jvmTarget.set(JvmTarget.JVM_17)
                     allWarningsAsErrors.set(true)
                     freeCompilerArgs.addAll(
@@ -52,9 +60,9 @@ public class KotlinConventionManager(
             }
 
             project.dependencies {
-                add("compileOnly", platform(libs.findLibrary("kotlin-bom").get()))
-                add("compileOnly", libs.findLibrary("kotlin-stdlib").get())
-                add("compileOnly", libs.findLibrary("kotlin-reflect").get())
+                add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
+                add("implementation", libs.findLibrary("kotlin-stdlib").get())
+                add("implementation", libs.findLibrary("kotlin-reflect").get())
 
                 add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
             }

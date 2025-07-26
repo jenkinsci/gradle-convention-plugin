@@ -24,6 +24,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 private const val JAVA_VERSION = 17
 
@@ -33,21 +34,23 @@ public class KotlinConventionsPlugin : Plugin<Project> {
             pluginManager.apply("org.jetbrains.kotlin.jvm")
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-            project.configureKotlin()
+            project.configureKotlin(libs)
             project.configureCommonDependencies(libs)
         }
     }
 }
 
-private fun Project.configureKotlin() {
+private fun Project.configureKotlin(libs: VersionCatalog) {
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(JAVA_VERSION)
 
         explicitApi()
 
+        val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion.split(".").let { "${it[0]}.${it[1]}" }
+
         compilerOptions {
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+            languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
             jvmTarget.set(JvmTarget.JVM_17)
 
             allWarningsAsErrors.set(true)
@@ -64,10 +67,10 @@ private fun Project.configureKotlin() {
 
 private fun Project.configureCommonDependencies(libs: VersionCatalog) {
     dependencies {
-        "implementation"(platform(libs.findLibrary("kotlin-bom").get()))
-        "implementation"(libs.findLibrary("kotlin-stdlib").get())
-        "implementation"(libs.findLibrary("kotlin-reflect").get())
+        add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
+        add("implementation", libs.findLibrary("kotlin-stdlib").get())
+        add("implementation", libs.findLibrary("kotlin-reflect").get())
 
-        "compileOnly"(libs.findLibrary("jetbrains-annotations").get())
+        add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
     }
 }
