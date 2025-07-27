@@ -93,7 +93,10 @@ public class QualityManager(
                 !quality.checkstyle.failOnViolation
                     .get()
 
-            resolveConfigFile("checkstyle", "suppressions.xml")
+            val suppressionsFile = resolveConfigFile("checkstyle", "suppressions.xml").asFile
+            if (suppressionsFile.exists()) {
+                configProperties = mapOf("suppressions.file" to suppressionsFile.absolutePath)
+            }
         }
         project.tasks.withType<Checkstyle>().configureEach { task ->
             task.group = "Verification"
@@ -168,7 +171,7 @@ public class QualityManager(
                 !quality.spotbugs.failOnError
                     .get(),
             )
-            excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml").asFile)
+            excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml"))
         }
 
         project.tasks.withType<SpotBugsTask>().configureEach {
@@ -185,42 +188,21 @@ public class QualityManager(
     }
 
     private fun configurePmd() {
-        if (!quality.pmd.enabled
-                .getOrElse(false)
-        ) {
-            return
-        }
+        if (!quality.pmd.enabled.getOrElse(false)) return
 
         project.pluginManager.apply(PmdPlugin::class.java)
 
         project.configure<PmdExtension> {
-            toolVersion =
-                quality.pmd.toolVersion
-                    .get()
-            quality.pmd.ruleSetFiles.orNull?.let {
-                ruleSetFiles = project.files(it.asFile)
-            }
-            isConsoleOutput =
-                quality.pmd.consoleOutput
-                    .get()
-            isIgnoreFailures =
-                !quality.pmd.failOnViolation
-                    .get()
+            toolVersion = quality.pmd.toolVersion.get()
+            ruleSetFiles = project.files(resolveConfigFile("pmd", "pmd-ruleset.xml"))
+            isConsoleOutput = quality.pmd.consoleOutput.get()
+            isIgnoreFailures = !quality.pmd.failOnViolation.get()
         }
         project.tasks.withType<Pmd>().configureEach { task ->
             task.group = "Verification"
             task.reports {
                 it.xml.required.set(true)
                 it.html.required.set(true)
-            }
-        }
-        if (quality.pmd.enableCPD
-                .getOrElse(false)
-        ) {
-            project.tasks.register("cpdCheck") {
-                it.group = "Verification"
-                it.description = "Run CPD copy-paste-detection"
-                it.dependsOn(project.tasks.withType<Pmd>())
             }
         }
     }
@@ -293,7 +275,7 @@ public class QualityManager(
                 !quality.detekt.failOnViolation
                     .get()
             source.setFrom(quality.detekt.source)
-            config.setFrom(resolveConfigFile("detekt", "detekt.yml").asFile)
+            config.setFrom(resolveConfigFile("detekt", "detekt.yml"))
             baseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
             parallel = true
         }

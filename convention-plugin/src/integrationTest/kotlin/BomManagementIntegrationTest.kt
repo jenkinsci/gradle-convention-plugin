@@ -182,7 +182,7 @@ class BomManagementIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle(listOf("help"), expectFailure = true)
+                .runGradleAndFail("help")
 
         result.output shouldContain "Missing coordinates for BOM 'aws-bom'."
     }
@@ -227,7 +227,7 @@ class BomManagementIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle(listOf("help"), expectFailure = true)
+                .runGradleAndFail("help")
 
         result.output shouldContain "Missing version for BOM 'aws-bom'."
     }
