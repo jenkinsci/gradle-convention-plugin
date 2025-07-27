@@ -44,11 +44,6 @@ class TestProjectBuilder(
         return this
     }
 
-    fun withGroovyBuildGradle(content: String): TestProjectBuilder {
-        File(projectDir, "build.gradle").writeText(content)
-        return this
-    }
-
     fun withGradleProperties(properties: Map<String, String>): TestProjectBuilder {
         val content =
             properties.entries
@@ -69,11 +64,19 @@ class TestProjectBuilder(
             content
                 ?:
                     """
-                    package $packageName
+                    package $packageName;
 
+                    /**
+                     * A class that returns a message.
+                     * This class is not intended to be subclassed.
+                     */
                     public class $className {
+                        /**
+                         * Returns the message.
+                         * @return a greeting string
+                         */
                         public String getMessage() {
-                            return "Hello from $className :)"
+                            return "Hello from $className :)";
                         }
                     }
 
@@ -188,7 +191,7 @@ class TestProjectBuilder(
         content: String,
     ): TestProjectBuilder {
         val configDir = File(projectDir, "config/$toolName")
-        configDir.parentFile.mkdirs()
+        configDir.mkdirs()
         File(configDir, fileName).writeText(content)
         return this
     }

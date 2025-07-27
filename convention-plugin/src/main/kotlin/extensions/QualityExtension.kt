@@ -171,7 +171,6 @@ public open class PmdExtension
                     versionFromCatalogOrFail(libs, "pmd"),
                 ),
             )
-        public val enableCPD: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val ruleSetFiles: RegularFileProperty = objects.fileProperty()
