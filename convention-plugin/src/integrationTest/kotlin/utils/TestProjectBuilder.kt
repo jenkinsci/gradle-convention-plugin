@@ -13,44 +13,45 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+@file:Suppress("ktlint:standard:no-wildcard-imports", "TooManyFunctions")
+
 package utils
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import java.io.File
+import org.gradle.tooling.BuildException
+import java.io.IOException
 import java.nio.file.Files
-import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.deleteRecursively
+import java.nio.file.Path
+import kotlin.io.path.*
 
 class TestProjectBuilder(
-    val projectDir: File,
+    val projectDir: Path,
 ) {
     init {
-        projectDir.mkdirs()
+        Files.createDirectories(projectDir)
     }
 
     fun withVersionCatalog(content: String = defaultVersionCatalog): TestProjectBuilder {
-        val catalogDir = File(projectDir, "gradle")
-        catalogDir.mkdirs()
-        File(catalogDir, "libs.versions.toml").writeText(content)
+        val catalogDir = projectDir.resolve("gradle")
+        Files.createDirectories(catalogDir)
+        catalogDir.resolve("libs.versions.toml").writeText(content)
         return this
     }
 
     fun withSettingsGradle(content: String = defaultSettings): TestProjectBuilder {
-        File(projectDir, "settings.gradle.kts").writeText(content)
+        projectDir.resolve("settings.gradle.kts").writeText(content)
         return this
     }
 
     fun withBuildGradle(content: String): TestProjectBuilder {
-        File(projectDir, "build.gradle.kts").writeText(content)
+        projectDir.resolve("build.gradle.kts").writeText(content)
         return this
     }
 
     fun withGradleProperties(properties: Map<String, String>): TestProjectBuilder {
-        val content =
-            properties.entries
-                .joinToString("\n") { "${it.key}=${it.value}" }
-        File(projectDir, "gradle.properties").writeText(content)
+        val content = properties.entries.joinToString("\n") { "${it.key}=${it.value}" }
+        projectDir.resolve("gradle.properties").writeText(content)
         return this
     }
 
@@ -59,8 +60,8 @@ class TestProjectBuilder(
         className: String = "JavaTestClass",
         content: String? = null,
     ): TestProjectBuilder {
-        val sourceDir = File(projectDir, "src/main/java/${packageName.replace('.', '/')}")
-        sourceDir.mkdirs()
+        val sourceDir = projectDir.resolve("src/main/java/${packageName.replace('.', '/')}")
+        Files.createDirectories(sourceDir)
 
         val javaContent =
             content
@@ -84,7 +85,7 @@ class TestProjectBuilder(
 
                     """.trimIndent()
 
-        File(sourceDir, "$className.java").writeText(javaContent)
+        sourceDir.resolve("$className.java").writeText(javaContent)
         return this
     }
 
@@ -93,8 +94,8 @@ class TestProjectBuilder(
         className: String = "KotlinTestClass",
         content: String? = null,
     ): TestProjectBuilder {
-        val sourceDir = File(projectDir, "src/main/kotlin/${packageName.replace('.', '/')}")
-        sourceDir.mkdirs()
+        val sourceDir = projectDir.resolve("src/main/kotlin/${packageName.replace('.', '/')}")
+        Files.createDirectories(sourceDir)
 
         val kotlinContent =
             content
@@ -108,7 +109,7 @@ class TestProjectBuilder(
 
                     """.trimIndent()
 
-        File(sourceDir, "$className.kt").writeText(kotlinContent)
+        sourceDir.resolve("$className.kt").writeText(kotlinContent)
         return this
     }
 
@@ -120,10 +121,10 @@ class TestProjectBuilder(
     ): TestProjectBuilder {
         val testDir =
             when (language) {
-                "kotlin" -> File(projectDir, "src/test/kotlin/${packageName.replace('.', '/')}")
-                else -> File(projectDir, "src/test/java/${packageName.replace('.', '/')}")
+                "kotlin" -> projectDir.resolve("src/test/kotlin/${packageName.replace('.', '/')}")
+                else -> projectDir.resolve("src/test/java/${packageName.replace('.', '/')}")
             }
-        testDir.mkdirs()
+        Files.createDirectories(testDir)
 
         val testContent =
             when (language) {
@@ -162,19 +163,14 @@ class TestProjectBuilder(
                     """.trimIndent()
             }
 
-        val fileExtension =
-            when (language) {
-                "kotlin" -> "kt"
-                else -> "java"
-            }
-
-        File(testDir, "$className.$fileExtension").writeText(testContent)
+        val fileExtension = if (language == "kotlin") "kt" else "java"
+        testDir.resolve("$className.$fileExtension").writeText(testContent)
         return this
     }
 
     fun withJellyFile(path: String = "src/main/resources/index.jelly"): TestProjectBuilder {
-        val jellyDir = File(projectDir, path).parentFile
-        jellyDir.mkdirs()
+        val jellyDir = projectDir.resolve(path)
+        Files.createDirectories(jellyDir.parent)
 
         val jellyContent =
             """
@@ -184,7 +180,7 @@ class TestProjectBuilder(
             </div>
             """.trimIndent()
 
-        File(projectDir, path).writeText(jellyContent)
+        jellyDir.writeText(jellyContent)
         return this
     }
 
@@ -193,9 +189,9 @@ class TestProjectBuilder(
         fileName: String,
         content: String,
     ): TestProjectBuilder {
-        val configDir = File(projectDir, "config/$toolName")
-        configDir.mkdirs()
-        File(configDir, fileName).writeText(content)
+        val configDir = projectDir.resolve("config/$toolName")
+        Files.createDirectories(configDir)
+        configDir.resolve(fileName).writeText(content)
         return this
     }
 
@@ -216,13 +212,13 @@ class TestProjectBuilder(
                     }
                     """.trimIndent()
 
-        File(projectDir, "package.json").writeText(packageJsonContent)
+        projectDir.resolve("package.json").writeText(packageJsonContent)
         return this
     }
 
     fun withJavaScriptSource(path: String = "src/main/js/main.js"): TestProjectBuilder {
-        val jsDir = File(projectDir, path).parentFile
-        jsDir.mkdirs()
+        val jsDir = projectDir.resolve(path)
+        Files.createDirectories(jsDir.parent)
 
         val jsContent =
             """
@@ -231,7 +227,7 @@ class TestProjectBuilder(
             }
             """.trimIndent()
 
-        File(projectDir, path).writeText(jsContent)
+        jsDir.writeText(jsContent)
         return this
     }
 
@@ -239,13 +235,13 @@ class TestProjectBuilder(
         name: String,
         action: TestProjectBuilder.() -> Unit,
     ): TestProjectBuilder {
-        val subProjectDir = File(projectDir, name)
-
+        val subProjectDir = projectDir.resolve(name)
         TestProjectBuilder(subProjectDir).action()
 
-        val settingsFile = File(projectDir, "settings.gradle.kts")
+        val settingsFile = projectDir.resolve("settings.gradle.kts")
         if (settingsFile.exists()) {
-            settingsFile.writeText("${settingsFile.readText()}\ninclude(\":$name\")")
+            val currentContent = settingsFile.readText()
+            settingsFile.writeText("$currentContent\ninclude(\":$name\")")
         }
 
         return this
@@ -258,21 +254,20 @@ class TestProjectBuilder(
         arguments: List<String> = emptyList(),
         expectFailure: Boolean = false,
     ): BuildResult {
-        val allArgs =
-            tasks + arguments + "--stacktrace" + "--info"
+        val allArgs = tasks + arguments + "--stacktrace" + "--info"
 
         val runner =
             GradleRunner
                 .create()
-                .withProjectDir(projectDir)
+                .withProjectDir(projectDir.toFile())
                 .withArguments(allArgs)
                 .withPluginClasspath()
                 .withDebug(true)
 
-        return if (expectFailure) {
-            runner.buildAndFail()
-        } else {
-            runner.build()
+        return try {
+            if (expectFailure) runner.buildAndFail() else runner.build()
+        } catch (e: BuildException) {
+            throw BuildException("Build failed for tasks: $tasks", e)
         }
     }
 
@@ -281,15 +276,15 @@ class TestProjectBuilder(
     @OptIn(ExperimentalPathApi::class)
     fun cleanup() {
         try {
-            projectDir.toPath().deleteRecursively()
-        } catch (e: IllegalStateException) {
-            println("Warning: Failed to delete test directory ${projectDir.absolutePath}: ${e.message}")
+            projectDir.deleteRecursively()
+        } catch (e: IOException) {
+            println("Warning: Failed to delete test directory ${projectDir.toAbsolutePath()}: ${e.message}")
         }
     }
 
     companion object {
         fun create(name: String = "test-project"): TestProjectBuilder {
-            val tempDir = Files.createTempDirectory("gradle-test-$name").toFile()
+            val tempDir = Files.createTempDirectory("gradle-test-$name")
             return TestProjectBuilder(tempDir)
         }
 

@@ -15,7 +15,7 @@
  */
 @file:Suppress("FunctionName")
 
-import io.kotest.matchers.file.shouldExist
+import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.AfterEach
@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import utils.TestProjectBuilder
 import utils.basicBuildScript
-import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.io.path.readText
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Quality Tools Integration Tests")
@@ -51,12 +51,12 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("checkstyleMain")
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val checkstyleXmlReport = File(builder.projectDir, "build/reports/checkstyle/main.xml")
-        val checkstyleHtmlReport = File(builder.projectDir, "build/reports/checkstyle/main.html")
+        val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
+        val checkstyleHtmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.html")
         checkstyleXmlReport.shouldExist()
         checkstyleHtmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport.toFile())
         val violations = document.getElementsByTagName("error")
 
         violations.length shouldBe 1
@@ -90,10 +90,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradle("checkstyleMain")
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val checkstyleXmlReport = File(builder.projectDir, "build/reports/checkstyle/main.xml")
+        val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
         checkstyleXmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport.toFile())
         val violations = document.getElementsByTagName("error")
 
         violations.length shouldBe 0
@@ -128,14 +128,14 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val spotbugsXmlReport = File(builder.projectDir, "build/reports/spotbugs/main.xml")
-        val spotbugsHtmlReport = File(builder.projectDir, "build/reports/spotbugs/main.html")
-        val spotbugsSarifReport = File(builder.projectDir, "build/reports/spotbugs/main.sarif")
+        val spotbugsXmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
+        val spotbugsHtmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.html")
+        val spotbugsSarifReport = builder.projectDir.resolve("build/reports/spotbugs/main.sarif")
         spotbugsXmlReport.shouldExist()
         spotbugsHtmlReport.shouldExist()
         spotbugsSarifReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport.toFile())
         val violations = document.getElementsByTagName("BugInstance")
 
         violations.length shouldBe 1
@@ -182,10 +182,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradle("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val spotbugsXmlReport = File(builder.projectDir, "build/reports/spotbugs/main.xml")
+        val spotbugsXmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
         spotbugsXmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport.toFile())
         val violations = document.getElementsByTagName("BugInstance")
 
         violations.length shouldBe 0
@@ -223,12 +223,12 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("pmdMain")
         result.task(":pmdMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val pmdXmlReport = File(builder.projectDir, "build/reports/pmd/main.xml")
-        val pmdHtmlReport = File(builder.projectDir, "build/reports/pmd/main.html")
+        val pmdXmlReport = builder.projectDir.resolve("build/reports/pmd/main.xml")
+        val pmdHtmlReport = builder.projectDir.resolve("build/reports/pmd/main.html")
         pmdXmlReport.shouldExist()
         pmdHtmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport.toFile())
         val violations = document.getElementsByTagName("violation")
 
         println(pmdXmlReport.readText())
@@ -299,10 +299,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("cpdCheck")
         result.task(":cpdCheck")?.outcome shouldBe TaskOutcome.FAILED
 
-        val cpdXmlReport = File(builder.projectDir, "build/reports/cpd/cpdCheck.xml")
+        val cpdXmlReport = builder.projectDir.resolve("build/reports/cpd/cpdCheck.xml")
         cpdXmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cpdXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cpdXmlReport.toFile())
         val violations = document.getElementsByTagName("duplication")
 
         violations.length shouldBe 1
@@ -363,9 +363,9 @@ class QualityToolsIntegrationTest {
 //        result.task("jacocoTestReport")?.outcome shouldBe TaskOutcome.SUCCESS
 //        result.task("jacocoTestCoverageVerification")?.outcome shouldBe TaskOutcome.SUCCESS
 //
-//        val jacocoXmlReport = File(builder.projectDir, "build/reports/jacoco/test/jacocoTestReport.xml")
-//        val jacocoHtmlReport = File(builder.projectDir, "build/reports/jacoco/test/html/index.html")
-//        val jacocoCsvReport = File(builder.projectDir, "build/reports/jacoco/test/jacocoTestReport.csv")
+//        val jacocoXmlReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.xml")
+//        val jacocoHtmlReport = builder.projectDir.resolve("build/reports/jacoco/test/html/index.html")
+//        val jacocoCsvReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.csv")
 //
 //        println(jacocoXmlReport.readText())
 //
