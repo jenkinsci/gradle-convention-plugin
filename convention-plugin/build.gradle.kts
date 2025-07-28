@@ -119,3 +119,8 @@ tasks.named("check") {
 tasks.register<Copy>("publishToLocal") {
     dependsOn("publishToMavenLocal")
 }
+
+tasks.withType<ValidatePlugins>().configureEach {
+    failOnWarning.set(true)
+    enableStricterValidation.set(true)
+}

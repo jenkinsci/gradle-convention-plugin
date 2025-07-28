@@ -16,8 +16,8 @@
 pluginManagement {
     includeBuild("build-logic")
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
@@ -30,8 +30,8 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
 
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
 
         maven {
             name = "Jenkins"
