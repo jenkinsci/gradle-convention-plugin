@@ -15,6 +15,11 @@
  */
 @file:Suppress("FunctionName")
 
+package io.github.aaravmahajanofficial
+
+import io.github.aaravmahajanofficial.utils.TestProjectBuilder
+import io.github.aaravmahajanofficial.utils.basicBuildScript
+import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -23,9 +28,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import utils.TestProjectBuilder
-import utils.basicBuildScript
-import utils.basicPluginConfiguration
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Plugin Application Integration Tests")
@@ -41,7 +43,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("kotlin-dsl-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -59,7 +61,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should apply convention plugin to existing Java project without conflicts")
     fun `apply plugin to existing Java project`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("java-existing-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -86,7 +88,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should validate minimum Gradle version requirement")
     fun `validate minimum gradle version`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("gradle-version-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -102,7 +104,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should handle plugin application with property-based configuration")
     fun `apply plugin with property configuration`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("property-config-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -126,7 +128,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should verify quality tasks are conditionally created")
     fun `verify quality tasks conditional creation`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("quality-conditional-test")
                 .withVersionCatalog()
                 .withSettingsGradle()

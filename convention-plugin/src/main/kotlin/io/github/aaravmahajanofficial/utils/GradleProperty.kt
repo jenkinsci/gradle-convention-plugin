@@ -13,10 +13,18 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package constants
+package io.github.aaravmahajanofficial.utils
 
-public object UrlConstants {
-    public const val JENKINS_INCREMENTALS_REPO_URL: String = "https://repo.jenkins-ci.org/incrementals"
-    public const val JENKINS_RELEASES_REPO_URL: String = "https://repo.jenkins-ci.org/releases"
-    public const val JENKINS_PUBLIC_REPO_URL: String = "https://repo.jenkins-ci.org/public"
-}
+import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
+
+internal fun <T : Any> gradleProperty(
+    providers: ProviderFactory,
+    key: String,
+    converter: (String) -> T,
+): Provider<T> = providers.gradleProperty(key).map(converter)
+
+internal fun gradleProperty(
+    providers: ProviderFactory,
+    key: String,
+): Provider<String> = providers.gradleProperty(key)

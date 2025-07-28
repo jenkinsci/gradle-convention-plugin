@@ -13,9 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package internal
+package io.github.aaravmahajanofficial.internal
 
-import extensions.BomExtension
+import io.github.aaravmahajanofficial.extensions.BomExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler

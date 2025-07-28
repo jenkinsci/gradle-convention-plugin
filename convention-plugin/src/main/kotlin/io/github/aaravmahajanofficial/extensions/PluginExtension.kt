@@ -15,12 +15,12 @@
  */
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package extensions
+package io.github.aaravmahajanofficial.extensions
 
 import DeveloperExtension
 import DevelopersExtension
-import constants.ConfigurationConstants
-import constants.UrlConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.UrlConstants
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.*

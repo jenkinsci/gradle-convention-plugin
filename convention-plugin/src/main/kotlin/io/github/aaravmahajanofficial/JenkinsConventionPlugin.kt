@@ -13,17 +13,19 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-@file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports")
+@file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports", "WildcardImport")
 
-import constants.PluginMetadata
-import extensions.PluginExtension
-import internal.*
+package io.github.aaravmahajanofficial
+
+import io.github.aaravmahajanofficial.constants.PluginMetadata
+import io.github.aaravmahajanofficial.extensions.PluginExtension
+import io.github.aaravmahajanofficial.internal.*
+import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
-import utils.GradleVersionUtils
 
 public class JenkinsConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {

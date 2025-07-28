@@ -15,6 +15,10 @@
  */
 @file:Suppress("FunctionName")
 
+package io.github.aaravmahajanofficial
+
+import io.github.aaravmahajanofficial.utils.TestProjectBuilder
+import io.github.aaravmahajanofficial.utils.basicBuildScript
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
@@ -22,8 +26,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import utils.TestProjectBuilder
-import utils.basicBuildScript
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.readText
 
@@ -41,7 +43,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute the checkstyle with defaults")
     fun `execute checkstyle with defaults`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("checkstyle-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -66,7 +68,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should suppress the checkstyle violations")
     fun `checkstyle should skip violations due to suppressions`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("checkstyle-suppress-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -103,7 +105,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute spotbugs with defaults")
     fun `execute spotbugs with defaults`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("spotbugs-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -145,7 +147,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute the spotbugs with exclusion filters")
     fun `execute spotbugs with exclude filters`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("spotbugs-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -195,7 +197,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute pmd with defaults")
     fun `execute pmd with defaults`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("pmd-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -240,7 +242,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute cpd with defaults")
     fun `execute cpd with defaults`() {
         builder =
-            TestProjectBuilder
+            TestProjectBuilder.Companion
                 .create("cpd-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
