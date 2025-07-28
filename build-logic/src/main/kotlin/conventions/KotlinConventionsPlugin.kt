@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
-private const val JAVA_VERSION = 17
+private const val JAVA_VERSION = 21
 
 public class KotlinConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -51,7 +51,7 @@ private fun Project.configureKotlin(libs: VersionCatalog) {
         compilerOptions {
             apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
             languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_21)
 
             allWarningsAsErrors.set(true)
             progressiveMode.set(false)

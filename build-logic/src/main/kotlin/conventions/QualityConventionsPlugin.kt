@@ -112,7 +112,7 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = JvmTarget.JVM_17.target
+        jvmTarget = JvmTarget.JVM_21.target
         autoCorrect = false
 
         reports {
