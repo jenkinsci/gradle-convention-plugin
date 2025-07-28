@@ -238,7 +238,7 @@ public open class JacocoExtension
                     "**/target/**",
                     "**/build/**",
                     "**/Messages.class",
-                    "**/*Descriptor.java",
+                    "**/*Descriptor.class",
                     "**/jelly/**",
                     "**/tags/**",
                 ),
