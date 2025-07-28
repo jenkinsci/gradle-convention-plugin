@@ -42,9 +42,10 @@ dokka = "2.0.0"
 pit = "1.15.0"
 checkstyle = "10.12.4"
 jacoco = "0.8.13"
-pmd = "7.0.0"
+pmd = "7.16.0"
 codenarc = "3.6.0"
 node-gradle = "7.1.0"
+cpd = "3.5"
 
 # Testing
 junit = "5.13.4"
@@ -98,6 +99,7 @@ benmanes-versions-gradle-plugin = { module = "com.github.ben-manes:gradle-versio
 owasp-depcheck-gradle-plugin = { module = "org.owasp:dependency-check-gradle", version.ref = "owaspCheck" }
 node-gradle-plugin = { module = "com.github.node-gradle:gradle-node-plugin", version.ref = "node-gradle" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+cpd-gradle-plugin = { module = "de.aaschmid:gradle-cpd-plugin", version.ref = "cpd" }
 
 # Testing
 junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }

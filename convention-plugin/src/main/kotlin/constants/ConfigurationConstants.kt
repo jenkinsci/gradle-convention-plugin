@@ -70,4 +70,6 @@ public object ConfigurationConstants {
     public const val DOKKA_ENABLED: String = "$QUALITY_PREFIX.dokka.enabled"
     public const val CODENARC_ENABLED: String = "$QUALITY_PREFIX.codenarc.enabled"
     public const val CODENARC_VERSION: String = "$QUALITY_PREFIX.codenarc.version"
+    public const val CPD_ENABLED: String = "$QUALITY_PREFIX.cpd.enabled"
+    public const val CPD_VERSION: String = "$QUALITY_PREFIX.cpd.version"
 }

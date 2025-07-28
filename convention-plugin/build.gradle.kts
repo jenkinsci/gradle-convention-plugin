@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.kover.gradle.plugin)
     implementation(libs.node.gradle.plugin)
     implementation(libs.dokka.gradle.plugin)
-
+    implementation(libs.cpd.gradle.plugin)
     implementation(libs.ktlint.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
