@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -29,17 +30,25 @@ import utils.basicPluginConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Plugin Application Integration Tests")
 class PluginApplicationIntegrationTest {
+    lateinit var builder: TestProjectBuilder
+
+    @AfterEach
+    fun cleanupTestProject() {
+        builder.cleanup()
+    }
+
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("kotlin-dsl-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("help")
+
+        val result = builder.runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldNotContain "FAILED"
@@ -49,7 +58,7 @@ class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should apply convention plugin to existing Java project without conflicts")
     fun `apply plugin to existing Java project`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("java-existing-test")
                 .withVersionCatalog()
@@ -64,7 +73,8 @@ class PluginApplicationIntegrationTest {
                      ${basicPluginConfiguration()}
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle("tasks", "--group=build")
+
+        val result = builder.runGradle("tasks", "--group=build")
 
         result.task(":tasks")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldContain "jpi"
@@ -75,13 +85,14 @@ class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should validate minimum Gradle version requirement")
     fun `validate minimum gradle version`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("gradle-version-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
-                .runGradle("help")
+
+        val result = builder.runGradle("help")
 
         result.task(":help")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldNotContain "requires Gradle"
@@ -90,7 +101,7 @@ class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should handle plugin application with property-based configuration")
     fun `apply plugin with property configuration`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("property-config-test")
                 .withVersionCatalog()
@@ -104,7 +115,8 @@ class PluginApplicationIntegrationTest {
                     ),
                 ).withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("jenkinsConventionPluginInfo")
+
+        val result = builder.runGradle("jenkinsConventionPluginInfo")
 
         result.task(":jenkinsConventionPluginInfo")?.outcome shouldBe TaskOutcome.SUCCESS
         result.output shouldContain "test-plugin"
@@ -113,7 +125,7 @@ class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should verify quality tasks are conditionally created")
     fun `verify quality tasks conditional creation`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("quality-conditional-test")
                 .withVersionCatalog()
@@ -147,7 +159,8 @@ class PluginApplicationIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle("tasks", "--all")
+
+        val result = builder.runGradle("tasks", "--all")
 
         result.task(":tasks")?.outcome shouldBe TaskOutcome.SUCCESS
 
@@ -158,7 +171,7 @@ class PluginApplicationIntegrationTest {
 //    @Test
 //    @DisplayName("should handle multi-module project structure")
 //    fun `handle multi module project structure`() {
-//        val result =
+//        builder =
 //            TestProjectBuilder
 //                .create("multi-module-test")
 //                .withVersionCatalog()
@@ -201,7 +214,9 @@ class PluginApplicationIntegrationTest {
 //
 //                        """.trimIndent(),
 //                    ).withJavaSource("com.example.ui", "UiLogic")
-//                }.runGradle("projects")
+//                }
+//
+//        val result = builder.runGradle("projects")
 //
 //        result.task(":projects")?.outcome shouldBe TaskOutcome.SUCCESS
 //        result.output shouldContain "plugin-core"

@@ -204,7 +204,7 @@ public class QualityManager(
             jacocoReport.reports { t ->
                 t.xml.required.set(true)
                 t.html.required.set(true)
-                t.csv.required.set(false)
+                t.csv.required.set(true)
             }
 
             val allExcludes = quality.jacoco.excludes.get()
@@ -371,7 +371,7 @@ public class QualityManager(
 
         project.tasks.withType<DependencyUpdatesTask>().configureEach { t ->
             t.rejectVersionIf {
-                project.isNonStable(it.candidate.version) && !project.isNonStable(it.currentVersion)
+                isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
             }
         }
     }
@@ -564,7 +564,7 @@ private fun Project.isFrontendProject(): Boolean {
     return frontendDirs.any { file(it).exists() && file(it).isDirectory }
 }
 
-private fun Project.isNonStable(version: String): Boolean {
+private fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)

@@ -19,6 +19,8 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import java.io.File
 import java.nio.file.Files
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
 
 class TestProjectBuilder(
     val projectDir: File,
@@ -112,7 +114,8 @@ class TestProjectBuilder(
 
     fun withTestSource(
         packageName: String = "com.example",
-        className: String = "TestClassTest",
+        className: String = "JavaTestClassTest",
+        testClassName: String = "JavaTestClass",
         language: String = "java",
     ): TestProjectBuilder {
         val testDir =
@@ -129,13 +132,13 @@ class TestProjectBuilder(
                     package $packageName
 
                     import org.junit.jupiter.api.Test
-                    import org.junit.jupiter.api.Assertions.*;
+                    import org.junit.jupiter.api.Assertions.*
 
                     class $className {
                         @Test
                         fun testGetMessage() {
-                            val testClass = TestClass()
-                            assertEquals("Hello from TestClass", testClass.getMessage())
+                            val testClass = $testClassName()
+                            assertEquals("Hello from $testClassName :)", testClass.getMessage())
                         }
                     }
 
@@ -143,7 +146,7 @@ class TestProjectBuilder(
 
                 else ->
                     """
-                    package $packageName
+                    package $packageName;
 
                     import org.junit.jupiter.api.Test;
                     import static org.junit.jupiter.api.Assertions.*;
@@ -151,8 +154,8 @@ class TestProjectBuilder(
                     public class $className {
                         @Test
                         public void testGetMessage() {
-                            TestClass testClass = new TestClass();
-                            assertEquals("Hello from TestClass", testClass.getMessage());
+                            $testClassName testClass = new $testClassName();
+                            assertEquals("Hello from $testClassName :)", testClass.getMessage());
                         }
                     }
 
@@ -275,10 +278,18 @@ class TestProjectBuilder(
 
     fun runGradleAndFail(vararg tasks: String): BuildResult = runGradle(tasks.toList(), expectFailure = true)
 
+    @OptIn(ExperimentalPathApi::class)
+    fun cleanup() {
+        try {
+            projectDir.toPath().deleteRecursively()
+        } catch (e: IllegalStateException) {
+            println("Warning: Failed to delete test directory ${projectDir.absolutePath}: ${e.message}")
+        }
+    }
+
     companion object {
         fun create(name: String = "test-project"): TestProjectBuilder {
             val tempDir = Files.createTempDirectory("gradle-test-$name").toFile()
-            tempDir.deleteOnExit()
             return TestProjectBuilder(tempDir)
         }
 

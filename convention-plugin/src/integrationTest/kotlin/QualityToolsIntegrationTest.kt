@@ -18,6 +18,7 @@
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -29,10 +30,17 @@ import javax.xml.parsers.DocumentBuilderFactory
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Quality Tools Integration Tests")
 class QualityToolsIntegrationTest {
+    lateinit var builder: TestProjectBuilder
+
+    @AfterEach
+    fun cleanupTestProject() {
+        builder.cleanup()
+    }
+
     @Test
     @DisplayName("should execute the checkstyle with defaults")
     fun `execute checkstyle with defaults`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("checkstyle-test")
                 .withVersionCatalog()
@@ -40,11 +48,11 @@ class QualityToolsIntegrationTest {
                 .withBuildGradle(basicBuildScript())
                 .withJavaSource()
 
-        val result = testProject.runGradleAndFail("checkstyleMain")
+        val result = builder.runGradleAndFail("checkstyleMain")
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val checkstyleXmlReport = File(testProject.projectDir, "build/reports/checkstyle/main.xml")
-        val checkstyleHtmlReport = File(testProject.projectDir, "build/reports/checkstyle/main.html")
+        val checkstyleXmlReport = File(builder.projectDir, "build/reports/checkstyle/main.xml")
+        val checkstyleHtmlReport = File(builder.projectDir, "build/reports/checkstyle/main.html")
         checkstyleXmlReport.shouldExist()
         checkstyleHtmlReport.shouldExist()
 
@@ -57,7 +65,7 @@ class QualityToolsIntegrationTest {
     @Test
     @DisplayName("should suppress the checkstyle violations")
     fun `checkstyle should skip violations due to suppressions`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("checkstyle-suppress-test")
                 .withVersionCatalog()
@@ -79,10 +87,10 @@ class QualityToolsIntegrationTest {
                         """.trimIndent(),
                 )
 
-        val result = testProject.runGradle("checkstyleMain")
+        val result = builder.runGradle("checkstyleMain")
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val checkstyleXmlReport = File(testProject.projectDir, "build/reports/checkstyle/main.xml")
+        val checkstyleXmlReport = File(builder.projectDir, "build/reports/checkstyle/main.xml")
         checkstyleXmlReport.shouldExist()
 
         val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport)
@@ -94,7 +102,7 @@ class QualityToolsIntegrationTest {
     @Test
     @DisplayName("should execute spotbugs with defaults")
     fun `execute spotbugs with defaults`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("spotbugs-test")
                 .withVersionCatalog()
@@ -117,12 +125,12 @@ class QualityToolsIntegrationTest {
                         """.trimIndent(),
                 )
 
-        val result = testProject.runGradleAndFail("spotbugsMain")
+        val result = builder.runGradleAndFail("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val spotbugsXmlReport = File(testProject.projectDir, "build/reports/spotbugs/main.xml")
-        val spotbugsHtmlReport = File(testProject.projectDir, "build/reports/spotbugs/main.html")
-        val spotbugsSarifReport = File(testProject.projectDir, "build/reports/spotbugs/main.sarif")
+        val spotbugsXmlReport = File(builder.projectDir, "build/reports/spotbugs/main.xml")
+        val spotbugsHtmlReport = File(builder.projectDir, "build/reports/spotbugs/main.html")
+        val spotbugsSarifReport = File(builder.projectDir, "build/reports/spotbugs/main.sarif")
         spotbugsXmlReport.shouldExist()
         spotbugsHtmlReport.shouldExist()
         spotbugsSarifReport.shouldExist()
@@ -136,7 +144,7 @@ class QualityToolsIntegrationTest {
     @Test
     @DisplayName("should execute the spotbugs with exclusion filters")
     fun `execute spotbugs with exclude filters`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("spotbugs-test")
                 .withVersionCatalog()
@@ -171,10 +179,10 @@ class QualityToolsIntegrationTest {
                         """.trimIndent(),
                 )
 
-        val result = testProject.runGradle("spotbugsMain")
+        val result = builder.runGradle("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val spotbugsXmlReport = File(testProject.projectDir, "build/reports/spotbugs/main.xml")
+        val spotbugsXmlReport = File(builder.projectDir, "build/reports/spotbugs/main.xml")
         spotbugsXmlReport.shouldExist()
 
         val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport)
@@ -186,7 +194,7 @@ class QualityToolsIntegrationTest {
     @Test
     @DisplayName("should execute pmd with defaults")
     fun `execute pmd with defaults`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("pmd-test")
                 .withVersionCatalog()
@@ -212,11 +220,11 @@ class QualityToolsIntegrationTest {
                         """.trimIndent(),
                 )
 
-        val result = testProject.runGradleAndFail("pmdMain")
+        val result = builder.runGradleAndFail("pmdMain")
         result.task(":pmdMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val pmdXmlReport = File(testProject.projectDir, "build/reports/pmd/main.xml")
-        val pmdHtmlReport = File(testProject.projectDir, "build/reports/pmd/main.html")
+        val pmdXmlReport = File(builder.projectDir, "build/reports/pmd/main.xml")
+        val pmdHtmlReport = File(builder.projectDir, "build/reports/pmd/main.html")
         pmdXmlReport.shouldExist()
         pmdHtmlReport.shouldExist()
 
@@ -231,7 +239,7 @@ class QualityToolsIntegrationTest {
     @Test
     @DisplayName("should execute cpd with defaults")
     fun `execute cpd with defaults`() {
-        val testProject =
+        builder =
             TestProjectBuilder
                 .create("cpd-test")
                 .withVersionCatalog()
@@ -288,15 +296,81 @@ class QualityToolsIntegrationTest {
                         """.trimIndent(),
                 )
 
-        val result = testProject.runGradleAndFail("cpdCheck")
+        val result = builder.runGradleAndFail("cpdCheck")
         result.task(":cpdCheck")?.outcome shouldBe TaskOutcome.FAILED
 
-        val cmdXmlReport = File(testProject.projectDir, "build/reports/cpd/cpdCheck.xml")
-        cmdXmlReport.shouldExist()
+        val cpdXmlReport = File(builder.projectDir, "build/reports/cpd/cpdCheck.xml")
+        cpdXmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cmdXmlReport)
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cpdXmlReport)
         val violations = document.getElementsByTagName("duplication")
 
         violations.length shouldBe 1
     }
+
+//    @Test
+//    @DisplayName("should execute Jacoco with defaults")
+//    fun `execute jacoco with defaults`() {
+//        builder =
+//            TestProjectBuilder
+//                .create("jacoco-test")
+//                .withVersionCatalog()
+//                .withSettingsGradle()
+//                .withGradleProperties(
+//                    mapOf(
+//                        "org.gradle.jvmargs" to
+//                            "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED " +
+//                            "--add-opens=java.base/java.lang=ALL-UNNAMED " +
+//                            "--add-opens=java.base/java.io=ALL-UNNAMED " +
+//                            "--add-opens=java.base/java.util=ALL-UNNAMED",
+//                    ),
+//                ).withBuildGradle(
+//                    """
+//                    plugins {
+//                        java
+//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+//                    }
+//
+//                    dependencies {
+//                        testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+//                    }
+//
+//                    tasks.test {
+//                        useJUnitPlatform()
+//
+//                        jvmArgs(
+//                            "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
+//                            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+//                            "--add-opens=java.base/java.io=ALL-UNNAMED",
+//                            "--add-opens=java.base/java.util=ALL-UNNAMED"
+//                        )
+//                    }
+//
+//                    jenkinsConvention {
+//                        quality {
+//                            jacoco {
+//                                minimumCodeCoverage = 0.5
+//                            }
+//                        }
+//                    }
+//
+//                    """.trimIndent(),
+//                ).withJavaSource()
+//                .withTestSource()
+//
+//        val result = builder.runGradle("test", "jacocoTestReport", "jacocoTestCoverageVerification")
+//        result.task("test")?.outcome shouldBe TaskOutcome.SUCCESS
+//        result.task("jacocoTestReport")?.outcome shouldBe TaskOutcome.SUCCESS
+//        result.task("jacocoTestCoverageVerification")?.outcome shouldBe TaskOutcome.SUCCESS
+//
+//        val jacocoXmlReport = File(builder.projectDir, "build/reports/jacoco/test/jacocoTestReport.xml")
+//        val jacocoHtmlReport = File(builder.projectDir, "build/reports/jacoco/test/html/index.html")
+//        val jacocoCsvReport = File(builder.projectDir, "build/reports/jacoco/test/jacocoTestReport.csv")
+//
+//        println(jacocoXmlReport.readText())
+//
+//        jacocoXmlReport.shouldExist()
+//        jacocoHtmlReport.shouldExist()
+//        jacocoCsvReport.shouldExist()
+//    }
 }
