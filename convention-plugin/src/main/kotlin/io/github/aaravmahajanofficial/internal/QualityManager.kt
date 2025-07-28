@@ -15,7 +15,7 @@
  */
 @file:Suppress("TooManyFunctions", "ktlint:standard:no-wildcard-imports", "LongMethod", "WildcardImport")
 
-package internal
+package io.github.aaravmahajanofficial.internal
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
@@ -29,9 +29,9 @@ import com.github.spotbugs.snom.SpotBugsTask
 import de.aaschmid.gradle.plugins.cpd.Cpd
 import de.aaschmid.gradle.plugins.cpd.CpdExtension
 import de.aaschmid.gradle.plugins.cpd.CpdPlugin
-import extensions.QualityExtension
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import io.github.aaravmahajanofficial.extensions.QualityExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension

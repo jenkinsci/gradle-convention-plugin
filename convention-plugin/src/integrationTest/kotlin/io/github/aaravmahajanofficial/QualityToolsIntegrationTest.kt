@@ -15,6 +15,10 @@
  */
 @file:Suppress("FunctionName")
 
+package io.github.aaravmahajanofficial
+
+import io.github.aaravmahajanofficial.utils.TestProjectBuilder
+import io.github.aaravmahajanofficial.utils.basicBuildScript
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
@@ -22,10 +26,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import utils.TestProjectBuilder
-import utils.basicBuildScript
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.io.path.readText
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Quality Tools Integration Tests")
@@ -49,6 +50,7 @@ class QualityToolsIntegrationTest {
                 .withJavaSource()
 
         val result = builder.runGradleAndFail("checkstyleMain")
+        println(result.output)
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.FAILED
 
         val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
@@ -230,8 +232,6 @@ class QualityToolsIntegrationTest {
 
         val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport.toFile())
         val violations = document.getElementsByTagName("violation")
-
-        println(pmdXmlReport.readText())
 
         violations.length shouldBe 1
     }

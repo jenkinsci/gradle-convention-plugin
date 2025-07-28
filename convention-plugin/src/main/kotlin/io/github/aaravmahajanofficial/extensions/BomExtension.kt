@@ -13,9 +13,11 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package extensions
+package io.github.aaravmahajanofficial.extensions
 
-import constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.libraryFromCatalog
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
@@ -25,8 +27,6 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
-import utils.gradleProperty
-import utils.libraryFromCatalog
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")

@@ -15,11 +15,13 @@
  */
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package extensions
+package io.github.aaravmahajanofficial.extensions
 
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
-import constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
@@ -34,8 +36,6 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import utils.gradleProperty
-import utils.versionFromCatalogOrFail
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")

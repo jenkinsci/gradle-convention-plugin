@@ -13,9 +13,11 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
+    `jvm-test-suite`
     id("conventions.kotlin")
     id("conventions.quality")
     alias(libs.plugins.plugin.publish)
@@ -23,29 +25,13 @@ plugins {
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
 
-group = project.property("group") as String
-version = project.property("version") as String
-
-// integration test setup
-val integrationTestSourceSet: SourceSet =
-    sourceSets.create("integrationTest") {
-        kotlin {
-            compileClasspath += sourceSets.main.get().output
-            runtimeClasspath += sourceSets.main.get().output
-        }
-    }
-
-val integrationTestImplementation =
-    configurations.named("integrationTestImplementation") {
-        extendsFrom(configurations.implementation.get())
-    }
-
-val integrationTestRuntimeOnly = configurations.named("integrationTestRuntimeOnly")
+group = providers.gradleProperty("group").get()
+version = providers.gradleProperty("version").get()
 
 dependencies {
-    compileOnly(gradleApi())
-    compileOnly(gradleKotlinDsl())
-    compileOnly(libs.kotlin.gradle.plugin) {
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
+    implementation(libs.kotlin.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
     implementation(libs.jenkins.gradle.jpi2)
@@ -64,13 +50,6 @@ dependencies {
     implementation(libs.ktlint.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
-
-    // integration test dependencies
-    integrationTestImplementation(gradleTestKit())
-    integrationTestImplementation(libs.junit.gradle.plugin)
-    integrationTestImplementation(libs.kotest.gradle.plugin)
-    integrationTestRuntimeOnly(libs.junit.launcher.gradle.plugin)
-    implementation(kotlin("test"))
 }
 
 gradlePlugin {
@@ -91,53 +70,52 @@ gradlePlugin {
                     "build-logic",
                     "version-catalog",
                 )
-            implementationClass = "JenkinsConventionPlugin"
+            implementationClass = "io.github.aaravmahajanofficial.JenkinsConventionPlugin"
         }
     }
 }
 
-tasks.named<ProcessResources>("processIntegrationTestResources") {
-    dependsOn(tasks.named("pluginUnderTestMetadata"))
-}
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+        }
 
-val integrationTest by tasks.registering(Test::class) {
+        register<JvmTestSuite>("integrationTest") {
 
-    description = "Runs integration tests."
-    group = "Verification"
+            dependencies {
+                implementation(project())
+                implementation(gradleTestKit())
 
-    testClassesDirs = integrationTestSourceSet.output.classesDirs
-    classpath =
-        integrationTestSourceSet.runtimeClasspath
-            .plus(files(tasks.named("pluginUnderTestMetadata").map { it.outputs.files }))
+                implementation(libs.kotest.gradle.plugin)
+                runtimeOnly(libs.junit.launcher.gradle.plugin)
 
-    shouldRunAfter("test")
+                runtimeOnly(files(tasks.named("pluginUnderTestMetadata")))
+            }
 
-    dependsOn(tasks.named("pluginUnderTestMetadata"))
+            targets.configureEach {
+                testTask.configure {
+                    shouldRunAfter(test)
 
-    // Ensure output directories exist (prevents classpathDiff error in Kotlin)
-    doFirst {
-        testClassesDirs.filter { !it.exists() }.forEach { it.mkdirs() }
+                    testLogging {
+                        events("passed", "skipped", "failed", "standardOut", "standardError")
+                        exceptionFormat = TestExceptionFormat.FULL
+                        showExceptions = true
+                        showCauses = true
+                        showStackTraces = true
+                    }
+
+                    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+                }
+            }
+        }
     }
-
-    useJUnitPlatform()
-
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = TestExceptionFormat.FULL
-        showCauses = true
-        showExceptions = true
-        showStackTraces = true
-    }
 }
 
-tasks.check {
-    dependsOn(integrationTest)
+tasks.named("check") {
+    dependsOn(testing.suites.named("integrationTest"))
 }
 
-tasks.register("publishToLocal") {
+tasks.register<Copy>("publishToLocal") {
     dependsOn("publishToMavenLocal")
-}
-
-tasks.named("build") {
-    finalizedBy("publishToLocal")
 }

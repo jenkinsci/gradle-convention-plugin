@@ -15,7 +15,7 @@
  */
 @file:Suppress("ktlint:standard:no-wildcard-imports", "TooManyFunctions")
 
-package utils
+package io.github.aaravmahajanofficial.utils
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner

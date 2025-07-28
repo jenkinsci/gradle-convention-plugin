@@ -15,6 +15,11 @@
  */
 @file:Suppress("FunctionName")
 
+package io.github.aaravmahajanofficial
+
+import io.github.aaravmahajanofficial.utils.TestProjectBuilder
+import io.github.aaravmahajanofficial.utils.basicBuildScript
+import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -23,9 +28,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import utils.TestProjectBuilder
-import utils.basicBuildScript
-import utils.basicPluginConfiguration
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Plugin Application Integration Tests")
