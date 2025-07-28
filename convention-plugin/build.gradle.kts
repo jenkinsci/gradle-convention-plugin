@@ -14,6 +14,8 @@
  * permissions and limitations under the License.
  */
 
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     `jvm-test-suite`
     id("conventions.kotlin")
@@ -23,13 +25,13 @@ plugins {
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
 
-group = project.property("group") as String
-version = project.property("version") as String
+group = providers.gradleProperty("group").get()
+version = providers.gradleProperty("version").get()
 
 dependencies {
-    compileOnly(gradleApi())
-    compileOnly(gradleKotlinDsl())
-    compileOnly(libs.kotlin.gradle.plugin) {
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
+    implementation(libs.kotlin.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
     implementation(libs.jenkins.gradle.jpi2)
@@ -85,37 +87,35 @@ testing {
                 implementation(project())
                 implementation(gradleTestKit())
 
-                implementation(libs.junit.gradle.plugin)
                 implementation(libs.kotest.gradle.plugin)
                 runtimeOnly(libs.junit.launcher.gradle.plugin)
 
-                runtimeOnly(files(tasks.pluginUnderTestMetadata))
+                runtimeOnly(files(tasks.named("pluginUnderTestMetadata")))
             }
 
-            targets {
-                all {
-                    testTask.configure {
-                        shouldRunAfter(test)
+            targets.configureEach {
+                testTask.configure {
+                    shouldRunAfter(test)
 
-                        testLogging {
-                            events("passed", "skipped", "failed", "standardOut", "standardError")
-                            showExceptions = true
-                            showCauses = true
-                            showStackTraces = true
-                        }
+                    testLogging {
+                        events("passed", "skipped", "failed", "standardOut", "standardError")
+                        exceptionFormat = TestExceptionFormat.FULL
+                        showExceptions = true
+                        showCauses = true
+                        showStackTraces = true
                     }
+
+                    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
                 }
             }
         }
     }
 }
 
-tasks {
-    check {
-        dependsOn(testing.suites.named("integrationTest"))
-    }
+tasks.named("check") {
+    dependsOn(testing.suites.named("integrationTest"))
+}
 
-    register<Copy>("publishToLocal") {
-        dependsOn("publishToMavenLocal")
-    }
+tasks.register<Copy>("publishToLocal") {
+    dependsOn("publishToMavenLocal")
 }

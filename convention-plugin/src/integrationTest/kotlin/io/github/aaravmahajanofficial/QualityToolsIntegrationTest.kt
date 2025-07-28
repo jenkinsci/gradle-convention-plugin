@@ -27,7 +27,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.io.path.readText
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Quality Tools Integration Tests")
@@ -51,6 +50,7 @@ class QualityToolsIntegrationTest {
                 .withJavaSource()
 
         val result = builder.runGradleAndFail("checkstyleMain")
+        println(result.output)
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.FAILED
 
         val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
@@ -232,8 +232,6 @@ class QualityToolsIntegrationTest {
 
         val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport.toFile())
         val violations = document.getElementsByTagName("violation")
-
-        println(pmdXmlReport.readText())
 
         violations.length shouldBe 1
     }
