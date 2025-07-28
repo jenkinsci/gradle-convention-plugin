@@ -20,6 +20,7 @@ package extensions
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import constants.ConfigurationConstants
+import extensions.QualityExtension.Companion.DEFAULT_TOKEN_COUNT
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
@@ -59,6 +60,7 @@ public open class QualityExtension
         public val kover: KoverExtension = objects.newInstance()
         public val eslint: EslintExtension = objects.newInstance()
         public val dokka: DokkaExtension = objects.newInstance()
+        public val cpd: CpdExtension = objects.newInstance(libs)
 
         public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
 
@@ -87,12 +89,15 @@ public open class QualityExtension
 
         public fun dokka(action: DokkaExtension.() -> Unit): Unit = action(dokka)
 
+        public fun cpd(action: CpdExtension.() -> Unit): Unit = action(cpd)
+
         public companion object {
             public const val DEFAULT_CODE_COVERAGE_THRESHOLD: Double = 0.8
             public const val DEFAULT_OWASP_THRESHOLD: Float = 7.0f
             public const val DEFAULT_MUTATION_THRESHOLD: Int = 85
             public const val DEFAULT_KOVER_THRESHOLD: Int = 80
             public const val DEFAULT_THREADS: Int = 4
+            public const val DEFAULT_TOKEN_COUNT: Int = 50
         }
     }
 
@@ -119,7 +124,20 @@ public open class CheckstyleExtension
                 ).orElse(versionFromCatalogOrFail(libs, "checkstyle")),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val configFile: RegularFileProperty = objects.fileProperty()
+        public val source: Property<String> = objects.property<String>().convention("src")
+        public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
+        public val exclude: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf(
+                    "**/generated/**",
+                    "**/target/**",
+                    "**/build/**",
+                    "**/Messages.class",
+                    "**/*Descriptor.java",
+                    "**/jelly/**",
+                    "**/tags/**",
+                ),
+            )
     }
 
 public open class SpotbugsExtension
@@ -147,7 +165,6 @@ public open class SpotbugsExtension
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
         public val failOnError: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val excludeFilterFile: RegularFileProperty = objects.fileProperty()
     }
 
 public open class PmdExtension
@@ -173,7 +190,20 @@ public open class PmdExtension
             )
         public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val ruleSetFiles: RegularFileProperty = objects.fileProperty()
+        public val source: Property<String> = objects.property<String>().convention("src")
+        public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
+        public val exclude: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf(
+                    "**/generated/**",
+                    "**/target/**",
+                    "**/build/**",
+                    "**/Messages.class",
+                    "**/*Descriptor.java",
+                    "**/jelly/**",
+                    "**/tags/**",
+                ),
+            )
     }
 
 public open class JacocoExtension
@@ -205,9 +235,11 @@ public open class JacocoExtension
             objects.listProperty<String>().convention(
                 listOf(
                     "**/generated/**",
+                    "**/target/**",
+                    "**/build/**",
                     "**/Messages.class",
                     "**/*Descriptor.class",
-                    "**/*Jelly.class",
+                    "**/jelly/**",
                     "**/tags/**",
                 ),
             )
@@ -240,8 +272,6 @@ public open class DetektExtension
             objects.listProperty<String>().convention(
                 listOf("src/main/java", "src/main/kotlin"),
             )
-        public val configFile: RegularFileProperty = objects.fileProperty()
-        public val baseline: RegularFileProperty = objects.fileProperty()
     }
 
 public open class SpotlessExtension
@@ -434,4 +464,24 @@ public open class CodenarcExtension
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
 
         public val configFile: RegularFileProperty = objects.fileProperty()
+    }
+
+public open class CpdExtension
+    @Inject
+    constructor(
+        libs: VersionCatalog,
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    ConfigurationConstants.CPD_ENABLED,
+                    String::toBoolean,
+                ).orElse(true),
+            )
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val source: Property<String> = objects.property<String>().convention("src")
+        public val minimumTokenCount: Property<Int> = objects.property<Int>().convention(DEFAULT_TOKEN_COUNT)
     }

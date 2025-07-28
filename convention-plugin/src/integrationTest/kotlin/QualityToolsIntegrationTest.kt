@@ -228,83 +228,75 @@ class QualityToolsIntegrationTest {
         violations.length shouldBe 1
     }
 
-//    @Test
-//    @DisplayName("should execute pmd with cpd enabled")
-//    fun `execute pmd with cpd enabled`() {
-//        val testProject =
-//            TestProjectBuilder
-//                .create("cpd-test")
-//                .withVersionCatalog()
-//                .withSettingsGradle()
-//                .withBuildGradle(
-//                    """
-//                    plugins {
-//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-//                    }
-//
-//                    jenkinsConvention {
-//                        artifactId = "test-plugin"
-//
-//                        quality {
-//                            pmd {
-//                                enableCPD = true
-//                            }
-//                        }
-//                    }
-//
-//                    """.trimIndent()
-//                )
-//                .withJavaSource(
-//                    className = "DuplicateClass1",
-//                    content = """
-//                    package com.example;
-//
-//                    public class DuplicateClass1 {
-//                        public void method1() {
-//                            System.out.println("This is a longer method with more content");
-//                            System.out.println("Adding more lines to exceed minimum token count");
-//                            System.out.println("Line 3");
-//                            System.out.println("Line 4");
-//                            System.out.println("Line 5");
-//                            int x = 10;
-//                            int y = 20;
-//                            int result = x + y;
-//                            System.out.println("Result: " + result);
-//                        }
-//                    }
-//                    """.trimIndent()
-//                ).withJavaSource(
-//                    className = "DuplicateClass2",
-//                    content = """
-//                    package com.example;
-//
-//                    public class DuplicateClass2 {
-//                        public void method1() {
-//                            System.out.println("This is a longer method with more content");
-//                            System.out.println("Adding more lines to exceed minimum token count");
-//                            System.out.println("Line 3");
-//                            System.out.println("Line 4");
-//                            System.out.println("Line 5");
-//                            int x = 10;
-//                            int y = 20;
-//                            int result = x + y;
-//                            System.out.println("Result: " + result);
-//                        }
-//                    }
-//                    """.trimIndent()
-//                )
-//
-//        val result = testProject.runGradleAndFail("cpdCheck")
-//        result.task(":cpdCheck")?.outcome shouldBe TaskOutcome.FAILED
-//
-//        val pmdXmlReport = File(testProject.projectDir, "build/reports/pmd/main.xml")
-//        pmdXmlReport.shouldExist()
-//
-//        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport)
-//        val violations = document.getElementsByTagName("violation")
-//
-//        println(pmdXmlReport.readText())
-//
-//        violations.length shouldBe 1
-//    }
+    @Test
+    @DisplayName("should execute cpd with defaults")
+    fun `execute cpd with defaults`() {
+        val testProject =
+            TestProjectBuilder
+                .create("cpd-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicBuildScript())
+                .withJavaSource()
+                .withJavaSource(
+                    className = "JavaTestClass",
+                    content =
+                        """
+                        package com.example;
+
+                        public class JavaTestClass {
+                            public String getMessage() {
+                                String message = "Hello from JavaTestClass";
+                                System.out.println(message);
+                                return message;
+                            }
+
+                            public void duplicateMethod() {
+                                String duplicateCode = "This is duplicate code";
+                                System.out.println(duplicateCode);
+                                System.out.println("Line 1");
+                                System.out.println("Line 2");
+                                System.out.println("Line 3");
+                                System.out.println("Line 4");
+                                System.out.println("Line 5");
+                            }
+                        }
+                        """.trimIndent(),
+                ).withJavaSource(
+                    className = "JavaTestClass2",
+                    content =
+                        """
+                        package com.example;
+
+                        public class JavaTestClass2 {
+                            public String getMessage() {
+                                String message = "Hello from JavaTestClass2";
+                                System.out.println(message);
+                                return message;
+                            }
+
+                            public void anotherDuplicateMethod() {
+                                String duplicateCode = "This is duplicate code";
+                                System.out.println(duplicateCode);
+                                System.out.println("Line 1");
+                                System.out.println("Line 2");
+                                System.out.println("Line 3");
+                                System.out.println("Line 4");
+                                System.out.println("Line 5");
+                            }
+                        }
+                        """.trimIndent(),
+                )
+
+        val result = testProject.runGradleAndFail("cpdCheck")
+        result.task(":cpdCheck")?.outcome shouldBe TaskOutcome.FAILED
+
+        val cmdXmlReport = File(testProject.projectDir, "build/reports/cpd/cpdCheck.xml")
+        cmdXmlReport.shouldExist()
+
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cmdXmlReport)
+        val violations = document.getElementsByTagName("duplication")
+
+        violations.length shouldBe 1
+    }
 }

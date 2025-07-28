@@ -18,6 +18,7 @@ package utils
 fun basicBuildScript(): String =
     """
     plugins {
+        java
         id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
     }
 

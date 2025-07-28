@@ -301,9 +301,10 @@ class TestProjectBuilder(
             pit = "1.15.0"
             checkstyle = "10.12.4"
             jacoco = "0.8.13"
-            pmd = "7.0.0"
+            pmd = "7.16.0"
             codenarc = "3.6.0"
             node-gradle = "7.1.0"
+            cpd = "3.5"
 
             [libraries]
             # Kotlin
