@@ -13,9 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
+    `jvm-test-suite`
     id("conventions.kotlin")
     id("conventions.quality")
     alias(libs.plugins.plugin.publish)
@@ -25,22 +25,6 @@ description = "Gradle plugin that provides conventions for developing Jenkins pl
 
 group = project.property("group") as String
 version = project.property("version") as String
-
-// integration test setup
-val integrationTestSourceSet: SourceSet =
-    sourceSets.create("integrationTest") {
-        kotlin {
-            compileClasspath += sourceSets.main.get().output
-            runtimeClasspath += sourceSets.main.get().output
-        }
-    }
-
-val integrationTestImplementation =
-    configurations.named("integrationTestImplementation") {
-        extendsFrom(configurations.implementation.get())
-    }
-
-val integrationTestRuntimeOnly = configurations.named("integrationTestRuntimeOnly")
 
 dependencies {
     compileOnly(gradleApi())
@@ -64,13 +48,6 @@ dependencies {
     implementation(libs.ktlint.gradle.plugin) {
         exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
     }
-
-    // integration test dependencies
-    integrationTestImplementation(gradleTestKit())
-    integrationTestImplementation(libs.junit.gradle.plugin)
-    integrationTestImplementation(libs.kotest.gradle.plugin)
-    integrationTestRuntimeOnly(libs.junit.launcher.gradle.plugin)
-    implementation(kotlin("test"))
 }
 
 gradlePlugin {
@@ -91,53 +68,54 @@ gradlePlugin {
                     "build-logic",
                     "version-catalog",
                 )
-            implementationClass = "JenkinsConventionPlugin"
+            implementationClass = "io.github.aaravmahajanofficial.JenkinsConventionPlugin"
         }
     }
 }
 
-tasks.named<ProcessResources>("processIntegrationTestResources") {
-    dependsOn(tasks.named("pluginUnderTestMetadata"))
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+        }
+
+        register<JvmTestSuite>("integrationTest") {
+
+            dependencies {
+                implementation(project())
+                implementation(gradleTestKit())
+
+                implementation(libs.junit.gradle.plugin)
+                implementation(libs.kotest.gradle.plugin)
+                runtimeOnly(libs.junit.launcher.gradle.plugin)
+
+                runtimeOnly(files(tasks.pluginUnderTestMetadata))
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+
+                        testLogging {
+                            events("passed", "skipped", "failed", "standardOut", "standardError")
+                            showExceptions = true
+                            showCauses = true
+                            showStackTraces = true
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-val integrationTest by tasks.registering(Test::class) {
-
-    description = "Runs integration tests."
-    group = "Verification"
-
-    testClassesDirs = integrationTestSourceSet.output.classesDirs
-    classpath =
-        integrationTestSourceSet.runtimeClasspath
-            .plus(files(tasks.named("pluginUnderTestMetadata").map { it.outputs.files }))
-
-    shouldRunAfter("test")
-
-    dependsOn(tasks.named("pluginUnderTestMetadata"))
-
-    // Ensure output directories exist (prevents classpathDiff error in Kotlin)
-    doFirst {
-        testClassesDirs.filter { !it.exists() }.forEach { it.mkdirs() }
+tasks {
+    check {
+        dependsOn(testing.suites.named("integrationTest"))
     }
 
-    useJUnitPlatform()
-
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = TestExceptionFormat.FULL
-        showCauses = true
-        showExceptions = true
-        showStackTraces = true
+    register<Copy>("publishToLocal") {
+        dependsOn("publishToMavenLocal")
     }
-}
-
-tasks.check {
-    dependsOn(integrationTest)
-}
-
-tasks.register("publishToLocal") {
-    dependsOn("publishToMavenLocal")
-}
-
-tasks.named("build") {
-    finalizedBy("publishToLocal")
 }
