@@ -32,27 +32,28 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+          cache: gradle
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: java-kotlin
+          languages: java-kotlin, actions
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build & Test
         run: |
-          ./gradlew clean build --no-build-cache --no-daemon --stacktrace
+          ./gradlew clean build
 
       - name: Publish to Maven Local
         run: |
-          ./gradlew publishToLocal --no-daemon --stacktrace
+          ./gradlew publishToLocal
 
       - name: Build Git Automerger Plugin Example
         run: |
           cd ./examples/git-automerger-plugin
-          ./gradlew clean build --no-configuration-cache -x test --no-daemon --stacktrace
+          ./gradlew clean build --no-configuration-cache -x test --stacktrace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

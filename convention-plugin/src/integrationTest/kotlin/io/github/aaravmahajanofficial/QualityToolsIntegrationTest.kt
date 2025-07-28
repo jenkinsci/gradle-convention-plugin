@@ -42,7 +42,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute the checkstyle with defaults")
     fun `execute checkstyle with defaults`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("checkstyle-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -68,7 +68,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should suppress the checkstyle violations")
     fun `checkstyle should skip violations due to suppressions`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("checkstyle-suppress-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -105,7 +105,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute spotbugs with defaults")
     fun `execute spotbugs with defaults`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("spotbugs-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -147,7 +147,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute the spotbugs with exclusion filters")
     fun `execute spotbugs with exclude filters`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("spotbugs-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -197,7 +197,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute pmd with defaults")
     fun `execute pmd with defaults`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("pmd-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -240,7 +240,7 @@ class QualityToolsIntegrationTest {
     @DisplayName("should execute cpd with defaults")
     fun `execute cpd with defaults`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("cpd-test")
                 .withVersionCatalog()
                 .withSettingsGradle()

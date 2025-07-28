@@ -43,7 +43,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("kotlin-dsl-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -61,7 +61,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should apply convention plugin to existing Java project without conflicts")
     fun `apply plugin to existing Java project`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("java-existing-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -88,7 +88,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should validate minimum Gradle version requirement")
     fun `validate minimum gradle version`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("gradle-version-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -104,7 +104,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should handle plugin application with property-based configuration")
     fun `apply plugin with property configuration`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("property-config-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
@@ -128,7 +128,7 @@ class PluginApplicationIntegrationTest {
     @DisplayName("should verify quality tasks are conditionally created")
     fun `verify quality tasks conditional creation`() {
         builder =
-            TestProjectBuilder.Companion
+            TestProjectBuilder
                 .create("quality-conditional-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
