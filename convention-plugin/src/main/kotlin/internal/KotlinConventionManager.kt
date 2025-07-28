@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-private const val JAVA_VERSION = 17
+private const val JAVA_VERSION = 21
 
 public class KotlinConventionManager(
     private val project: Project,
@@ -50,7 +50,7 @@ public class KotlinConventionManager(
                 t.compilerOptions {
                     languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
                     apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    jvmTarget.set(JvmTarget.JVM_17)
+                    jvmTarget.set(JvmTarget.JVM_21)
                     allWarningsAsErrors.set(true)
                     freeCompilerArgs.addAll(
                         "-Xjsr305=strict",

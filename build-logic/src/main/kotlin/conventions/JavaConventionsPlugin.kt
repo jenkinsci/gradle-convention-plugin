@@ -24,7 +24,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
-private const val JAVA_VERSION = 17
+private const val JAVA_VERSION = 21
 
 public class JavaConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {

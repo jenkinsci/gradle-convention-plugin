@@ -27,20 +27,20 @@ group = project.property("group") as String
 version = project.property("version") as String
 
 // integration test setup
-sourceSets {
-    create("integrationTest") {
+val integrationTestSourceSet: SourceSet =
+    sourceSets.create("integrationTest") {
         kotlin {
             compileClasspath += sourceSets.main.get().output
             runtimeClasspath += sourceSets.main.get().output
         }
     }
-}
 
-val integrationTestImplementation: Configuration by configurations.getting {
-    extendsFrom(configurations.implementation.get())
-}
+val integrationTestImplementation =
+    configurations.named("integrationTestImplementation") {
+        extendsFrom(configurations.implementation.get())
+    }
 
-val integrationTestRuntimeOnly by configurations.getting
+val integrationTestRuntimeOnly = configurations.named("integrationTestRuntimeOnly")
 
 dependencies {
     compileOnly(gradleApi())
@@ -96,19 +96,28 @@ gradlePlugin {
     }
 }
 
+tasks.named<ProcessResources>("processIntegrationTestResources") {
+    dependsOn(tasks.named("pluginUnderTestMetadata"))
+}
+
 val integrationTest by tasks.registering(Test::class) {
 
     description = "Runs integration tests."
     group = "Verification"
 
-    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
-    classpath = sourceSets["integrationTest"].runtimeClasspath
+    testClassesDirs = integrationTestSourceSet.output.classesDirs
+    classpath =
+        integrationTestSourceSet.runtimeClasspath
+            .plus(files(tasks.named("pluginUnderTestMetadata").map { it.outputs.files }))
+
     shouldRunAfter("test")
 
-    // plugin metadata
-    val pluginMetadata = tasks.named("pluginUnderTestMetadata")
-    dependsOn(pluginMetadata)
-    classpath += files(pluginMetadata.get().outputs.files)
+    dependsOn(tasks.named("pluginUnderTestMetadata"))
+
+    // Ensure output directories exist (prevents classpathDiff error in Kotlin)
+    doFirst {
+        testClassesDirs.filter { !it.exists() }.forEach { it.mkdirs() }
+    }
 
     useJUnitPlatform()
 

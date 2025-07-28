@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -28,17 +29,25 @@ import utils.basicBuildScript
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Bom Management Integration Tests")
 class BomManagementIntegrationTest {
+    lateinit var builder: TestProjectBuilder
+
+    @AfterEach
+    fun cleanupTestProject() {
+        builder.cleanup()
+    }
+
     @Test
     @DisplayName("should apply predefined BOMs correctly")
     fun `apply all predefined boms correctly`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("all-boms-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
@@ -76,14 +85,15 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should handle test-only BOMs correctly")
     fun `handle test-only boms correctly`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("all-boms-test")
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("dependencies", "--configuration=testRuntimeClasspath")
+
+        val result = builder.runGradle("dependencies", "--configuration=testRuntimeClasspath")
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
@@ -96,7 +106,7 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should apply custom BOM")
     fun `apply custom bom`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("custom-boms-test")
                 .withVersionCatalog()
@@ -135,7 +145,8 @@ class BomManagementIntegrationTest {
                     """.trimIndent(),
                 ).withJavaSource()
                 .withTestSource()
-                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
@@ -145,7 +156,7 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should fail with clear error when coordinates are missing in custom BOM")
     fun `fail on custom bom missing coordinates`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("custom-boms-test")
                 .withVersionCatalog()
@@ -182,7 +193,8 @@ class BomManagementIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradleAndFail("help")
+
+        val result = builder.runGradleAndFail("help")
 
         result.output shouldContain "Missing coordinates for BOM 'aws-bom'."
     }
@@ -190,7 +202,7 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should fail with clear error when version is missing in custom BOM")
     fun `fail on custom bom missing version`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("custom-boms-test")
                 .withVersionCatalog()
@@ -227,7 +239,8 @@ class BomManagementIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradleAndFail("help")
+
+        val result = builder.runGradleAndFail("help")
 
         result.output shouldContain "Missing version for BOM 'aws-bom'."
     }
@@ -235,7 +248,7 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should handle bom conflicts gracefully")
     fun `handle bom conflicts gracefully`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("boms-conflict-test")
                 .withVersionCatalog()
@@ -250,7 +263,8 @@ class BomManagementIntegrationTest {
                     }
                     """.trimIndent(),
                 ).withJavaSource()
-                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
@@ -261,7 +275,7 @@ class BomManagementIntegrationTest {
     @Test
     @DisplayName("should disable boms via properties")
     fun `disable boms via properties`() {
-        val result =
+        builder =
             TestProjectBuilder
                 .create("disable-boms-properties-test")
                 .withVersionCatalog()
@@ -274,7 +288,8 @@ class BomManagementIntegrationTest {
                     ),
                 ).withBuildGradle(basicBuildScript())
                 .withJavaSource()
-                .runGradle("dependencies", "--configuration=runtimeClasspath")
+
+        val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 

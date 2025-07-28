@@ -20,7 +20,6 @@ package extensions
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import constants.ConfigurationConstants
-import extensions.QualityExtension.Companion.DEFAULT_TOKEN_COUNT
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
@@ -483,5 +482,6 @@ public open class CpdExtension
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val source: Property<String> = objects.property<String>().convention("src")
-        public val minimumTokenCount: Property<Int> = objects.property<Int>().convention(DEFAULT_TOKEN_COUNT)
+        public val minimumTokenCount: Property<Int> =
+            objects.property<Int>().convention(QualityExtension.DEFAULT_TOKEN_COUNT)
     }

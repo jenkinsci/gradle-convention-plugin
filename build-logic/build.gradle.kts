@@ -21,7 +21,7 @@ plugins {
 }
 
 val javaToolchainVersion: Provider<Int> =
-    providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(17)
+    providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(21)
 
 java {
     toolchain {
@@ -40,7 +40,7 @@ kotlin {
         apiVersion =
             org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
         languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2
-        jvmTarget = JvmTarget.JVM_17
+        jvmTarget = JvmTarget.JVM_21
 
         allWarningsAsErrors.set(true)
         progressiveMode.set(false)
