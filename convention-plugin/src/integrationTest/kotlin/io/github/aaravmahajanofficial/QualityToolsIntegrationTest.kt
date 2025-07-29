@@ -19,6 +19,7 @@ package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
 import io.github.aaravmahajanofficial.utils.basicBuildScript
+import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
@@ -50,15 +51,14 @@ class QualityToolsIntegrationTest {
                 .withJavaSource()
 
         val result = builder.runGradleAndFail("checkstyleMain")
-        println(result.output)
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
-        val checkstyleHtmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.html")
-        checkstyleXmlReport.shouldExist()
-        checkstyleHtmlReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
+        val htmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.html")
+        xmlReport.shouldExist()
+        htmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("error")
 
         violations.length shouldBe 1
@@ -92,10 +92,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradle("checkstyleMain")
         result.task(":checkstyleMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val checkstyleXmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
-        checkstyleXmlReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/checkstyle/main.xml")
+        xmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(checkstyleXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("error")
 
         violations.length shouldBe 0
@@ -130,14 +130,14 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val spotbugsXmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
-        val spotbugsHtmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.html")
-        val spotbugsSarifReport = builder.projectDir.resolve("build/reports/spotbugs/main.sarif")
-        spotbugsXmlReport.shouldExist()
-        spotbugsHtmlReport.shouldExist()
-        spotbugsSarifReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
+        val htmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.html")
+        val sarifReport = builder.projectDir.resolve("build/reports/spotbugs/main.sarif")
+        xmlReport.shouldExist()
+        htmlReport.shouldExist()
+        sarifReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("BugInstance")
 
         violations.length shouldBe 1
@@ -184,10 +184,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradle("spotbugsMain")
         result.task(":spotbugsMain")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val spotbugsXmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
-        spotbugsXmlReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/spotbugs/main.xml")
+        xmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(spotbugsXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("BugInstance")
 
         violations.length shouldBe 0
@@ -225,12 +225,12 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("pmdMain")
         result.task(":pmdMain")?.outcome shouldBe TaskOutcome.FAILED
 
-        val pmdXmlReport = builder.projectDir.resolve("build/reports/pmd/main.xml")
-        val pmdHtmlReport = builder.projectDir.resolve("build/reports/pmd/main.html")
-        pmdXmlReport.shouldExist()
-        pmdHtmlReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/pmd/main.xml")
+        val htmlReport = builder.projectDir.resolve("build/reports/pmd/main.html")
+        xmlReport.shouldExist()
+        htmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pmdXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("violation")
 
         violations.length shouldBe 1
@@ -299,10 +299,10 @@ class QualityToolsIntegrationTest {
         val result = builder.runGradleAndFail("cpdCheck")
         result.task(":cpdCheck")?.outcome shouldBe TaskOutcome.FAILED
 
-        val cpdXmlReport = builder.projectDir.resolve("build/reports/cpd/cpdCheck.xml")
-        cpdXmlReport.shouldExist()
+        val xmlReport = builder.projectDir.resolve("build/reports/cpd/cpdCheck.xml")
+        xmlReport.shouldExist()
 
-        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(cpdXmlReport.toFile())
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
         val violations = document.getElementsByTagName("duplication")
 
         violations.length shouldBe 1
@@ -319,31 +319,34 @@ class QualityToolsIntegrationTest {
 //                .withGradleProperties(
 //                    mapOf(
 //                        "org.gradle.jvmargs" to
-//                            "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED " +
-//                            "--add-opens=java.base/java.lang=ALL-UNNAMED " +
-//                            "--add-opens=java.base/java.io=ALL-UNNAMED " +
-//                            "--add-opens=java.base/java.util=ALL-UNNAMED",
+//                            "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.lang=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.io=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.util=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.security=ALL-UNNAMED" +
+//                            "--add-opens=java.base/java.net=ALL-UNNAMED" +
+//                            "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" +
+//                            "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED" +
+//                            "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
+//
+//                        "org.gradle.daemon" to "false"
 //                    ),
 //                ).withBuildGradle(
 //                    """
 //                    plugins {
-//                        java
+//                        `jvm-test-suite`
+//                        `java-gradle-plugin`
 //                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
 //                    }
 //
-//                    dependencies {
-//                        testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
-//                    }
-//
-//                    tasks.test {
-//                        useJUnitPlatform()
-//
-//                        jvmArgs(
-//                            "--add-opens=java.prefs/java.util.prefs=ALL-UNNAMED",
-//                            "--add-opens=java.base/java.lang=ALL-UNNAMED",
-//                            "--add-opens=java.base/java.io=ALL-UNNAMED",
-//                            "--add-opens=java.base/java.util=ALL-UNNAMED"
-//                        )
+//                    testing {
+//                        suites {
+//                            val test by getting(JvmTestSuite::class) {
+//                                useJUnitJupiter()
+//                            }
+//                        }
 //                    }
 //
 //                    jenkinsConvention {
@@ -363,14 +366,214 @@ class QualityToolsIntegrationTest {
 //        result.task("jacocoTestReport")?.outcome shouldBe TaskOutcome.SUCCESS
 //        result.task("jacocoTestCoverageVerification")?.outcome shouldBe TaskOutcome.SUCCESS
 //
-//        val jacocoXmlReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.xml")
-//        val jacocoHtmlReport = builder.projectDir.resolve("build/reports/jacoco/test/html/index.html")
-//        val jacocoCsvReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.csv")
+//        val xmlReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.xml")
+//        val htmlReport = builder.projectDir.resolve("build/reports/jacoco/test/html/index.html")
+//        val csvReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.csv")
 //
-//        println(jacocoXmlReport.readText())
+//        println(xmlReport.readText())
 //
-//        jacocoXmlReport.shouldExist()
-//        jacocoHtmlReport.shouldExist()
-//        jacocoCsvReport.shouldExist()
+//        xmlReport.shouldExist()
+//        htmlReport.shouldExist()
+//        csvReport.shouldExist()
 //    }
+
+    @Test
+    @DisplayName("should execute Detekt kotlin code analysis")
+    fun `execute detekt for kotlin code analysis`() {
+        builder =
+            TestProjectBuilder
+                .create("detekt-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        kotlin("jvm")
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    ${basicPluginConfiguration()}
+
+                    """.trimIndent(),
+                ).withKotlinSource(
+                    content =
+                        """
+                        package com.example
+
+                        class KotlinTestClass {
+                            fun veryLongMethodNameThatExceedsTheMaximumLineLength(): String {
+                                return "This line is too long and should trigger a Detekt violation"
+                            }
+                        }
+
+                        """.trimIndent(),
+                )
+
+        val result = builder.runGradleAndFail("detekt")
+        result.task(":detekt")?.outcome shouldBe TaskOutcome.FAILED
+
+        val xmlReport = builder.projectDir.resolve("build/reports/detekt/detekt.xml")
+        val htmlReport = builder.projectDir.resolve("build/reports/detekt/detekt.html")
+        val sarifReport = builder.projectDir.resolve("build/reports/detekt/detekt.sarif")
+        xmlReport.shouldExist()
+        htmlReport.shouldExist()
+        sarifReport.shouldExist()
+
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
+        val violations = document.getElementsByTagName("error")
+
+        violations.length shouldBe 1
+    }
+
+    @Test
+    @DisplayName("should execute Detekt using baseline")
+    fun `execute detekt with baseline config`() {
+        builder =
+            TestProjectBuilder
+                .create("detekt-baseline-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        kotlin("jvm")
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    ${basicPluginConfiguration()}
+
+                    """.trimIndent(),
+                ).withKotlinSource(
+                    content =
+                        """
+                        package com.example
+
+                        class KotlinTestClass {
+                            fun veryLongMethodNameThatExceedsTheMaximumLineLength(): String {
+                                return "This line is too long and should trigger a Detekt violation"
+                            }
+                        }
+
+                        """.trimIndent(),
+                )
+
+        val detektBaselineResult = builder.runGradle("detektBaseline")
+        detektBaselineResult.task(":detektBaseline")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        val detektResult = builder.runGradle("detekt")
+        detektResult.task(":detekt")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        val xmlReport = builder.projectDir.resolve("build/reports/detekt/detekt.xml")
+        xmlReport.shouldExist()
+
+        val xmlBaselineResult = builder.projectDir.resolve("config/detekt/detekt-baseline.xml")
+        xmlBaselineResult.shouldExist()
+
+        val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlReport.toFile())
+        val violations = document.getElementsByTagName("error")
+
+        violations.length shouldBe 0
+    }
+
+    @Test
+    @DisplayName("should execute spotless with defaults")
+    fun `execute spotless with defaults`() {
+        builder =
+            TestProjectBuilder
+                .create("spotless-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        kotlin("jvm")
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    ${basicPluginConfiguration()}
+
+                    """.trimIndent(),
+                ).withKotlinSource(
+                    content =
+                        """
+                        package com.example
+
+                        class KotlinTestClass{
+                        fun getMessage( ):String="Hello from KotlinTestClass"
+                        }
+                        """.trimIndent(),
+                ).withJavaSource(
+                    content =
+                        """
+                        package com.example;
+
+                        public class JavaTestClass {
+                        public String getMessage( ){
+                        return"Hello from JavaTestClass";
+                        }
+                        }
+                        """.trimIndent(),
+                )
+
+        val kotlinResult = builder.runGradleAndFail("spotlessKotlinCheck")
+        kotlinResult.task(":spotlessKotlinCheck")?.outcome shouldBe TaskOutcome.FAILED
+
+        val javaResult = builder.runGradleAndFail("spotlessJavaCheck")
+        javaResult.task(":spotlessJavaCheck")?.outcome shouldBe TaskOutcome.FAILED
+
+        val applyResult = builder.runGradle("spotlessApply")
+        applyResult.task(":spotlessApply")?.outcome shouldBe TaskOutcome.SUCCESS
+    }
+
+    // Dokka
+    @Test
+    @DisplayName("should execute dokka with defaults")
+    fun `execute dokka with defaults`() {
+        builder =
+            TestProjectBuilder
+                .create("dokka-test")
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    """
+                    plugins {
+                        kotlin("jvm")
+                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+                    }
+
+                    ${basicPluginConfiguration()}
+
+                    """.trimIndent(),
+                ).withKotlinSource(
+                    content =
+                        """
+                        package com.example
+
+                        /**
+                         * A test class for demonstrating Dokka documentation generation.
+                         *
+                         * @author Test Developer
+                         * @since 1.0.0
+                         */
+                        class KotlinTestClass {
+                            /**
+                             * Returns a greeting message.
+                             *
+                             * @return A greeting string
+                             */
+                            fun getMessage(): String = "Hello from KotlinTestClass"
+                        }
+                        """.trimIndent(),
+                )
+
+        val result = builder.runGradle("dokkaHtml")
+        result.task(":dokkaHtml")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        val htmlReport = builder.projectDir.resolve("build/dokka/html/index.html")
+        htmlReport.shouldExist()
+    }
+
+    // Kover
+    // ESLint
+    // Codenarc
 }

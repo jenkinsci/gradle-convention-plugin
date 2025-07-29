@@ -284,7 +284,7 @@ class TestProjectBuilder(
 
     companion object {
         fun create(name: String = "test-project"): TestProjectBuilder {
-            val tempDir = Files.createTempDirectory("gradle-test-$name")
+            val tempDir = Files.createTempDirectory("gradle-test-$name-")
             return TestProjectBuilder(tempDir)
         }
 
@@ -347,8 +347,8 @@ class TestProjectBuilder(
 
             dependencyResolutionManagement {
                 repositories {
-                    gradlePluginPortal()
                     mavenCentral()
+                    gradlePluginPortal()
                     maven {
                         name = "Jenkins"
                         url = uri("https://repo.jenkins-ci.org/public/")
