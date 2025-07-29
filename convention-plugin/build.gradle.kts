@@ -86,10 +86,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
-
                 implementation(libs.kotest.gradle.plugin)
-                runtimeOnly(libs.junit.launcher.gradle.plugin)
-
                 runtimeOnly(files(tasks.named("pluginUnderTestMetadata")))
             }
 
