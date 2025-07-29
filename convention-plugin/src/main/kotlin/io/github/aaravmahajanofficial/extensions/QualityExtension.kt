@@ -266,8 +266,8 @@ public open class DetektExtension
                 ),
             )
         public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
-    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val source: ListProperty<String> = objects.listProperty<String>().convention(listOf("src/main/kotlin"))
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val source: ListProperty<String> = objects.listProperty<String>().convention(listOf("src/main/kotlin"))
     }
 
 public open class SpotlessExtension
