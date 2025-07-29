@@ -247,7 +247,7 @@ public class QualityManager(
             autoCorrect = quality.detekt.autoCorrect.get()
             buildUponDefaultConfig = true
             isIgnoreFailures = !quality.detekt.failOnViolation.get()
-            source.setFrom(quality.detekt.source)
+            source.setFrom(quality.detekt.source.get())
             config.setFrom(resolveConfigFile("detekt", "detekt.yml"))
             baseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
             parallel = true
@@ -269,30 +269,30 @@ public class QualityManager(
         project.variantResolution("spotless")
 
         project.configure<SpotlessExtension> {
-            kotlin {
-                it.target("**/*.kt")
-                it.targetExclude("**/build/**", "bin/**", "**/generated/**")
-                it.ktlint()
-                it.trimTrailingWhitespace()
-                it.endWithNewline()
+            kotlin { k ->
+                k.target("**/*.kt")
+                k.targetExclude("**/build/**", "bin/**", "**/generated/**")
+                k.ktlint()
+                k.trimTrailingWhitespace()
+                k.endWithNewline()
             }
-            kotlinGradle {
-                it.target("*.gradle.kts", "**/*.gradle.kts")
-                it.targetExclude("**/build/**", "**/.gradle/**")
-                it.ktlint()
-                it.trimTrailingWhitespace()
-                it.endWithNewline()
+            kotlinGradle { kg ->
+                kg.target("*.gradle.kts", "**/*.gradle.kts")
+                kg.targetExclude("**/build/**", "**/.gradle/**")
+                kg.ktlint()
+                kg.trimTrailingWhitespace()
+                kg.endWithNewline()
             }
-            java {
-                it.target("src/*/java/**/*.java")
-                it.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
-                it.palantirJavaFormat()
-                it.trimTrailingWhitespace()
-                it.endWithNewline()
-                it.removeUnusedImports()
+            java { j ->
+                j.target("src/*/java/**/*.java")
+                j.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
+                j.palantirJavaFormat()
+                j.trimTrailingWhitespace()
+                j.endWithNewline()
+                j.removeUnusedImports()
             }
-            format("misc") {
-                it.target(
+            format("misc") { m ->
+                m.target(
                     "*.md",
                     "*.txt",
                     ".gitignore",
@@ -308,7 +308,7 @@ public class QualityManager(
                     "*.dockerfile",
                     "Dockerfile*",
                 )
-                it.targetExclude(
+                m.targetExclude(
                     "**/build/**",
                     "**/.gradle/**",
                     "**/.idea/**",
@@ -317,8 +317,8 @@ public class QualityManager(
                     "**/generated/**",
                 )
 
-                it.trimTrailingWhitespace()
-                it.endWithNewline()
+                m.trimTrailingWhitespace()
+                m.endWithNewline()
             }
         }
     }
