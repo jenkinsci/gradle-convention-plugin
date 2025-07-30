@@ -31,14 +31,10 @@ version = providers.gradleProperty("version").get()
 dependencies {
     implementation(gradleApi())
     implementation(gradleKotlinDsl())
-    implementation(libs.kotlin.gradle.plugin) {
-        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
-    }
+    implementation(libs.kotlin.gradle.plugin)
     implementation(libs.jenkins.gradle.jpi2)
     implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin) {
-        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
-    }
+    implementation(libs.detekt.gradle.plugin)
     implementation(libs.spotbugs.gradle.plugin)
     implementation(libs.owasp.depcheck.gradle.plugin)
     implementation(libs.benmanes.versions.gradle.plugin)
@@ -47,9 +43,7 @@ dependencies {
     implementation(libs.node.gradle.plugin)
     implementation(libs.dokka.gradle.plugin)
     implementation(libs.cpd.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin) {
-        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
-    }
+    implementation(libs.ktlint.gradle.plugin)
 }
 
 gradlePlugin {
