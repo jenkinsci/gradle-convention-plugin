@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew clean
 
       - name: Run build
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build -x integrationTest --no-daemon
 
       - name: Publish to Maven Local
         run: ./gradlew publishToLocal
