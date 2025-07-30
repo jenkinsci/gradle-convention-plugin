@@ -20,10 +20,11 @@ package io.github.aaravmahajanofficial.utils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.tooling.BuildException
-import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.exists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 class TestProjectBuilder(
     val projectDir: Path,
@@ -279,15 +280,6 @@ class TestProjectBuilder(
     }
 
     fun runGradleAndFail(vararg tasks: String): BuildResult = runGradle(tasks.toList(), expectFailure = true)
-
-    @OptIn(ExperimentalPathApi::class)
-    fun cleanup() {
-        try {
-            projectDir.deleteRecursively()
-        } catch (e: IOException) {
-            println("Warning: Failed to delete test directory ${projectDir.toAbsolutePath()}: ${e.message}")
-        }
-    }
 
     companion object {
         fun create(): TestProjectBuilder {

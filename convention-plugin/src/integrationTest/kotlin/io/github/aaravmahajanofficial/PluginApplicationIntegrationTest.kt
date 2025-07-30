@@ -24,7 +24,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -33,11 +32,6 @@ import org.junit.jupiter.api.TestInstance
 @DisplayName("Plugin Application Integration Tests")
 class PluginApplicationIntegrationTest {
     lateinit var builder: TestProjectBuilder
-
-    @AfterEach
-    fun cleanupTestProject() {
-        builder.cleanup()
-    }
 
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")

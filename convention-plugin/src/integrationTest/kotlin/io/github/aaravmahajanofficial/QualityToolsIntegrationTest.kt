@@ -23,7 +23,6 @@ import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -33,11 +32,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 @DisplayName("Quality Tools Integration Tests")
 class QualityToolsIntegrationTest {
     lateinit var builder: TestProjectBuilder
-
-    @AfterEach
-    fun cleanupTestProject() {
-        builder.cleanup()
-    }
 
     @Test
     @DisplayName("should execute the checkstyle with defaults")
