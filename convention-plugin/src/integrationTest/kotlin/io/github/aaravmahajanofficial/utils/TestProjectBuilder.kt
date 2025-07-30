@@ -254,7 +254,14 @@ class TestProjectBuilder(
         arguments: List<String> = emptyList(),
         expectFailure: Boolean = false,
     ): BuildResult {
-        val allArgs = tasks + arguments + "--stacktrace" + "--info"
+        val allArgs =
+            buildList {
+                addAll(tasks)
+                addAll(arguments)
+                add("--stacktrace")
+                add("--info")
+                add("--build-cache")
+            }
 
         val runner =
             GradleRunner
@@ -262,12 +269,12 @@ class TestProjectBuilder(
                 .withProjectDir(projectDir.toFile())
                 .withArguments(allArgs)
                 .withPluginClasspath()
-                .withDebug(true)
+                .forwardOutput()
 
         return try {
             if (expectFailure) runner.buildAndFail() else runner.build()
         } catch (e: BuildException) {
-            throw BuildException("Build failed for tasks: $tasks", e)
+            throw BuildException("Build failed for tasks: $tasks\n${e.message}", e)
         }
     }
 

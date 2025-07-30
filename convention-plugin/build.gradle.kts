@@ -83,15 +83,19 @@ testing {
 
         register<JvmTestSuite>("integrationTest") {
 
+            useJUnitJupiter()
+
             dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
                 implementation(libs.kotest.gradle.plugin)
-                runtimeOnly(files(tasks.named("pluginUnderTestMetadata")))
             }
 
             targets.configureEach {
                 testTask.configure {
+
+                    classpath += files(tasks.named("pluginUnderTestMetadata"))
+
                     shouldRunAfter(tasks.named("test"))
 
                     testLogging {
