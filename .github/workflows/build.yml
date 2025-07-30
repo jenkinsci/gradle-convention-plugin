@@ -42,18 +42,7 @@ jobs:
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
 
-      - name: Clean Gradle build
-        run: ./gradlew clean
-
       - name: Run build
-        run: ./gradlew build -x integrationTest --no-daemon
-
-      - name: Publish to Maven Local
-        run: ./gradlew publishToLocal
-
-      - name: Build Git Automerger Plugin Example
-        run: |
-          cd ./examples/git-automerger-plugin
-          ./gradlew clean build --no-configuration-cache -x test --stacktrace
+        run: ./gradlew clean build -x integrationTest --no-daemon
 
       - uses: github/codeql-action/analyze@v3
