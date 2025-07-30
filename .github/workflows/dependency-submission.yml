@@ -2,7 +2,7 @@ name: Dependency Submission
 
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -17,6 +17,6 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: '21'
       - name: Generate & Submit Dependency Graph
         uses: gradle/actions/dependency-submission@v4
