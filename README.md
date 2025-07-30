@@ -1,4 +1,4 @@
-[![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
+[![Gradle Build](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/build.yml)
 
 # Jenkins Gradle Convention Plugin
 
@@ -76,15 +76,6 @@ jenkinsConvention {
         email = "example@example.com"
         organization = "Example Inc."
     }
-
-    quality {
-        useSpotBugs = true
-        useDetekt = true
-    }
-
-    bom {
-        useCoreBom = true
-    }
 }
 ```
 
@@ -112,10 +103,8 @@ The plugin provides several extensions to customize your build:
 ```kotlin
 jenkinsConvention {
     quality {
-        useSpotBugs = true
-        useDetekt = true
-        detekt {
-            autoCorrect = true
+        spotless {
+            enabled = false
         }
     }
 }
@@ -126,8 +115,15 @@ jenkinsConvention {
 ```kotlin
 jenkinsConvention {
     bom {
-        useCoreBom = true
-        useJacksonBom = true
+        netty {
+            enabled = false
+        }
+        customBoms {
+            create("aws-bom") {
+                coordinates = "com.amazonaws:aws-java-sdk-bom"
+                testOnly = false
+            }
+        } 
     }
 }
 ```
