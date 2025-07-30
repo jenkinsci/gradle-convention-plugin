@@ -44,7 +44,7 @@ class QualityToolsIntegrationTest {
     fun `execute checkstyle with defaults`() {
         builder =
             TestProjectBuilder
-                .create("checkstyle-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -69,7 +69,7 @@ class QualityToolsIntegrationTest {
     fun `checkstyle should skip violations due to suppressions`() {
         builder =
             TestProjectBuilder
-                .create("checkstyle-suppress-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -106,7 +106,7 @@ class QualityToolsIntegrationTest {
     fun `execute spotbugs with defaults`() {
         builder =
             TestProjectBuilder
-                .create("spotbugs-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -148,7 +148,7 @@ class QualityToolsIntegrationTest {
     fun `execute spotbugs with exclude filters`() {
         builder =
             TestProjectBuilder
-                .create("spotbugs-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -198,7 +198,7 @@ class QualityToolsIntegrationTest {
     fun `execute pmd with defaults`() {
         builder =
             TestProjectBuilder
-                .create("pmd-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -241,7 +241,7 @@ class QualityToolsIntegrationTest {
     fun `execute cpd with defaults`() {
         builder =
             TestProjectBuilder
-                .create("cpd-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -382,7 +382,7 @@ class QualityToolsIntegrationTest {
     fun `execute detekt for kotlin code analysis`() {
         builder =
             TestProjectBuilder
-                .create("detekt-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -430,7 +430,7 @@ class QualityToolsIntegrationTest {
     fun `execute detekt with baseline config`() {
         builder =
             TestProjectBuilder
-                .create("detekt-baseline-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -480,7 +480,7 @@ class QualityToolsIntegrationTest {
     fun `execute spotless with defaults`() {
         builder =
             TestProjectBuilder
-                .create("spotless-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -531,7 +531,7 @@ class QualityToolsIntegrationTest {
     fun `execute dokka with defaults`() {
         builder =
             TestProjectBuilder
-                .create("dokka-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -573,7 +573,51 @@ class QualityToolsIntegrationTest {
         htmlReport.shouldExist()
     }
 
-    // Kover
+//    @Test
+//    @DisplayName("should execute kover with defaults")
+//    fun `execute kover with defaults`() {
+//        builder =
+//            TestProjectBuilder
+//                .create("kover-test")
+//                .withVersionCatalog()
+//                .withSettingsGradle()
+//                .withBuildGradle(
+//                    """
+//                    plugins {
+//                        kotlin("jvm")
+//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+//                    }
+//
+//                    ${basicPluginConfiguration()}
+//
+//                    testing {
+//                        suites {
+//                            val test by getting(JvmTestSuite::class) {
+//                                useJUnitJupiter()
+//                            }
+//                        }
+//                    }
+//
+//                    """.trimIndent(),
+//                ).withKotlinSource()
+//                .withTestSource(
+//                    language = "kotlin",
+//                    className = "KotlinTestClassTest",
+//                    testClassName = "KotlinTestClass"
+//                )
+//
+//        val tasks = builder.runGradle("tasks", "--all")
+//        println(tasks.output)
+//
+//        val result = builder.runGradle("koverHtmlReport")
+//        result.task(":koverHtmlReport")?.outcome shouldBe TaskOutcome.SUCCESS
+//
+//        println(result.output)
+//
+//        val xmlReport = builder.projectDir.resolve("build/reports/kover/report.xml")
+//        xmlReport.shouldExist()
+//    }
+
     // ESLint
     // Codenarc
 }

@@ -43,7 +43,7 @@ class BomManagementIntegrationTest {
     fun `apply all predefined boms correctly`() {
         builder =
             TestProjectBuilder
-                .create("all-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -89,7 +89,7 @@ class BomManagementIntegrationTest {
     fun `handle test-only boms correctly`() {
         builder =
             TestProjectBuilder
-                .create("all-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -110,7 +110,7 @@ class BomManagementIntegrationTest {
     fun `apply custom bom`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -160,7 +160,7 @@ class BomManagementIntegrationTest {
     fun `fail on custom bom missing coordinates`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -206,7 +206,7 @@ class BomManagementIntegrationTest {
     fun `fail on custom bom missing version`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -252,7 +252,7 @@ class BomManagementIntegrationTest {
     fun `handle bom conflicts gracefully`() {
         builder =
             TestProjectBuilder
-                .create("boms-conflict-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -279,7 +279,7 @@ class BomManagementIntegrationTest {
     fun `disable boms via properties`() {
         builder =
             TestProjectBuilder
-                .create("disable-boms-properties-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withGradleProperties(

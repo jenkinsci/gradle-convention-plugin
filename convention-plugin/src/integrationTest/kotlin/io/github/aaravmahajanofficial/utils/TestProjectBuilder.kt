@@ -283,8 +283,8 @@ class TestProjectBuilder(
     }
 
     companion object {
-        fun create(name: String = "test-project"): TestProjectBuilder {
-            val tempDir = Files.createTempDirectory("gradle-test-$name-")
+        fun create(): TestProjectBuilder {
+            val tempDir = Files.createTempDirectory("gradle-test-")
             return TestProjectBuilder(tempDir)
         }
 
