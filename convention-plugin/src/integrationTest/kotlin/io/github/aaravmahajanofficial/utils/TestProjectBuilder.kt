@@ -20,10 +20,11 @@ package io.github.aaravmahajanofficial.utils
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.tooling.BuildException
-import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.exists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 class TestProjectBuilder(
     val projectDir: Path,
@@ -254,7 +255,14 @@ class TestProjectBuilder(
         arguments: List<String> = emptyList(),
         expectFailure: Boolean = false,
     ): BuildResult {
-        val allArgs = tasks + arguments + "--stacktrace" + "--info"
+        val allArgs =
+            buildList {
+                addAll(tasks)
+                addAll(arguments)
+                add("--stacktrace")
+                add("--info")
+                add("--build-cache")
+            }
 
         val runner =
             GradleRunner
@@ -262,29 +270,20 @@ class TestProjectBuilder(
                 .withProjectDir(projectDir.toFile())
                 .withArguments(allArgs)
                 .withPluginClasspath()
-                .withDebug(true)
+                .forwardOutput()
 
         return try {
             if (expectFailure) runner.buildAndFail() else runner.build()
         } catch (e: BuildException) {
-            throw BuildException("Build failed for tasks: $tasks", e)
+            throw BuildException("Build failed for tasks: $tasks\n${e.message}", e)
         }
     }
 
     fun runGradleAndFail(vararg tasks: String): BuildResult = runGradle(tasks.toList(), expectFailure = true)
 
-    @OptIn(ExperimentalPathApi::class)
-    fun cleanup() {
-        try {
-            projectDir.deleteRecursively()
-        } catch (e: IOException) {
-            println("Warning: Failed to delete test directory ${projectDir.toAbsolutePath()}: ${e.message}")
-        }
-    }
-
     companion object {
-        fun create(name: String = "test-project"): TestProjectBuilder {
-            val tempDir = Files.createTempDirectory("gradle-test-$name-")
+        fun create(): TestProjectBuilder {
+            val tempDir = Files.createTempDirectory("gradle-test-")
             return TestProjectBuilder(tempDir)
         }
 

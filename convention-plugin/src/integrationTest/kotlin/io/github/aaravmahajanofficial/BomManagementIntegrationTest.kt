@@ -23,7 +23,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -33,17 +32,12 @@ import org.junit.jupiter.api.TestInstance
 class BomManagementIntegrationTest {
     lateinit var builder: TestProjectBuilder
 
-    @AfterEach
-    fun cleanupTestProject() {
-        builder.cleanup()
-    }
-
     @Test
     @DisplayName("should apply predefined BOMs correctly")
     fun `apply all predefined boms correctly`() {
         builder =
             TestProjectBuilder
-                .create("all-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -89,7 +83,7 @@ class BomManagementIntegrationTest {
     fun `handle test-only boms correctly`() {
         builder =
             TestProjectBuilder
-                .create("all-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -110,7 +104,7 @@ class BomManagementIntegrationTest {
     fun `apply custom bom`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -160,7 +154,7 @@ class BomManagementIntegrationTest {
     fun `fail on custom bom missing coordinates`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -206,7 +200,7 @@ class BomManagementIntegrationTest {
     fun `fail on custom bom missing version`() {
         builder =
             TestProjectBuilder
-                .create("custom-boms-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -252,7 +246,7 @@ class BomManagementIntegrationTest {
     fun `handle bom conflicts gracefully`() {
         builder =
             TestProjectBuilder
-                .create("boms-conflict-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -279,7 +273,7 @@ class BomManagementIntegrationTest {
     fun `disable boms via properties`() {
         builder =
             TestProjectBuilder
-                .create("disable-boms-properties-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withGradleProperties(

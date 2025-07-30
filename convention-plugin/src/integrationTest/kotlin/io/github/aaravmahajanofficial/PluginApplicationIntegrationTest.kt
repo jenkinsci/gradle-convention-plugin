@@ -24,7 +24,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -34,17 +33,12 @@ import org.junit.jupiter.api.TestInstance
 class PluginApplicationIntegrationTest {
     lateinit var builder: TestProjectBuilder
 
-    @AfterEach
-    fun cleanupTestProject() {
-        builder.cleanup()
-    }
-
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
         builder =
             TestProjectBuilder
-                .create("kotlin-dsl-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -62,7 +56,7 @@ class PluginApplicationIntegrationTest {
     fun `apply plugin to existing Java project`() {
         builder =
             TestProjectBuilder
-                .create("java-existing-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
@@ -89,7 +83,7 @@ class PluginApplicationIntegrationTest {
     fun `validate minimum gradle version`() {
         builder =
             TestProjectBuilder
-                .create("gradle-version-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicBuildScript())
@@ -105,7 +99,7 @@ class PluginApplicationIntegrationTest {
     fun `apply plugin with property configuration`() {
         builder =
             TestProjectBuilder
-                .create("property-config-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withGradleProperties(
@@ -129,7 +123,7 @@ class PluginApplicationIntegrationTest {
     fun `verify quality tasks conditional creation`() {
         builder =
             TestProjectBuilder
-                .create("quality-conditional-test")
+                .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(

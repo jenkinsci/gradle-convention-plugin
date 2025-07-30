@@ -16,8 +16,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlin.dsl)
     `java-gradle-plugin`
+    alias(libs.plugins.kotlin.dsl)
 }
 
 val javaToolchainVersion: Provider<Int> =
@@ -53,21 +53,6 @@ kotlin {
     }
 }
 
-sourceSets {
-    main {
-        java.setSrcDirs(emptyList<String>())
-        kotlin.setSrcDirs(listOf("src/main/kotlin"))
-    }
-    test {
-        java.setSrcDirs(emptyList<String>())
-        kotlin.setSrcDirs(listOf("src/test/kotlin"))
-    }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    source = project.files().asFileTree
-}
-
 gradlePlugin {
     plugins {
         create("javaConventions") {
@@ -75,15 +60,11 @@ gradlePlugin {
             displayName = "Java Conventions"
             implementationClass = "conventions.JavaConventionsPlugin"
         }
-    }
-    plugins {
         create("kotlinConventions") {
             id = "conventions.kotlin"
             displayName = "Kotlin Conventions"
             implementationClass = "conventions.KotlinConventionsPlugin"
         }
-    }
-    plugins {
         create("qualityConventions") {
             id = "conventions.quality"
             displayName = "Quality Conventions"
@@ -94,15 +75,8 @@ gradlePlugin {
 
 dependencies {
     implementation(gradleApi())
+    implementation(libs.kotlin.gradle.plugin)
     implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin) {
-        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
-    }
-    implementation(libs.ktlint.gradle.plugin) {
-        exclude("org.jetbrains.kotlin", "kotlin-compiler-embeddable")
-    }
-
-    compileOnly(libs.kotlin.gradle.plugin) {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
-    }
+    implementation(libs.detekt.gradle.plugin)
+    implementation(libs.ktlint.gradle.plugin)
 }
