@@ -2,9 +2,7 @@ name: Gradle Build
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -34,7 +32,7 @@ jobs:
         with:
           languages: java-kotlin, actions
 
-      - name: Set up Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: release-candidate
@@ -42,7 +40,7 @@ jobs:
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
 
-      - name: Build & Test
+      - name: Run build
         run: ./gradlew build --no-daemon
 
       - name: Publish to Maven Local
@@ -53,5 +51,4 @@ jobs:
           cd ./examples/git-automerger-plugin
           ./gradlew clean build --no-configuration-cache -x test --stacktrace
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v3
