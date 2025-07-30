@@ -92,7 +92,8 @@ testing {
 
             targets.configureEach {
                 testTask.configure {
-                    shouldRunAfter(test)
+                    dependsOn(tasks.named("jar"))
+                    shouldRunAfter(tasks.named("test"))
 
                     testLogging {
                         events("passed", "skipped", "failed", "standardOut", "standardError")
