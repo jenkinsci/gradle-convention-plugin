@@ -18,7 +18,6 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicBuildScript
 import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -41,7 +40,7 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradle("help")
@@ -59,16 +58,8 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        java
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                     ${basicPluginConfiguration()}
-                    """.trimIndent(),
-                ).withJavaSource()
+                .withBuildGradle(basicPluginConfiguration())
+                .withJavaSource()
 
         val result = builder.runGradle("tasks", "--group=build")
 
@@ -86,7 +77,7 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
 
         val result = builder.runGradle("help")
 
@@ -109,7 +100,7 @@ class PluginApplicationIntegrationTest {
                         "cfg.quality.jacoco.enabled" to "enabled",
                         "cfg.bom.jenkins" to "enabled",
                     ),
-                ).withBuildGradle(basicBuildScript())
+                ).withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradle("jenkinsConventionPluginInfo")
@@ -127,33 +118,19 @@ class PluginApplicationIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "test-plugin"
-                        humanReadableName = "Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-                            developer {
-                                id = "dev-123"
-                                name = "Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-                        quality {
-                            checkstyle {
-                                enabled = false
-                            }
-                            pmd {
-                                enabled = false
-                            }
-                        }
-                    }
-                    """.trimIndent(),
+                    basicPluginConfiguration(
+                        qualityBlock =
+                            """
+                            quality {
+                                    checkstyle {
+                                        enabled = false
+                                    }
+                                    pmd {
+                                        enabled = false
+                                    }
+                                }
+                            """.trimIndent(),
+                    ),
                 ).withJavaSource()
 
         val result = builder.runGradle("tasks", "--all")

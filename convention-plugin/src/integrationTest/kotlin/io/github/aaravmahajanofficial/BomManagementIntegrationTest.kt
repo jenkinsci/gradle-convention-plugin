@@ -18,7 +18,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicBuildScript
+import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -40,7 +40,7 @@ class BomManagementIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
@@ -86,7 +86,7 @@ class BomManagementIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=testRuntimeClasspath")
@@ -108,37 +108,20 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "Bom-test-plugin"
-                        humanReadableName = "Bom Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-
-                            developer {
-                                id = "bom-dev-123"
-                                name = "Bom-Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        bom {
-                            customBoms {
-                                create("aws-bom") {
-                                    coordinates = "com.amazonaws:aws-java-sdk-bom"
-                                    version = "1.12.788"
-                                    testOnly = false
+                    basicPluginConfiguration(
+                        bomBlock =
+                            """
+                            bom {
+                                customBoms {
+                                    create("aws-bom") {
+                                        coordinates = "com.amazonaws:aws-java-sdk-bom"
+                                        version = "1.12.788"
+                                        testOnly = false
+                                    }
                                 }
                             }
-                        }
-
-                    }
-                    """.trimIndent(),
+                            """.trimIndent(),
+                    ),
                 ).withJavaSource()
                 .withTestSource()
 
@@ -158,36 +141,19 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "Bom-test-plugin"
-                        humanReadableName = "Bom Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-
-                            developer {
-                                id = "bom-dev-123"
-                                name = "Bom-Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        bom {
-                            customBoms {
-                                create("aws-bom") {
-                                    version = "1.12.788"
-                                    testOnly = false
+                    basicPluginConfiguration(
+                        bomBlock =
+                            """
+                            bom {
+                                customBoms {
+                                    create("aws-bom") {
+                                        version = "1.12.788"
+                                        testOnly = false
+                                    }
                                 }
                             }
-                        }
-
-                    }
-                    """.trimIndent(),
+                            """.trimIndent(),
+                    ),
                 ).withJavaSource()
 
         val result = builder.runGradleAndFail("help")
@@ -204,36 +170,19 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    """
-                    plugins {
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    jenkinsConvention {
-                        artifactId = "Bom-test-plugin"
-                        humanReadableName = "Bom Test Plugin"
-                        homePage = uri("https://github.com")
-
-                        developers {
-
-                            developer {
-                                id = "bom-dev-123"
-                                name = "Bom-Test Dev"
-                                email = "testDev@gmail.com"
-                            }
-                        }
-
-                        bom {
-                            customBoms {
-                                create("aws-bom") {
-                                    coordinates = "com.amazonaws:aws-java-sdk-bom"
-                                    testOnly = false
+                    basicPluginConfiguration(
+                        bomBlock =
+                            """
+                            bom {
+                                customBoms {
+                                    create("aws-bom") {
+                                        coordinates = "com.amazonaws:aws-java-sdk-bom"
+                                        testOnly = false
+                                    }
                                 }
                             }
-                        }
-
-                    }
-                    """.trimIndent(),
+                            """.trimIndent(),
+                    ),
                 ).withJavaSource()
 
         val result = builder.runGradleAndFail("help")
@@ -250,14 +199,15 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    """
-                    ${basicBuildScript()}
-
-                    dependencies {
-                        implementation("org.springframework.boot:spring-boot-starter-json:2.7.8")
-                        implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
-                    }
-                    """.trimIndent(),
+                    basicPluginConfiguration(
+                        dependenciesBlock =
+                            """
+                            dependencies {
+                                implementation("org.springframework.boot:spring-boot-starter-json:2.7.8")
+                                implementation("com.fasterxml.jackson.core:jackson-core:2.16.0")
+                            }
+                            """.trimIndent(),
+                    ),
                 ).withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
@@ -282,7 +232,7 @@ class BomManagementIntegrationTest {
                         "cfg.bom.jackson.enabled" to "false",
                         "cfg.bom.spring.enabled" to "false",
                     ),
-                ).withBuildGradle(basicBuildScript())
+                ).withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")

@@ -18,7 +18,6 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicBuildScript
 import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
@@ -41,7 +40,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
 
         val result = builder.runGradleAndFail("checkstyleMain")
@@ -66,7 +65,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
                 .withConfigFile(
                     toolName = "checkstyle",
@@ -103,7 +102,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource(
                     content =
                         """
@@ -145,7 +144,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource(
                     content =
                         """
@@ -195,7 +194,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource(
                     content =
                         """
@@ -238,7 +237,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicBuildScript())
+                .withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
                 .withJavaSource(
                     className = "JavaTestClass",
@@ -307,7 +306,7 @@ class QualityToolsIntegrationTest {
 //    fun `execute jacoco with defaults`() {
 //        builder =
 //            TestProjectBuilder
-//                .create("jacoco-test")
+//                .create()
 //                .withVersionCatalog()
 //                .withSettingsGradle()
 //                .withGradleProperties(
@@ -324,15 +323,13 @@ class QualityToolsIntegrationTest {
 //                            "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" +
 //                            "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED" +
 //                            "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
-//
-//                        "org.gradle.daemon" to "false"
+//                        "org.gradle.daemon" to "false",
 //                    ),
 //                ).withBuildGradle(
 //                    """
 //                    plugins {
 //                        `jvm-test-suite`
-//                        `java-gradle-plugin`
-//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+//                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "999-SNAPSHOT"
 //                    }
 //
 //                    testing {
@@ -379,17 +376,8 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        kotlin("jvm")
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    ${basicPluginConfiguration()}
-
-                    """.trimIndent(),
-                ).withKotlinSource(
+                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withKotlinSource(
                     content =
                         """
                         package com.example
@@ -427,17 +415,8 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        kotlin("jvm")
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    ${basicPluginConfiguration()}
-
-                    """.trimIndent(),
-                ).withKotlinSource(
+                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withKotlinSource(
                     content =
                         """
                         package com.example
@@ -477,17 +456,8 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        kotlin("jvm")
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    ${basicPluginConfiguration()}
-
-                    """.trimIndent(),
-                ).withKotlinSource(
+                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withKotlinSource(
                     content =
                         """
                         package com.example
@@ -528,17 +498,8 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(
-                    """
-                    plugins {
-                        kotlin("jvm")
-                        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
-                    }
-
-                    ${basicPluginConfiguration()}
-
-                    """.trimIndent(),
-                ).withKotlinSource(
+                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withKotlinSource(
                     content =
                         """
                         package com.example

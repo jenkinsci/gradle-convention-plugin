@@ -24,7 +24,6 @@ import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
 public class JenkinsConventionPlugin : Plugin<Project> {
@@ -56,19 +55,6 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }
-            }
-
-            project.dependencies {
-                add("testImplementation", "org.junit.jupiter:junit-jupiter-api:5.9.3")
-                add("testImplementation", "org.junit.jupiter:junit-jupiter-params:5.9.3")
-                add("testRuntimeOnly", "org.junit.jupiter:junit-jupiter-engine:5.9.3")
-                add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher:1.9.3")
-
-                add("testImplementation", "org.jenkins-ci.plugins:pipeline-utility-steps")
-                add("testImplementation", "org.jenkins-ci.plugins.workflow:workflow-job")
-                add("testImplementation", "org.jenkins-ci.plugins.workflow:workflow-cps")
-                add("testImplementation", "org.jenkins-ci.plugins.workflow:workflow-basic-steps")
-                add("implementation", "org.eclipse.jgit:org.eclipse.jgit:7.2.1.202505142326-r")
             }
 
             tasks.register("jenkinsConventionPluginInfo") { t ->
