@@ -32,13 +32,8 @@ jobs:
 
       - uses: github/codeql-action/init@v3
         with:
-          languages: java-kotlin
+          languages: java-kotlin,actions
           build-mode: manual
-
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: actions
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
