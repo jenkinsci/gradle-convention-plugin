@@ -270,7 +270,7 @@ class TestProjectBuilder(
                 .withProjectDir(projectDir.toFile())
                 .withArguments(allArgs)
                 .withPluginClasspath()
-                .forwardOutput()
+                .withDebug(true)
 
         return try {
             if (expectFailure) runner.buildAndFail() else runner.build()
@@ -342,6 +342,14 @@ class TestProjectBuilder(
 
         private val defaultSettings =
             """
+            pluginManagement {
+                repositories {
+                    mavenLocal()
+                    mavenCentral()
+                    gradlePluginPortal()
+                }
+            }
+
             rootProject.name = "test-project"
 
             dependencyResolutionManagement {

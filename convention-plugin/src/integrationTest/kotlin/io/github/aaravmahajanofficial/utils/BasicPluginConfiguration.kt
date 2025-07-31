@@ -15,18 +15,18 @@
  */
 package io.github.aaravmahajanofficial.utils
 
-fun basicBuildScript(): String =
+fun basicPluginConfiguration(
+    applyKotlin: Boolean = false,
+    bomBlock: String = "",
+    qualityBlock: String = "",
+    dependenciesBlock: String = "",
+): String =
     """
     plugins {
-        java
-        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin")
+        ${if (applyKotlin) "kotlin(\"jvm\")" else ""}
+        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "999-SNAPSHOT"
     }
 
-    ${basicPluginConfiguration()}
-    """.trimIndent()
-
-fun basicPluginConfiguration(): String =
-    """
     jenkinsConvention {
         artifactId = "test-plugin"
         humanReadableName = "Test Plugin"
@@ -46,5 +46,11 @@ fun basicPluginConfiguration(): String =
                 url = uri("https://opensource.org/license/mit")
             }
         }
+
+        ${bomBlock.ifBlank { "" }}
+        ${qualityBlock.ifBlank { "" }}
     }
+
+    ${dependenciesBlock.ifBlank { "" }}
+
     """.trimIndent()

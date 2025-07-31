@@ -111,7 +111,7 @@ tasks.named("check") {
     dependsOn(testing.suites.named("integrationTest"))
 }
 
-tasks.register<Copy>("publishToLocal") {
+tasks.register("publishToLocal") {
     dependsOn("publishToMavenLocal")
 }
 
