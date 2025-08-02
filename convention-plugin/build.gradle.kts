@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.dokka.gradle.plugin)
     implementation(libs.cpd.gradle.plugin)
     implementation(libs.ktlint.gradle.plugin)
+    implementation(libs.jgit.gradle.plugin)
 }
 
 gradlePlugin {

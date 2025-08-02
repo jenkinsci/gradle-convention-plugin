@@ -17,10 +17,10 @@
 
 package io.github.aaravmahajanofficial.extensions
 
-import DeveloperExtension
-import DevelopersExtension
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.constants.UrlConstants
+import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.*
@@ -35,45 +35,37 @@ public open class PluginExtension
     @Inject
     constructor(
         private val objects: ObjectFactory,
-        private val providers: ProviderFactory,
+        providers: ProviderFactory,
         projectName: String,
         projectDescription: Provider<String>,
         libs: VersionCatalog,
     ) {
         public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
-
-        public fun bom(action: BomExtension.() -> Unit) {
-            bom.apply(action)
-        }
-
         public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
+        public val scm: SCMExtension by lazy { objects.newInstance<SCMExtension>(libs) }
 
-        public fun quality(action: QualityExtension.() -> Unit) {
-            quality.apply(action)
-        }
+        public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
+
+        public fun quality(action: QualityExtension.() -> Unit): QualityExtension = quality.apply(action)
+
+        public fun scm(action: SCMExtension.() -> Unit): SCMExtension = scm.apply(action)
 
         public val jenkinsVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(
+                    providers,
                     ConfigurationConstants.JENKINS_VERSION,
-                ).orElse(libs.findVersion("jenkins-core").get().requiredVersion),
+                ).orElse(versionFromCatalogOrFail(libs, "jenkins-core")),
             )
 
         public val artifactId: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(ConfigurationConstants.ARTIFACT_ID).orElse(
+                gradleProperty(providers, ConfigurationConstants.ARTIFACT_ID).orElse(
                     projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
                 ),
             )
 
         public val pluginId: Property<String> = objects.property<String>().convention(artifactId)
-
-        public val groupId: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(
-                    ConfigurationConstants.GROUP_ID,
-                ).orElse("org.jenkins-ci.plugins"),
-            )
 
         public val humanReadableName: Property<String> =
             objects.property<String>().convention(
@@ -84,12 +76,13 @@ public open class PluginExtension
 
         public val sandboxed: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(ConfigurationConstants.SANDBOXED, String::toBoolean).orElse(false),
+                gradleProperty(providers, ConfigurationConstants.SANDBOXED, String::toBoolean).orElse(false),
             )
 
         public val usePluginFirstClassLoader: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
+                    providers,
                     ConfigurationConstants.USE_PLUGIN_FIRST_CLASS_LOADER,
                     String::toBoolean,
                 ).orElse(true),
@@ -100,6 +93,7 @@ public open class PluginExtension
         public val minimumJenkinsCoreVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(
+                    providers,
                     ConfigurationConstants.MINIMUM_JENKINS_VERSION,
                 ).orElse("2.504.3"),
             )
@@ -107,15 +101,17 @@ public open class PluginExtension
         public val description: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(
+                    providers,
                     ConfigurationConstants.DESCRIPTION,
                 ).orElse("A Jenkins Plugin"),
             )
 
-        public val githubUrl: Property<URI> = objects.property<URI>()
+        public val gitHub: Property<URI> = objects.property<URI>()
 
         public val generateTests: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(
+                    providers,
                     ConfigurationConstants.GENERATE_TESTS,
                     String::toBoolean,
                 ).orElse(false),
@@ -123,9 +119,7 @@ public open class PluginExtension
 
         public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
 
-        public val extension: Property<String> = objects.property<String>().convention(".hpi")
-
-        public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
+        public val extension: Property<String> = objects.property<String>().convention("hpi")
 
         public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
@@ -145,9 +139,7 @@ public open class PluginExtension
 
         public val pluginLabels: ListProperty<String> = objects.listProperty<String>().convention(emptySet())
 
-        public val pluginDevelopers: ListProperty<DeveloperExtension> =
-            objects
-                .listProperty<DeveloperExtension>()
+        public val pluginDevelopers: ListProperty<DeveloperExtension> = objects.listProperty<DeveloperExtension>()
 
         public val pluginLicenses: ListProperty<LicenseExtension> = objects.listProperty<LicenseExtension>()
 
@@ -157,17 +149,5 @@ public open class PluginExtension
 
         public fun licenses(configure: LicensesExtension.() -> Unit) {
             LicensesExtension(objects, pluginLicenses).apply(configure)
-        }
-
-        private fun <T : Any> gradleProperty(
-            key: String,
-            converter: (String) -> T,
-        ): Provider<T> = providers.gradleProperty(key).map(converter)
-
-        private fun gradleProperty(key: String) = providers.gradleProperty(key)
-
-        public fun validate() {
-            require(githubUrl.isPresent && githubUrl.toString().isNotBlank()) { "githubUrl must be set" }
-            require(pluginDevelopers.getOrElse(emptyList()).isNotEmpty()) { "At least one developer must be specified" }
         }
     }

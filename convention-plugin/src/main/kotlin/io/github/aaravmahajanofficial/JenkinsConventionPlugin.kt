@@ -46,7 +46,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             KotlinConventionManager(project, libs).configure()
             GroovyConventionManager(project).configure()
 
-            JpiPluginAdapter(project, pluginExtension).applyAndConfigure()
+            JpiPluginManager(project, pluginExtension).applyAndConfigure()
 
             project.afterEvaluate {
                 try {

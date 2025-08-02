@@ -54,6 +54,9 @@ kotest = "5.9.1"
 # Publishing
 maven-gradle-publish-plugin = "0.34.0"
 
+# Miscellaneous
+jgit = "7.3.0.202506031305-r"
+
 [libraries]
 # Kotlin and Gradle
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
@@ -104,6 +107,9 @@ cpd-gradle-plugin = { module = "de.aaschmid:gradle-cpd-plugin", version.ref = "c
 junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-launcher-gradle-plugin = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-launcher" }
 kotest-gradle-plugin = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+
+# Miscellaneous
+jgit-gradle-plugin = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
