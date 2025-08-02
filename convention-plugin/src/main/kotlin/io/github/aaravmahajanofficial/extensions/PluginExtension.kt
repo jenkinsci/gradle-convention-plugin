@@ -23,7 +23,10 @@ import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.*
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
+import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
@@ -37,18 +40,14 @@ public open class PluginExtension
         private val objects: ObjectFactory,
         providers: ProviderFactory,
         projectName: String,
-        projectDescription: Provider<String>,
         libs: VersionCatalog,
     ) {
         public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
         public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
-        public val scm: SCMExtension by lazy { objects.newInstance<SCMExtension>(libs) }
 
         public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
 
         public fun quality(action: QualityExtension.() -> Unit): QualityExtension = quality.apply(action)
-
-        public fun scm(action: SCMExtension.() -> Unit): SCMExtension = scm.apply(action)
 
         public val jenkinsVersion: Property<String> =
             objects.property<String>().convention(
@@ -65,14 +64,8 @@ public open class PluginExtension
                 ),
             )
 
-        public val pluginId: Property<String> = objects.property<String>().convention(artifactId)
-
-        public val humanReadableName: Property<String> =
-            objects.property<String>().convention(
-                projectDescription.orElse(projectName),
-            )
-
-        public val homePage: Property<URI> = objects.property<URI>()
+        public val homePage: Property<URI> =
+            objects.property<URI>().convention(URI.create("https://github.com/jenkinsci/${artifactId.get()}"))
 
         public val sandboxed: Property<Boolean> =
             objects.property<Boolean>().convention(
@@ -95,18 +88,13 @@ public open class PluginExtension
                 gradleProperty(
                     providers,
                     ConfigurationConstants.MINIMUM_JENKINS_VERSION,
-                ).orElse("2.504.3"),
+                ).orElse(versionFromCatalogOrFail(libs, "jenkins-core")),
             )
 
-        public val description: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.DESCRIPTION,
-                ).orElse("A Jenkins Plugin"),
-            )
+        public val gitHub: Property<URI> =
+            objects.property<URI>().convention(URI.create("https://github.com/jenkinsci/${artifactId.get()}"))
 
-        public val gitHub: Property<URI> = objects.property<URI>()
+        public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
 
         public val generateTests: Property<Boolean> =
             objects.property<Boolean>().convention(
@@ -136,8 +124,6 @@ public open class PluginExtension
                         "--add-opens=java.base/java.util=ALL-UNNAMED",
                     ),
                 )
-
-        public val pluginLabels: ListProperty<String> = objects.listProperty<String>().convention(emptySet())
 
         public val pluginDevelopers: ListProperty<DeveloperExtension> = objects.listProperty<DeveloperExtension>()
 

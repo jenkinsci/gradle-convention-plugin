@@ -17,13 +17,17 @@ package io.github.aaravmahajanofficial.internal
 
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import org.eclipse.jgit.api.Git
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
+import org.gradle.kotlin.dsl.withType
 import org.jenkinsci.gradle.plugins.jpi.JpiExtension
 import org.jenkinsci.gradle.plugins.jpi.core.PluginDeveloper
 import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
+import org.jenkinsci.gradle.plugins.manifest.GenerateJenkinsManifestTask
 import java.nio.file.Paths
+import java.util.jar.Manifest
 
 public class JpiPluginManager(
     private val project: Project,
@@ -38,17 +42,21 @@ public class JpiPluginManager(
 
         bridgeExtensionProperties()
         project.tasks.findByName("generateLicenseInfo")?.enabled = false
+
+        configureManifestExtensions()
     }
 
     private fun bridgeExtensionProperties() =
         with(jpiExtension) {
-            pluginId.convention(pluginExtension.pluginId)
-            humanReadableName.convention(pluginExtension.humanReadableName)
+            pluginId.convention(pluginExtension.artifactId)
+            humanReadableName.convention(
+                if (!project.description.isNullOrBlank()) project.description else project.name,
+            )
             homePage.convention(pluginExtension.homePage)
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
             minimumJenkinsCoreVersion.convention(pluginExtension.minimumJenkinsCoreVersion)
             extension.convention(pluginExtension.extension)
-            scmTag.convention(pluginExtension.scm.tag)
+            scmTag.convention(pluginExtension.scmTag)
             gitHub.convention(pluginExtension.gitHub)
             generateTests.convention(pluginExtension.generateTests)
             generatedTestClassName.convention(pluginExtension.generatedTestClassName)
@@ -99,6 +107,45 @@ public class JpiPluginManager(
             }
         } catch (e: IllegalStateException) {
             throw IllegalStateException("Failed to retrieve Git HEAD SHA in repo: $repoDir", e)
+        }
+    }
+
+    private fun configureManifestExtensions() {
+        project.tasks.withType<GenerateJenkinsManifestTask>().configureEach { task ->
+            task.doFirst {
+                val manifest = Manifest()
+
+                manifest.mainAttributes.putValue("Implementation-Title", pluginExtension.artifactId.get())
+                manifest.mainAttributes.putValue("Implementation-Version", project.version.toString())
+                manifest.mainAttributes.putValue("Specification-Title", project.name)
+                manifest.mainAttributes.putValue("Specification-Version", project.version.toString())
+                manifest.mainAttributes.putValue("Artifact-Id", pluginExtension.artifactId.get())
+                manifest.mainAttributes.putValue("Hudson-Version", pluginExtension.jenkinsVersion.get())
+
+                val license = pluginExtension.pluginLicenses.get().firstOrNull()
+                manifest.mainAttributes.putValue("Plugin-License-Name", license?.name?.get())
+                manifest.mainAttributes.putValue("Plugin-License-Url", license?.url?.get().toString())
+                manifest.mainAttributes.putValue("Plugin-License-Distribution", license?.distribution?.get())
+                manifest.mainAttributes.putValue("Plugin-License-Comments", license?.comments?.get())
+
+                manifest.mainAttributes.putValue("Implementation-Build", getFullHashFromJpi())
+                manifest.mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${pluginExtension.gitHub.get()}.git")
+                manifest.mainAttributes.putValue("Plugin-ScmTag", pluginExtension.scmTag.get())
+                manifest.mainAttributes.putValue("Plugin-ScmUrl", pluginExtension.gitHub.get().toString())
+                manifest.mainAttributes.putValue("Build-Jdk-Spec", JavaVersion.current().toString())
+
+                val additionalManifestFile =
+                    project.layout.buildDirectory
+                        .file("jenkins-manifests/additional.mf")
+                        .get()
+                        .asFile
+                additionalManifestFile.parentFile.mkdirs()
+                additionalManifestFile.outputStream().use {
+                    manifest.write(it)
+                }
+
+                task.upstreamManifests.from(additionalManifestFile)
+            }
         }
     }
 }

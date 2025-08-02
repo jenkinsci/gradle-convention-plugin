@@ -22,7 +22,6 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import java.net.URI
 import javax.inject.Inject
 
 public open class DeveloperExtension
@@ -33,9 +32,9 @@ public open class DeveloperExtension
         public val id: Property<String> = objects.property<String>().convention("")
         public val name: Property<String> = objects.property<String>().convention("")
         public val email: Property<String> = objects.property<String>().convention("")
-        public val website: Property<URI> = objects.property<URI>().convention(URI("https://github.com"))
+        public val website: Property<String> = objects.property<String>().convention("https://github.com")
         public val organization: Property<String> = objects.property<String>().convention("")
-        public val organizationUrl: Property<URI> = objects.property<URI>().convention(URI("https://github.com"))
+        public val organizationUrl: Property<String> = objects.property<String>().convention("https://github.com")
         public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("dev"))
         public val timezone: Property<String> = objects.property<String>().convention("UTC")
     }
