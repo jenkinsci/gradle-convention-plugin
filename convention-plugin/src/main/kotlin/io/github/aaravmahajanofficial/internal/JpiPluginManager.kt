@@ -16,14 +16,16 @@
 package io.github.aaravmahajanofficial.internal
 
 import io.github.aaravmahajanofficial.extensions.PluginExtension
+import org.eclipse.jgit.api.Git
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
 import org.jenkinsci.gradle.plugins.jpi.JpiExtension
 import org.jenkinsci.gradle.plugins.jpi.core.PluginDeveloper
 import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
+import java.nio.file.Paths
 
-public class JpiPluginAdapter(
+public class JpiPluginManager(
     private val project: Project,
     private val pluginExtension: PluginExtension,
 ) {
@@ -46,8 +48,8 @@ public class JpiPluginAdapter(
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
             minimumJenkinsCoreVersion.convention(pluginExtension.minimumJenkinsCoreVersion)
             extension.convention(pluginExtension.extension)
-            scmTag.convention(pluginExtension.scmTag)
-            gitHub.convention(pluginExtension.githubUrl)
+            scmTag.convention(pluginExtension.scm.tag)
+            gitHub.convention(pluginExtension.gitHub)
             generateTests.convention(pluginExtension.generateTests)
             generatedTestClassName.convention(pluginExtension.generatedTestClassName)
             sandboxed.convention(pluginExtension.sandboxed)
@@ -87,4 +89,16 @@ public class JpiPluginAdapter(
                 },
             )
         }
+
+    private fun getFullHashFromJpi(): String {
+        val repoDir = Paths.get(project.rootDir.absolutePath).toFile()
+        return try {
+            Git.open(repoDir).use { git ->
+                git.repository.resolve("HEAD").name
+                    ?: throw IllegalStateException("Cannot resolve HEAD in repo: $repoDir")
+            }
+        } catch (e: IllegalStateException) {
+            throw IllegalStateException("Failed to retrieve Git HEAD SHA in repo: $repoDir", e)
+        }
+    }
 }
