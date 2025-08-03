@@ -17,13 +17,17 @@ package io.github.aaravmahajanofficial.internal
 
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import org.eclipse.jgit.api.Git
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.newInstance
+import org.gradle.kotlin.dsl.withType
 import org.jenkinsci.gradle.plugins.jpi.JpiExtension
 import org.jenkinsci.gradle.plugins.jpi.core.PluginDeveloper
 import org.jenkinsci.gradle.plugins.jpi.core.PluginLicense
+import org.jenkinsci.gradle.plugins.manifest.GenerateJenkinsManifestTask
 import java.nio.file.Paths
+import java.util.jar.Manifest
 
 public class JpiPluginManager(
     private val project: Project,
@@ -38,17 +42,23 @@ public class JpiPluginManager(
 
         bridgeExtensionProperties()
         project.tasks.findByName("generateLicenseInfo")?.enabled = false
+
+        configureManifestExtensions()
     }
 
     private fun bridgeExtensionProperties() =
         with(jpiExtension) {
-            pluginId.convention(pluginExtension.pluginId)
-            humanReadableName.convention(pluginExtension.humanReadableName)
+            pluginId.convention(pluginExtension.artifactId)
+            humanReadableName.convention(
+                project.provider {
+                    project.description?.takeIf { it.isNotBlank() } ?: project.name
+                },
+            )
             homePage.convention(pluginExtension.homePage)
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
             minimumJenkinsCoreVersion.convention(pluginExtension.minimumJenkinsCoreVersion)
             extension.convention(pluginExtension.extension)
-            scmTag.convention(pluginExtension.scm.tag)
+            scmTag.convention(pluginExtension.scmTag)
             gitHub.convention(pluginExtension.gitHub)
             generateTests.convention(pluginExtension.generateTests)
             generatedTestClassName.convention(pluginExtension.generatedTestClassName)
@@ -99,6 +109,46 @@ public class JpiPluginManager(
             }
         } catch (e: IllegalStateException) {
             throw IllegalStateException("Failed to retrieve Git HEAD SHA in repo: $repoDir", e)
+        }
+    }
+
+    private fun configureManifestExtensions() {
+        project.tasks.withType<GenerateJenkinsManifestTask>().configureEach { task ->
+
+            val additionalManifestFile = project.layout.buildDirectory.file("jenkins-manifests/additional.mf")
+            task.upstreamManifests.from(additionalManifestFile)
+
+            task.doFirst {
+                val manifest =
+                    Manifest().apply {
+                        mainAttributes.putValue("Manifest-Version", "1.0")
+                        mainAttributes.putValue("Implementation-Title", pluginExtension.artifactId.get())
+                        mainAttributes.putValue("Implementation-Version", project.version.toString())
+                        mainAttributes.putValue("Specification-Title", project.name)
+                        mainAttributes.putValue("Specification-Version", project.version.toString())
+                        mainAttributes.putValue("Artifact-Id", pluginExtension.artifactId.get())
+                        mainAttributes.putValue("Hudson-Version", pluginExtension.jenkinsVersion.get())
+                        mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${pluginExtension.gitHub.get()}.git")
+                        mainAttributes.putValue("Plugin-ScmUrl", pluginExtension.gitHub.get().toString())
+                        mainAttributes.putValue("Build-Jdk-Spec", JavaVersion.current().toString())
+
+                        val fullHash = getFullHashFromJpi()
+                        mainAttributes.putValue("Implementation-Build", fullHash)
+                        mainAttributes.putValue("Plugin-ScmTag", fullHash)
+
+                        val license = pluginExtension.pluginLicenses.orNull?.firstOrNull()
+                        license?.let {
+                            it.name.orNull?.let { name -> mainAttributes.putValue("Plugin-License-Name", name) }
+                            it.url.orNull?.let { url -> mainAttributes.putValue("Plugin-License-Url", url) }
+                        }
+                    }
+
+                val file = additionalManifestFile.get().asFile
+                file.parentFile.mkdirs()
+                file.outputStream().use {
+                    manifest.write(it)
+                }
+            }
         }
     }
 }

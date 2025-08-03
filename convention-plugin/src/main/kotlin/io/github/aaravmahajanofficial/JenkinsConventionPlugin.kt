@@ -38,7 +38,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     PluginMetadata.EXTENSION_NAME,
                     PluginExtension::class.java,
                     project.name,
-                    project.provider { project.description },
+                    project.rootDir,
                     libs,
                 )
 
