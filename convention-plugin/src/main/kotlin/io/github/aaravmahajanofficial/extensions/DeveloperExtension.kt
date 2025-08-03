@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
+import org.eclipse.jgit.lib.RepositoryBuilder
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -22,20 +23,27 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
+import java.io.File
 import javax.inject.Inject
 
 public open class DeveloperExtension
     @Inject
     constructor(
         objects: ObjectFactory,
+        projectDir: File,
     ) {
-        public val id: Property<String> = objects.property<String>().convention("")
-        public val name: Property<String> = objects.property<String>().convention("")
-        public val email: Property<String> = objects.property<String>().convention("")
+        private val gitUser = readGitUserMetadata(projectDir)
+        private val userName = System.getProperty("user.name")
+
+        public val id: Property<String> = objects.property<String>().convention(userName)
+        public val name: Property<String> =
+            objects.property<String>().convention(gitUser.name ?: userName.replaceFirstChar { it.uppercaseChar() })
+        public val email: Property<String> =
+            objects.property<String>().convention(gitUser.email ?: "$userName@users.noreply.github.com")
         public val website: Property<String> = objects.property<String>().convention("https://github.com")
         public val organization: Property<String> = objects.property<String>().convention("")
         public val organizationUrl: Property<String> = objects.property<String>().convention("https://github.com")
-        public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("dev"))
+        public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("developer"))
         public val timezone: Property<String> = objects.property<String>().convention("UTC")
     }
 
@@ -49,3 +57,18 @@ public open class DevelopersExtension
             developersList.add(objects.newInstance<DeveloperExtension>().apply(action))
         }
     }
+
+private fun readGitUserMetadata(projectDir: File): GitUserMetadata {
+    RepositoryBuilder().findGitDir(projectDir).build().use { repo ->
+        val config = repo.config
+        val name = config.getString("user", null, "name")
+        val email = config.getString("user", null, "email")
+
+        return GitUserMetadata(name, email)
+    }
+}
+
+private data class GitUserMetadata(
+    val name: String?,
+    val email: String?,
+)

@@ -50,7 +50,9 @@ public class JpiPluginManager(
         with(jpiExtension) {
             pluginId.convention(pluginExtension.artifactId)
             humanReadableName.convention(
-                if (!project.description.isNullOrBlank()) project.description else project.name,
+                project.provider {
+                    project.description?.takeIf { it.isNotBlank() } ?: project.name
+                },
             )
             homePage.convention(pluginExtension.homePage)
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
@@ -112,39 +114,40 @@ public class JpiPluginManager(
 
     private fun configureManifestExtensions() {
         project.tasks.withType<GenerateJenkinsManifestTask>().configureEach { task ->
+
+            val additionalManifestFile = project.layout.buildDirectory.file("jenkins-manifests/additional.mf")
+            task.upstreamManifests.from(additionalManifestFile)
+
             task.doFirst {
-                val manifest = Manifest()
+                val manifest =
+                    Manifest().apply {
+                        mainAttributes.putValue("Manifest-Version", "1.0")
+                        mainAttributes.putValue("Implementation-Title", pluginExtension.artifactId.get())
+                        mainAttributes.putValue("Implementation-Version", project.version.toString())
+                        mainAttributes.putValue("Specification-Title", project.name)
+                        mainAttributes.putValue("Specification-Version", project.version.toString())
+                        mainAttributes.putValue("Artifact-Id", pluginExtension.artifactId.get())
+                        mainAttributes.putValue("Hudson-Version", pluginExtension.jenkinsVersion.get())
+                        mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${pluginExtension.gitHub.get()}.git")
+                        mainAttributes.putValue("Plugin-ScmUrl", pluginExtension.gitHub.get().toString())
+                        mainAttributes.putValue("Build-Jdk-Spec", JavaVersion.current().toString())
 
-                manifest.mainAttributes.putValue("Implementation-Title", pluginExtension.artifactId.get())
-                manifest.mainAttributes.putValue("Implementation-Version", project.version.toString())
-                manifest.mainAttributes.putValue("Specification-Title", project.name)
-                manifest.mainAttributes.putValue("Specification-Version", project.version.toString())
-                manifest.mainAttributes.putValue("Artifact-Id", pluginExtension.artifactId.get())
-                manifest.mainAttributes.putValue("Hudson-Version", pluginExtension.jenkinsVersion.get())
+                        val fullHash = getFullHashFromJpi()
+                        mainAttributes.putValue("Implementation-Build", fullHash)
+                        mainAttributes.putValue("Plugin-ScmTag", fullHash)
 
-                val license = pluginExtension.pluginLicenses.get().firstOrNull()
-                manifest.mainAttributes.putValue("Plugin-License-Name", license?.name?.get())
-                manifest.mainAttributes.putValue("Plugin-License-Url", license?.url?.get().toString())
-                manifest.mainAttributes.putValue("Plugin-License-Distribution", license?.distribution?.get())
-                manifest.mainAttributes.putValue("Plugin-License-Comments", license?.comments?.get())
+                        val license = pluginExtension.pluginLicenses.orNull?.firstOrNull()
+                        license?.let {
+                            it.name.orNull?.let { name -> mainAttributes.putValue("Plugin-License-Name", name) }
+                            it.url.orNull?.let { url -> mainAttributes.putValue("Plugin-License-Url", url) }
+                        }
+                    }
 
-                manifest.mainAttributes.putValue("Implementation-Build", getFullHashFromJpi())
-                manifest.mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${pluginExtension.gitHub.get()}.git")
-                manifest.mainAttributes.putValue("Plugin-ScmTag", pluginExtension.scmTag.get())
-                manifest.mainAttributes.putValue("Plugin-ScmUrl", pluginExtension.gitHub.get().toString())
-                manifest.mainAttributes.putValue("Build-Jdk-Spec", JavaVersion.current().toString())
-
-                val additionalManifestFile =
-                    project.layout.buildDirectory
-                        .file("jenkins-manifests/additional.mf")
-                        .get()
-                        .asFile
-                additionalManifestFile.parentFile.mkdirs()
-                additionalManifestFile.outputStream().use {
+                val file = additionalManifestFile.get().asFile
+                file.parentFile.mkdirs()
+                file.outputStream().use {
                     manifest.write(it)
                 }
-
-                task.upstreamManifests.from(additionalManifestFile)
             }
         }
     }

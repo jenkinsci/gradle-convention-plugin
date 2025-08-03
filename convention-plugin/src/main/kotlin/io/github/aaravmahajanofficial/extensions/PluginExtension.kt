@@ -31,6 +31,7 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
+import java.io.File
 import java.net.URI
 import javax.inject.Inject
 
@@ -40,6 +41,7 @@ public open class PluginExtension
         private val objects: ObjectFactory,
         providers: ProviderFactory,
         projectName: String,
+        projectDir: File,
         libs: VersionCatalog,
     ) {
         public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
@@ -125,15 +127,23 @@ public open class PluginExtension
                     ),
                 )
 
-        public val pluginDevelopers: ListProperty<DeveloperExtension> = objects.listProperty<DeveloperExtension>()
+        public val pluginDevelopers: ListProperty<DeveloperExtension> =
+            objects.listProperty<DeveloperExtension>().apply {
+                add(objects.newInstance<DeveloperExtension>(projectDir))
+            }
 
-        public val pluginLicenses: ListProperty<LicenseExtension> = objects.listProperty<LicenseExtension>()
+        public val pluginLicenses: ListProperty<LicenseExtension> =
+            objects.listProperty<LicenseExtension>().apply {
+                add(objects.newInstance<LicenseExtension>())
+            }
 
         public fun developers(configure: DevelopersExtension.() -> Unit) {
+            pluginDevelopers.set(emptyList())
             DevelopersExtension(objects, pluginDevelopers).apply(configure)
         }
 
         public fun licenses(configure: LicensesExtension.() -> Unit) {
+            pluginLicenses.set(emptyList())
             LicensesExtension(objects, pluginLicenses).apply(configure)
         }
     }
