@@ -31,6 +31,11 @@ import de.aaschmid.gradle.plugins.cpd.CpdExtension
 import de.aaschmid.gradle.plugins.cpd.CpdPlugin
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import io.github.aaravmahajanofficial.constants.FormattingConstants.BIN
+import io.github.aaravmahajanofficial.constants.FormattingConstants.BUILD
+import io.github.aaravmahajanofficial.constants.FormattingConstants.GENERATED
+import io.github.aaravmahajanofficial.constants.FormattingConstants.GRADLE
+import io.github.aaravmahajanofficial.constants.FormattingConstants.OUT
 import io.github.aaravmahajanofficial.extensions.QualityExtension
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
@@ -271,21 +276,21 @@ public class QualityManager(
         project.configure<SpotlessExtension> {
             kotlin { k ->
                 k.target("**/*.kt")
-                k.targetExclude("**/build/**", "bin/**", "**/generated/**")
+                k.targetExclude(BUILD, BIN, GENERATED, OUT)
                 k.ktlint()
                 k.trimTrailingWhitespace()
                 k.endWithNewline()
             }
             kotlinGradle { kg ->
                 kg.target("*.gradle.kts", "**/*.gradle.kts")
-                kg.targetExclude("**/build/**", "**/.gradle/**")
+                kg.targetExclude(BUILD, GRADLE, OUT)
                 kg.ktlint()
                 kg.trimTrailingWhitespace()
                 kg.endWithNewline()
             }
             java { j ->
-                j.target("src/*/java/**/*.java")
-                j.targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
+                j.target("src/**/*.java")
+                j.targetExclude(GENERATED, BUILD, GRADLE, OUT)
                 j.palantirJavaFormat()
                 j.trimTrailingWhitespace()
                 j.endWithNewline()
@@ -315,6 +320,7 @@ public class QualityManager(
                     "**/node_modules/**",
                     "**/.git/**",
                     "**/generated/**",
+                    "**/out/**",
                 )
 
                 m.trimTrailingWhitespace()
@@ -429,7 +435,7 @@ public class QualityManager(
                 ) {
                     argsList += "--fix"
                 }
-                configFile?.let { argsList += listOf("--config", it) }
+                configFile?.let { file -> argsList += listOf("--config", file) }
                 args.set(argsList)
             }
             inputs.files(
@@ -447,10 +453,6 @@ public class QualityManager(
         if (!quality.dokka.enabled.get() || !project.isKotlinProject()) return
 
         project.pluginManager.apply(DokkaPlugin::class.java)
-
-        project.tasks.named("dokkaHtml").configure { task ->
-            task.outputs.dir(quality.dokka.outputDirectory)
-        }
     }
 
     private fun configureCpd() {
@@ -546,7 +548,8 @@ private fun Project.isJavaProject(): Boolean {
     return isJava || isJavaLibrary || isJavaGradlePlugin
 }
 
-private fun Project.isKotlinProject(): Boolean = plugins.hasPlugin("org.jetbrains.kotlin.jvm")
+private fun Project.isKotlinProject(): Boolean =
+    plugins.hasPlugin("org.jetbrains.kotlin.jvm") || plugins.hasPlugin("kotlin")
 
 private fun Project.isGroovyProject(): Boolean = plugins.hasPlugin("groovy")
 

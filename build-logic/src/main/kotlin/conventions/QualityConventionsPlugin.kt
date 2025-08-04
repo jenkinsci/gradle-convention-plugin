@@ -16,6 +16,12 @@
 package conventions
 
 import com.diffplug.gradle.spotless.SpotlessExtension
+import conventions.FormattingConstants.BIN
+import conventions.FormattingConstants.BUILD
+import conventions.FormattingConstants.GENERATED
+import conventions.FormattingConstants.GRADLE
+import conventions.FormattingConstants.LIC_PATH
+import conventions.FormattingConstants.OUT
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -46,31 +52,37 @@ private fun Project.configureSpotless() {
     configure<SpotlessExtension> {
         kotlin {
             target("**/*.kt")
-            targetExclude("**/build/**", "bin/**", "**/generated/**")
-            ktlint()
-            trimTrailingWhitespace()
-            endWithNewline()
-            licenseHeaderFile(rootProject.file("config/license-header.txt"), "(package |@file:|import )")
-        }
-        kotlinGradle {
-            target("*.gradle.kts", "**/*.gradle.kts", "settings.gradle.kts")
-            targetExclude("**/build/**", "**/.gradle/**")
+            targetExclude(BUILD, BIN, GENERATED, OUT)
             ktlint()
             trimTrailingWhitespace()
             endWithNewline()
             licenseHeaderFile(
-                rootProject.file("config/license-header.txt").absolutePath,
-                "^\\s*(pluginManagement|plugins|plugin|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject|[a-zA-Z])",
+                rootProject.file(LIC_PATH),
+                "(package |@file:|import )",
+            )
+        }
+        kotlinGradle {
+            target("*.gradle.kts", "**/*.gradle.kts", "settings.gradle.kts")
+            targetExclude(BUILD, GRADLE, OUT)
+            ktlint()
+            trimTrailingWhitespace()
+            endWithNewline()
+            licenseHeaderFile(
+                rootProject.file(LIC_PATH),
+                "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
             )
         }
         java {
             palantirJavaFormat()
-            target("src/*/java/**/*.java")
-            targetExclude("**/generated/**", "**/build/**", "**/.gradle/**")
+            target("src/**/*.java")
+            targetExclude(GENERATED, BUILD, GRADLE, OUT)
             trimTrailingWhitespace()
             endWithNewline()
             removeUnusedImports()
-            licenseHeaderFile(rootProject.file("config/license-header.txt").absolutePath, "(package |@file:|import )")
+            licenseHeaderFile(
+                rootProject.file(LIC_PATH),
+                "(package |@file:|import )",
+            )
         }
         format("misc") {
             target(
@@ -96,6 +108,7 @@ private fun Project.configureSpotless() {
                 "**/node_modules/**",
                 "**/.git/**",
                 "**/generated/**",
+                "**/out/**",
             )
 
             trimTrailingWhitespace()
@@ -122,4 +135,14 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
             txt.required.set(true)
         }
     }
+}
+
+private object FormattingConstants {
+    const val BUILD = "**/build/**"
+    const val GRADLE = "**/.gradle/**"
+    const val OUT = "**/out/**"
+    const val GENERATED = "**/generated/**"
+    const val GIT = "**/.git/**"
+    const val BIN = "**/bin/**"
+    const val LIC_PATH = "config/license-header.txt"
 }
