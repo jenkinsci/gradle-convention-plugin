@@ -76,9 +76,9 @@ public class JpiPluginManager(
                             id.set(dev.id)
                             name.set(dev.name)
                             email.set(dev.email)
-                            url.set(dev.website.toString())
+                            url.set(dev.website)
                             organization.set(dev.organization)
-                            organizationUrl.set(dev.organizationUrl.toString())
+                            organizationUrl.set(dev.organizationUrl)
                             roles.set(dev.roles)
                             timezone.set(dev.timezone)
                         }
@@ -91,7 +91,7 @@ public class JpiPluginManager(
                     licenses.map { lic ->
                         project.objects.newInstance<PluginLicense>().apply {
                             name.set(lic.name)
-                            url.set(lic.url.toString())
+                            url.set(lic.url)
                             distribution.set(lic.distribution)
                             comments.set(lic.comments)
                         }
@@ -145,8 +145,8 @@ public class JpiPluginManager(
 
                 val file = additionalManifestFile.get().asFile
                 file.parentFile.mkdirs()
-                file.outputStream().use {
-                    manifest.write(it)
+                file.outputStream().use { stream ->
+                    manifest.write(stream)
                 }
             }
         }

@@ -13,7 +13,6 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
@@ -43,7 +42,9 @@ dependencies {
     implementation(libs.node.gradle.plugin)
     implementation(libs.dokka.gradle.plugin)
     implementation(libs.cpd.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin)
+    implementation(libs.ktlint.gradle.plugin) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
+    }
     implementation(libs.jgit.gradle.plugin)
 }
 
@@ -113,6 +114,8 @@ tasks.named("check") {
 }
 
 tasks.register("publishToLocal") {
+    group = "Publishing"
+    description = "Publishes the project to the local Maven repository"
     dependsOn("publishToMavenLocal")
 }
 

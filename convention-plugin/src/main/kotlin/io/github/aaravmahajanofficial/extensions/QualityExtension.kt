@@ -125,18 +125,7 @@ public open class CheckstyleExtension
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val source: Property<String> = objects.property<String>().convention("src")
         public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
-        public val exclude: ListProperty<String> =
-            objects.listProperty<String>().convention(
-                listOf(
-                    "**/generated/**",
-                    "**/target/**",
-                    "**/build/**",
-                    "**/Messages.class",
-                    "**/*Descriptor.java",
-                    "**/jelly/**",
-                    "**/tags/**",
-                ),
-            )
+        public val exclude: ListProperty<String> = objects.listProperty<String>().convention(excludeList)
     }
 
 public open class SpotbugsExtension
@@ -191,18 +180,7 @@ public open class PmdExtension
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val source: Property<String> = objects.property<String>().convention("src")
         public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
-        public val exclude: ListProperty<String> =
-            objects.listProperty<String>().convention(
-                listOf(
-                    "**/generated/**",
-                    "**/target/**",
-                    "**/build/**",
-                    "**/Messages.class",
-                    "**/*Descriptor.java",
-                    "**/jelly/**",
-                    "**/tags/**",
-                ),
-            )
+        public val exclude: ListProperty<String> = objects.listProperty<String>().convention(excludeList)
     }
 
 public open class JacocoExtension
@@ -428,8 +406,6 @@ public open class DokkaExtension
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val outputDirectory: DirectoryProperty =
-            objects.directoryProperty().convention(layout.buildDirectory.dir("dokka/html"))
     }
 
 public open class CodenarcExtension
@@ -482,3 +458,14 @@ public open class CpdExtension
         public val minimumTokenCount: Property<Int> =
             objects.property<Int>().convention(QualityExtension.DEFAULT_TOKEN_COUNT)
     }
+
+private val excludeList =
+    listOf(
+        "**/generated/**",
+        "**/build/**",
+        "**/target/**",
+        "**/Messages.java",
+        "**/*Descriptor.java",
+        "**/jelly/**",
+        "**/tags/**",
+    )
