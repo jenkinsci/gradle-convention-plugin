@@ -102,6 +102,10 @@ owasp-depcheck-gradle-plugin = { module = "org.owasp:dependency-check-gradle", v
 node-gradle-plugin = { module = "com.github.node-gradle:gradle-node-plugin", version.ref = "node-gradle" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 cpd-gradle-plugin = { module = "de.aaschmid:gradle-cpd-plugin", version.ref = "cpd" }
+checkstyle-gradle-plugin = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
+pmd-gradle-plugin = { module = "net.sourceforge.pmd:pmd", version.ref = "pmd" }
+jacoco-gradle-plugin = { module = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
+codenarc-gradle-plugin = { module = "org.codenarc:CodeNarc", version.ref = "codenarc" }
 
 # Testing
 junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
