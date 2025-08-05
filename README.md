@@ -64,16 +64,15 @@ The plugin provides a highly configurable DSL for Jenkins plugin development. Ex
 
 ```kotlin
 jenkinsConvention {
-    homePage = uri("https://wiki.jenkins-ci.org/display/JENKINS/YourPlugin")
-    githubUrl = uri("https://github.com/jenkinsci/your-plugin.git")
-    pluginLabels = listOf("security", "static-analysis")
+    // only modify the required fields
+    homepage = uri("https://example.com/your-plugin")
 
+    // By default: (id, website, email) would be derived as per configured in git
     developer {
         id = "exampleDev"
         name = "Example Developer"
-        website = uri("https://example.com")
-        roles = setOf("dev", "contributor")
         email = "example@example.com"
+        website = uri("https://example.com")
         organization = "Example Inc."
     }
 }
@@ -89,7 +88,6 @@ Execute the following commands to build and test your Jenkins plugin:
 
 **Notes:**
 - The `--no-configuration-cache` flag ensures a clean build and avoids issues when developing plugins.
-- The `--stacktrace` flag provides detailed error output for troubleshooting.
 
 ## Configuration Options
 
