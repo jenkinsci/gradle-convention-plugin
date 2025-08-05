@@ -40,7 +40,7 @@ public class QualityConventionsPlugin : Plugin<Project> {
             pluginManager.apply("com.diffplug.spotless")
             pluginManager.apply("io.gitlab.arturbosch.detekt")
 
-            configureSpotless()
+            configureSpotless(libs)
             configureDetekt(libs)
 
             tasks.named("check") { dependsOn("spotlessCheck", "detekt") }
@@ -48,12 +48,12 @@ public class QualityConventionsPlugin : Plugin<Project> {
     }
 }
 
-private fun Project.configureSpotless() {
+private fun Project.configureSpotless(libs: VersionCatalog) {
     configure<SpotlessExtension> {
         kotlin {
             target("**/*.kt")
             targetExclude(BUILD, BIN, GENERATED, OUT)
-            ktlint()
+            ktlint(libs.findVersion("ktlint").get().requiredVersion)
             trimTrailingWhitespace()
             endWithNewline()
             licenseHeaderFile(
@@ -64,7 +64,7 @@ private fun Project.configureSpotless() {
         kotlinGradle {
             target("*.gradle.kts", "**/*.gradle.kts", "settings.gradle.kts")
             targetExclude(BUILD, GRADLE, OUT)
-            ktlint()
+            ktlint(libs.findVersion("ktlint").get().requiredVersion)
             trimTrailingWhitespace()
             endWithNewline()
             licenseHeaderFile(
@@ -73,7 +73,7 @@ private fun Project.configureSpotless() {
             )
         }
         java {
-            palantirJavaFormat()
+            palantirJavaFormat(libs.findVersion("palantir-java").get().requiredVersion)
             target("src/**/*.java")
             targetExclude(GENERATED, BUILD, GRADLE, OUT)
             trimTrailingWhitespace()

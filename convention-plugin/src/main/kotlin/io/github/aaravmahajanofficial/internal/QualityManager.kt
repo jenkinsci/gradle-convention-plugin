@@ -37,12 +37,14 @@ import io.github.aaravmahajanofficial.constants.FormattingConstants.GENERATED
 import io.github.aaravmahajanofficial.constants.FormattingConstants.GRADLE
 import io.github.aaravmahajanofficial.constants.FormattingConstants.OUT
 import io.github.aaravmahajanofficial.extensions.QualityExtension
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.attributes.LibraryElements
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.RegularFile
@@ -62,6 +64,7 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
 public class QualityManager(
     private val project: Project,
+    private val libs: VersionCatalog,
     private val quality: QualityExtension,
 ) {
     public fun apply() {
@@ -277,21 +280,21 @@ public class QualityManager(
             kotlin { k ->
                 k.target("**/*.kt")
                 k.targetExclude(BUILD, BIN, GENERATED, OUT)
-                k.ktlint()
+                k.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
                 k.trimTrailingWhitespace()
                 k.endWithNewline()
             }
             kotlinGradle { kg ->
                 kg.target("*.gradle.kts", "**/*.gradle.kts")
                 kg.targetExclude(BUILD, GRADLE, OUT)
-                kg.ktlint()
+                kg.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
                 kg.trimTrailingWhitespace()
                 kg.endWithNewline()
             }
             java { j ->
                 j.target("src/**/*.java")
                 j.targetExclude(GENERATED, BUILD, GRADLE, OUT)
-                j.palantirJavaFormat()
+                j.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
                 j.trimTrailingWhitespace()
                 j.endWithNewline()
                 j.removeUnusedImports()
