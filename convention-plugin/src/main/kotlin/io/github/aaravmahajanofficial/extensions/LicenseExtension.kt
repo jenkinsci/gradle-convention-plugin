@@ -29,8 +29,8 @@ public open class LicenseExtension
         objects: ObjectFactory,
     ) {
         public val name: Property<String> = objects.property<String>().convention("Apache License Version 2.0")
-    public val url: Property<URI> =
-        objects.property<URI>().convention(URI.create("https://www.apache.org/licenses/LICENSE-2.0.txt"))
+        public val url: Property<URI> =
+            objects.property<URI>().convention(URI.create("https://www.apache.org/licenses/LICENSE-2.0.txt"))
         public val distribution: Property<String> = objects.property<String>().convention("repo")
         public val comments: Property<String> = objects.property<String>().convention("Apache License Version 2.0")
     }

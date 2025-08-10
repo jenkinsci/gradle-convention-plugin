@@ -33,7 +33,7 @@ public open class DeveloperExtension
         objects: ObjectFactory,
         layout: ProjectLayout,
     ) {
-    private val gitUser = readGitUserMetadata(layout.projectDirectory.asFile)
+        private val gitUser = readGitUserMetadata(layout.projectDirectory.asFile)
         private val userName = System.getProperty("user.name")
 
         public val id: Property<String> = objects.property<String>().convention(userName)

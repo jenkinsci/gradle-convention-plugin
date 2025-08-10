@@ -43,10 +43,10 @@ public open class PluginExtension
         layout: ProjectLayout,
         libs: VersionCatalog,
     ) {
-    private val projectName = layout.projectDirectory.asFile.name
+        private val projectName = layout.projectDirectory.asFile.name
 
-    public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
-    public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
+        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
 
         public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
 
@@ -114,8 +114,8 @@ public open class PluginExtension
 
         public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
-    public val incrementalsRepoUrl: Property<URI> =
-        objects.property<URI>().convention(URI.create(UrlConstants.JENKINS_INCREMENTALS_REPO_URL))
+        public val incrementalsRepoUrl: Property<URI> =
+            objects.property<URI>().convention(URI.create(UrlConstants.JENKINS_INCREMENTALS_REPO_URL))
 
         public val testJvmArguments: ListProperty<String> =
             objects
