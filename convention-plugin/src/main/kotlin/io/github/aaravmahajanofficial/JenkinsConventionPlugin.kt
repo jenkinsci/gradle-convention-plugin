@@ -24,6 +24,7 @@ import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 
 public class JenkinsConventionPlugin : Plugin<Project> {
@@ -33,17 +34,10 @@ public class JenkinsConventionPlugin : Plugin<Project> {
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-            val pluginExtension =
-                extensions.create(
-                    PluginMetadata.EXTENSION_NAME,
-                    PluginExtension::class.java,
-                    project.name,
-                    project.rootDir,
-                    libs,
-                )
+            val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
             JavaConventionManager(project).configure()
-            KotlinConventionManager(project, libs).configure()
+            KotlinConventionManager(project).configure()
             GroovyConventionManager(project).configure()
 
             JpiPluginManager(project, pluginExtension).applyAndConfigure()
@@ -51,7 +45,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             project.afterEvaluate {
                 try {
                     BomManager(project, pluginExtension.bom).configure()
-                    QualityManager(project, libs, pluginExtension.quality).apply()
+                    QualityManager(project, pluginExtension.quality).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }

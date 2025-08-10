@@ -29,7 +29,6 @@ fun basicPluginConfiguration(
 
     jenkinsConvention {
         artifactId = "test-plugin"
-        humanReadableName = "Test Plugin"
         homePage = uri("https://github.com")
 
         developers {

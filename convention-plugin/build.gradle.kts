@@ -24,9 +24,6 @@ plugins {
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
 
-group = providers.gradleProperty("group").get()
-version = providers.gradleProperty("version").get()
-
 dependencies {
     implementation(gradleApi())
     implementation(gradleKotlinDsl())

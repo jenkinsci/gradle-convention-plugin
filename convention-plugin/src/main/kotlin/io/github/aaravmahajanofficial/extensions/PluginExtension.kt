@@ -22,6 +22,7 @@ import io.github.aaravmahajanofficial.constants.UrlConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -31,7 +32,6 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import java.io.File
 import java.net.URI
 import javax.inject.Inject
 
@@ -40,12 +40,13 @@ public open class PluginExtension
     constructor(
         private val objects: ObjectFactory,
         providers: ProviderFactory,
-        projectName: String,
-        projectDir: File,
+        layout: ProjectLayout,
         libs: VersionCatalog,
     ) {
-        public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
-        public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
+        private val projectName = layout.projectDirectory.asFile.name
+
+        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
 
         public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
 
@@ -113,8 +114,8 @@ public open class PluginExtension
 
         public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
-        public val incrementalsRepoUrl: Property<String> =
-            objects.property<String>().convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
+        public val incrementalsRepoUrl: Property<URI> =
+            objects.property<URI>().convention(URI.create(UrlConstants.JENKINS_INCREMENTALS_REPO_URL))
 
         public val testJvmArguments: ListProperty<String> =
             objects
@@ -129,7 +130,7 @@ public open class PluginExtension
 
         public val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects.listProperty<DeveloperExtension>().apply {
-                add(objects.newInstance<DeveloperExtension>(projectDir))
+                add(objects.newInstance<DeveloperExtension>())
             }
 
         public val pluginLicenses: ListProperty<LicenseExtension> =

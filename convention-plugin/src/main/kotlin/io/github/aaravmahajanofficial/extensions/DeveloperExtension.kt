@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial.extensions
 
 import org.eclipse.jgit.lib.RepositoryBuilder
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -30,9 +31,9 @@ public open class DeveloperExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        projectDir: File,
+        layout: ProjectLayout,
     ) {
-        private val gitUser = readGitUserMetadata(projectDir)
+        private val gitUser = readGitUserMetadata(layout.projectDirectory.asFile)
         private val userName = System.getProperty("user.name")
 
         public val id: Property<String> = objects.property<String>().convention(userName)
@@ -58,15 +59,17 @@ public open class DevelopersExtension
         }
     }
 
-private fun readGitUserMetadata(projectDir: File): GitUserMetadata {
-    RepositoryBuilder().findGitDir(projectDir).build().use { repo ->
-        val config = repo.config
-        val name = config.getString("user", null, "name")
-        val email = config.getString("user", null, "email")
-
-        return GitUserMetadata(name, email)
+private fun readGitUserMetadata(projectDir: File): GitUserMetadata =
+    try {
+        RepositoryBuilder().findGitDir(projectDir).build().use { repo ->
+            val config = repo.config
+            val name = config.getString("user", null, "name")
+            val email = config.getString("user", null, "email")
+            GitUserMetadata(name, email)
+        }
+    } catch (_: Exception) {
+        GitUserMetadata(null, null)
     }
-}
 
 private data class GitUserMetadata(
     val name: String?,

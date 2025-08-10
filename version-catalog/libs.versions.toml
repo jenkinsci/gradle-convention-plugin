@@ -30,7 +30,6 @@ spock-bom = "2.4-M6-groovy-4.0"
 
 # Quality
 spotbugs = "6.2.4"
-spotbugsTool = "4.9.3"
 detekt = "1.23.8"
 spotless = "7.2.1"
 ktlint = "1.7.1"

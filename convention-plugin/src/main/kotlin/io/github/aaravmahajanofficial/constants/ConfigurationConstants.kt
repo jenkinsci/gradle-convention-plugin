@@ -50,7 +50,6 @@ public object ConfigurationConstants {
     public const val CHECKSTYLE_ENABLED: String = "$QUALITY_PREFIX.checkstyle.enabled"
     public const val CHECKSTYLE_VERSION: String = "$QUALITY_PREFIX.checkstyle.version"
     public const val SPOTBUGS_ENABLED: String = "$QUALITY_PREFIX.spotbugs.enabled"
-    public const val SPOTBUGS_VERSION: String = "$QUALITY_PREFIX.spotbugs.version"
     public const val PMD_ENABLED: String = "$QUALITY_PREFIX.pmd.enabled"
     public const val PMD_VERSION: String = "$QUALITY_PREFIX.pmd.version"
     public const val JACOCO_ENABLED: String = "$QUALITY_PREFIX.jacoco.enabled"
