@@ -65,7 +65,7 @@ public class JpiPluginManager(
             sandboxed.convention(pluginExtension.sandboxed)
             usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
             maskedClassesFromCore.convention(pluginExtension.maskedClassesFromCore)
-            incrementalsRepoUrl.convention(pluginExtension.incrementalsRepoUrl)
+            incrementalsRepoUrl.convention(pluginExtension.incrementalsRepoUrl.toString())
             testJvmArguments.convention(pluginExtension.testJvmArguments)
             requireEscapeByDefaultInJelly.convention(pluginExtension.requireEscapeByDefaultInJelly)
 
@@ -91,7 +91,7 @@ public class JpiPluginManager(
                     licenses.map { lic ->
                         project.objects.newInstance<PluginLicense>().apply {
                             name.set(lic.name)
-                            url.set(lic.url)
+                            url.set(lic.url.toString())
                             distribution.set(lic.distribution)
                             comments.set(lic.comments)
                         }
@@ -139,7 +139,7 @@ public class JpiPluginManager(
                         val license = pluginExtension.pluginLicenses.orNull?.firstOrNull()
                         license?.let {
                             it.name.orNull?.let { name -> mainAttributes.putValue("Plugin-License-Name", name) }
-                            it.url.orNull?.let { url -> mainAttributes.putValue("Plugin-License-Url", url) }
+                            it.url.orNull?.let { url -> mainAttributes.putValue("Plugin-License-Url", url.toString()) }
                         }
                     }
 

@@ -31,11 +31,6 @@ import de.aaschmid.gradle.plugins.cpd.CpdExtension
 import de.aaschmid.gradle.plugins.cpd.CpdPlugin
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
-import io.github.aaravmahajanofficial.constants.FormattingConstants.BIN
-import io.github.aaravmahajanofficial.constants.FormattingConstants.BUILD
-import io.github.aaravmahajanofficial.constants.FormattingConstants.GENERATED
-import io.github.aaravmahajanofficial.constants.FormattingConstants.GRADLE
-import io.github.aaravmahajanofficial.constants.FormattingConstants.OUT
 import io.github.aaravmahajanofficial.extensions.QualityExtension
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import io.gitlab.arturbosch.detekt.Detekt
@@ -44,16 +39,13 @@ import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import kotlinx.kover.gradle.plugin.KoverGradlePlugin
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.attributes.LibraryElements
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.RegularFile
 import org.gradle.api.plugins.quality.*
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.named
-import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.withType
+import org.gradle.kotlin.dsl.*
 import org.gradle.testing.jacoco.plugins.JacocoPlugin
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
@@ -64,9 +56,10 @@ import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
 public class QualityManager(
     private val project: Project,
-    private val libs: VersionCatalog,
     private val quality: QualityExtension,
 ) {
+    private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+
     public fun apply() {
         configureSpotless()
         configureCheckstyle()
@@ -150,7 +143,6 @@ public class QualityManager(
         project.pluginManager.apply(SpotBugsPlugin::class.java)
 
         project.configure<SpotBugsExtension> {
-            toolVersion.set(quality.spotbugs.toolVersion)
             effort.set(quality.spotbugs.effortLevel.get())
             reportLevel.set(quality.spotbugs.reportLevel.get())
             ignoreFailures.set(!quality.spotbugs.failOnError.get())
@@ -276,31 +268,53 @@ public class QualityManager(
 
         project.variantResolution("spotless")
 
+        val commonExcludes =
+            listOf(
+                "**/build/**",
+                "**/.gradle/**",
+                "**/.idea/**",
+                "**/node_modules/**",
+                "**/.git/**",
+                "**/generated/**",
+                "**/out/**",
+                "**/.gradle-test-kit/**", // integration test dirs
+            )
+
         project.configure<SpotlessExtension> {
-            kotlin { k ->
-                k.target("**/*.kt")
-                k.targetExclude(BUILD, BIN, GENERATED, OUT)
-                k.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
-                k.trimTrailingWhitespace()
-                k.endWithNewline()
+            kotlin { t ->
+                t.target(
+                    "src/main/kotlin/**/*.kt",
+                    "src/test/kotlin/**/*.kt",
+                )
+                t.targetExclude(commonExcludes)
+                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
             }
-            kotlinGradle { kg ->
-                kg.target("*.gradle.kts", "**/*.gradle.kts")
-                kg.targetExclude(BUILD, GRADLE, OUT)
-                kg.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
-                kg.trimTrailingWhitespace()
-                kg.endWithNewline()
+            kotlinGradle { t ->
+                t.target(
+                    "*.gradle.kts",
+                    "**/*.gradle.kts",
+                    "settings.gradle.kts",
+                )
+                t.targetExclude(commonExcludes + "**/gradle/**")
+                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
             }
-            java { j ->
-                j.target("src/**/*.java")
-                j.targetExclude(GENERATED, BUILD, GRADLE, OUT)
-                j.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
-                j.trimTrailingWhitespace()
-                j.endWithNewline()
-                j.removeUnusedImports()
+            java { t ->
+                t.target(
+                    "src/main/java/**/*.java",
+                    "src/test/java/**/*.java",
+                )
+                t.targetExclude(commonExcludes + "**/gradle/**")
+                t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
+                t.removeUnusedImports()
             }
-            format("misc") { m ->
-                m.target(
+            format("misc") { t ->
+                t.target(
                     "*.md",
                     "*.txt",
                     ".gitignore",
@@ -311,23 +325,13 @@ public class QualityManager(
                     "*.json",
                     ".editorconfig",
                     "*.xml",
-                    "*.gradle",
                     "*.sh",
                     "*.dockerfile",
                     "Dockerfile*",
                 )
-                m.targetExclude(
-                    "**/build/**",
-                    "**/.gradle/**",
-                    "**/.idea/**",
-                    "**/node_modules/**",
-                    "**/.git/**",
-                    "**/generated/**",
-                    "**/out/**",
-                )
-
-                m.trimTrailingWhitespace()
-                m.endWithNewline()
+                t.targetExclude(commonExcludes)
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
             }
         }
     }

@@ -143,13 +143,6 @@ public open class SpotbugsExtension
                     String::toBoolean,
                 ).orElse(true),
             )
-        public val toolVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.SPOTBUGS_VERSION,
-                ).orElse(versionFromCatalogOrFail(libs, "spotbugsTool")),
-            )
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
         public val failOnError: Property<Boolean> = objects.property<Boolean>().convention(true)

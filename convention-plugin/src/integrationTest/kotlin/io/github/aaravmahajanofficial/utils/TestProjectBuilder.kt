@@ -51,7 +51,16 @@ class TestProjectBuilder(
     }
 
     fun withGradleProperties(properties: Map<String, String>): TestProjectBuilder {
-        val content = properties.entries.joinToString("\n") { "${it.key}=${it.value}" }
+        val content =
+            buildString {
+                appendLine(defaultGradleProperties)
+                if (properties.isNotEmpty()) {
+                    appendLine()
+                    properties.forEach { (key, value) ->
+                        appendLine("$key=$value")
+                    }
+                }
+            }
         projectDir.resolve("gradle.properties").writeText(content)
         return this
     }
@@ -260,8 +269,6 @@ class TestProjectBuilder(
                 addAll(tasks)
                 addAll(arguments)
                 add("--stacktrace")
-                add("--info")
-                add("--build-cache")
             }
 
         val runner =
@@ -287,6 +294,14 @@ class TestProjectBuilder(
             return TestProjectBuilder(tempDir)
         }
 
+        private val defaultGradleProperties =
+            """
+            org.gradle.parallel=true
+            org.gradle.configuration-cache=true
+            org.gradle.jvmargs=-Xmx2g
+            org.gradle.caching=true
+            """.trimIndent()
+
         private val defaultVersionCatalog =
             """
             [versions]
@@ -295,7 +310,6 @@ class TestProjectBuilder(
             jenkins-gradle-jpi2 = "0.55.0"
             jenkins-bom = "5015.vb_52d36583443"
             spotbugs = "6.2.2"
-            spotbugsTool = "4.9.3"
             detekt = "1.23.8"
             spotless = "7.2.1"
             ktlint = "1.7.1"
@@ -310,6 +324,7 @@ class TestProjectBuilder(
             codenarc = "3.6.0"
             node-gradle = "7.1.0"
             cpd = "3.5"
+            palantir-java = "2.73.0"
 
             [libraries]
             # Kotlin
@@ -321,7 +336,7 @@ class TestProjectBuilder(
 
             # Jenkins
             jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
-            jenkins-gradle-jpi2 = { module = "org.jenkins-ci.jpi2:org.jenkins-ci.jpi2.gradle.plugin", version.ref = "jenkins-gradle-jpi2" }
+            jenkins-gradle-jpi2 = { module = "org.jenkins-ci.jpi2:org.jenkins-ci.jpi2.gradle.plugin", version = "0.55.0" }
 
             # BOM
             jenkins-bom-coordinates = { module = "io.jenkins.tools.bom:bom-2.504.x", version.ref = "jenkins-bom" }
