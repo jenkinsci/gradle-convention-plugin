@@ -29,7 +29,6 @@ categories:
     labels:
       - 'documentation'
   - title: '✍️ Other changes'
-  - labels: [ ]
 exclude-labels:
   - 'skip-changelog'
   - 'invalid'
