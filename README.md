@@ -1,4 +1,4 @@
-[![Gradle Build](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/build.yml)
+[![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 
 # Jenkins Gradle Convention Plugin
 
