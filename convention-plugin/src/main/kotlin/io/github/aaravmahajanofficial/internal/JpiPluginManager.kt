@@ -76,7 +76,7 @@ public class JpiPluginManager(
                             id.set(dev.id)
                             name.set(dev.name)
                             email.set(dev.email)
-                            url.set(dev.website)
+                            url.set(dev.website.get().toString())
                             organization.set(dev.organization)
                             organizationUrl.set(dev.organizationUrl)
                             roles.set(dev.roles)
@@ -91,7 +91,7 @@ public class JpiPluginManager(
                     licenses.map { lic ->
                         project.objects.newInstance<PluginLicense>().apply {
                             name.set(lic.name)
-                            url.set(lic.url.toString())
+                            url.set(lic.url.get().toString())
                             distribution.set(lic.distribution)
                             comments.set(lic.comments)
                         }

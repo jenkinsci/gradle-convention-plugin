@@ -38,7 +38,7 @@ public class KotlinConventionManager(
 
         project.configure<KotlinJvmProjectExtension> {
             jvmToolchain(JAVA_VERSION)
-            explicitApi()
+//            explicitApi()
         }
 
         val kotlinVersion =
