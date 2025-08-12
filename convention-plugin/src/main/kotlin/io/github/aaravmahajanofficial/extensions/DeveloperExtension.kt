@@ -25,6 +25,7 @@ import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
 import java.io.File
+import java.net.URI
 import javax.inject.Inject
 
 public open class DeveloperExtension
@@ -41,7 +42,7 @@ public open class DeveloperExtension
             objects.property<String>().convention(gitUser.name ?: userName.replaceFirstChar { it.uppercaseChar() })
         public val email: Property<String> =
             objects.property<String>().convention(gitUser.email ?: "$userName@users.noreply.github.com")
-        public val website: Property<String> = objects.property<String>().convention("https://github.com")
+        public val website: Property<URI> = objects.property<URI>().convention(URI.create("https://github.com"))
         public val organization: Property<String> = objects.property<String>().convention("")
         public val organizationUrl: Property<String> = objects.property<String>().convention("https://github.com")
         public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("developer"))
