@@ -13,6 +13,6 @@ catalog {
 
 mavenPublishing {
     configure(VersionCatalog())
-    publishToMavenCentral()
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 }
