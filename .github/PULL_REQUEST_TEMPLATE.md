@@ -21,7 +21,7 @@
 ---
 
 ## Checklist
-<!-- Please check the one that applies to this PR using "x". -->
+<!-- Please check all that apply to this PR using "x". -->
 - [ ] I reviewed the [CONTRIBUTING](./CONTRIBUTING.md) guidelines and followed project style conventions
 - [ ] I added and/or updated tests and confirmed they pass locally
 - [ ] I commented code in complex areas
