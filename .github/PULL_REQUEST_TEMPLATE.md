@@ -1,88 +1,34 @@
-## Summary
-
-<!--
-Briefly describe *what* this PR changes and *why*.
-Focus on clarity and motivation.
-If this addresses an issue, reference it (e.g. "Fixes #123").
--->
-
-Fixes #
+# Description
+<!-- What changed, why, and how it fixes the issue. Link issues with `Fixes #<number>`. -->  
 
 ---
 
-## What Changed?
-
-<!--
-- List key changes and improvements.
-- Note any relevant dependencies or related PRs.
-- Use bullet points for readability.
--->
-
-- 
-
----
-
-## Change Type
-
-<!--
-Select all that apply by marking `[x]`.
-Remove lines that don't apply.
--->
-
-- [ ] Bug fix (non-breaking)
-- [ ] New feature (non-breaking)
-- [ ] Breaking change
-- [ ] Documentation update
-- [ ] Code quality/refactor/performance
-- [ ] Dependency update
-- [ ] Build/CI/CD improvement
+## Type of Change
+<!-- Please check the one that applies to this PR using "x". -->
+- [ ] Bug fix — non-breaking change that fixes an issue
+- [ ] Feature — non-breaking change adding functionality
+- [ ] Breaking change — requires downstream updates/migrations
+- [ ] Refactoring — no functional changes, code improvements
+- [ ] Documentation — changes to docs only
+- [ ] Other — describe:
 
 ---
 
-## Developer Checklist
-
-<!--
-Please check each box to indicate completion.
-Remove lines not relevant to your PR.
--->
-
-- [ ] I reviewed the [CONTRIBUTING](./CONTRIBUTING.md) guidelines
-- [ ] My code matches the project style and conventions
-- [ ] I added and/or updated tests
-- [ ] All CI checks pass locally
-- [ ] Documentation is updated where needed
-- [ ] No new warnings, errors, or linter issues introduced
-- [ ] Logging is added/updated where appropriate
-- [ ] Dependent changes are merged & published
-- [ ] My branch is up to date with target branch
-- [ ] I spellchecked my code/comments/messages
+## Testing
+<!-- Steps for reviewers to verify changes. Include environment/setup if needed. -->  
+* ...
 
 ---
 
-## How Was This Tested?
-
-<!--
-Describe how you tested your changes.
-Add clear steps for reviewers to reproduce.
-Provide details on test environments, commands, or configs.
--->
-
-1.
-2.
-3.
+## Checklist
+<!-- Please check all that apply to this PR using "x". -->
+- [ ] I reviewed the [CONTRIBUTING](./CONTRIBUTING.md) guidelines and followed project style conventions
+- [ ] I added and/or updated tests and confirmed they pass locally
+- [ ] I commented code in complex areas
+- [ ] I updated documentation where needed
+- [ ] Changes introduce no new warnings
 
 ---
 
-## Screenshots / Demo
-
-<!--
-If visual, UI, or workflow changes, add screenshots or GIFs.
--->
-
----
-
-## Additional Notes
-
-<!--
-Add any other information for reviewers, e.g. known issues, follow-ups, or links.
--->
+## Additional Notes *(optional)*
+<!-- Any extra info for reviewers --> 
