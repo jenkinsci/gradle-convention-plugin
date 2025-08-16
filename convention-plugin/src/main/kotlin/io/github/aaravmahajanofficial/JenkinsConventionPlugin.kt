@@ -55,10 +55,13 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 group = "Help"
                 description = "Prints the convention plugin configuration."
 
-                t.doLast {
-                    val extension = project.extensions.getByType<PluginExtension>()
+                val artifactId =
+                    project.provider {
+                        extensions.getByType<PluginExtension>().artifactId.orNull
+                    }
 
-                    println("artifactId: ${extension.artifactId.orNull}")
+                t.doLast {
+                    println("artifactId: ${artifactId.get()}")
                 }
             }
         }
