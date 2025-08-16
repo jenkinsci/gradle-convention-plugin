@@ -1,5 +1,6 @@
 [![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
-![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%23343b41&color=%237b53fb&link=https%3A%2F%2Fplugins.gradle.org%2Fplugin%2Fio.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
+[![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%2330363c&color=%237b53fb)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
+
 
 # Jenkins Gradle Convention Plugin
 
