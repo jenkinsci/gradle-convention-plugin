@@ -1,88 +1,39 @@
-## Summary
+# Description
+<!-- Brief summary of changes and why they are needed. Link issues with `Fixes #<number>`. -->  
+Fixes # (issue)
 
-<!--
-Briefly describe *what* this PR changes and *why*.
-Focus on clarity and motivation.
-If this addresses an issue, reference it (e.g. "Fixes #123").
--->
+## Pull Request Type
+What kind of change does this Pull Request introduce?
 
-Fixes #
+<!-- Please check the one that applies to this PR using "x". -->
+```
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation content changes
+- [ ] Code style update (formatting, local variables)
+- [ ] Refactoring (no functional changes, no api changes)
+- [ ] Other... Please describe:
+```
 
----
+## How has this been tested?
+<!-- Steps for reviewers to verify changes. Include environment/setup if needed. -->  
+* ...
 
-## What Changed?
-
-<!--
-- List key changes and improvements.
-- Note any relevant dependencies or related PRs.
-- Use bullet points for readability.
--->
-
-- 
-
----
-
-## Change Type
-
-<!--
-Select all that apply by marking `[x]`.
-Remove lines that don't apply.
--->
-
-- [ ] Bug fix (non-breaking)
-- [ ] New feature (non-breaking)
-- [ ] Breaking change
-- [ ] Documentation update
-- [ ] Code quality/refactor/performance
-- [ ] Dependency update
-- [ ] Build/CI/CD improvement
-
----
-
-## Developer Checklist
-
-<!--
-Please check each box to indicate completion.
-Remove lines not relevant to your PR.
--->
-
+## Checklist
+<!-- Please check the one that applies to this PR using "x". -->
+```
 - [ ] I reviewed the [CONTRIBUTING](./CONTRIBUTING.md) guidelines
 - [ ] My code matches the project style and conventions
 - [ ] I added and/or updated tests
-- [ ] All CI checks pass locally
-- [ ] Documentation is updated where needed
-- [ ] No new warnings, errors, or linter issues introduced
-- [ ] Logging is added/updated where appropriate
-- [ ] Dependent changes are merged & published
-- [ ] My branch is up to date with target branch
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] Any dependent changes have been merged and published in downstream modules
 - [ ] I spellchecked my code/comments/messages
+```
 
----
-
-## How Was This Tested?
-
-<!--
-Describe how you tested your changes.
-Add clear steps for reviewers to reproduce.
-Provide details on test environments, commands, or configs.
--->
-
-1.
-2.
-3.
-
----
-
-## Screenshots / Demo
-
-<!--
-If visual, UI, or workflow changes, add screenshots or GIFs.
--->
-
----
-
-## Additional Notes
-
-<!--
-Add any other information for reviewers, e.g. known issues, follow-ups, or links.
--->
+## Other Information
+<!-- Add any other helpful information that may be needed here. -->
