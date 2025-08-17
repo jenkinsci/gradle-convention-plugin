@@ -407,7 +407,7 @@ public open class CodenarcExtension
                 versionFromCatalogOrFail(libs, "codenarc"),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val source: ConfigurableFileCollection = objects.fileCollection()
+        public val source: ConfigurableFileCollection = objects.fileCollection().from("src")
     }
 
 public open class CpdExtension
