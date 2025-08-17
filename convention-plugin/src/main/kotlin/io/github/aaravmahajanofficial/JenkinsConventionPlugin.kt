@@ -13,13 +13,18 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-@file:Suppress("UnstableApiUsage", "ktlint:standard:no-wildcard-imports", "WildcardImport")
+@file:Suppress("UnstableApiUsage")
 
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata
 import io.github.aaravmahajanofficial.extensions.PluginExtension
-import io.github.aaravmahajanofficial.internal.*
+import io.github.aaravmahajanofficial.internal.BomManager
+import io.github.aaravmahajanofficial.internal.GroovyConventionManager
+import io.github.aaravmahajanofficial.internal.JavaConventionManager
+import io.github.aaravmahajanofficial.internal.JpiPluginManager
+import io.github.aaravmahajanofficial.internal.KotlinConventionManager
+import io.github.aaravmahajanofficial.internal.QualityManager
 import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project

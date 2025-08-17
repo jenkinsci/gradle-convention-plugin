@@ -13,8 +13,6 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-@file:Suppress("ktlint:standard:no-wildcard-imports")
-
 package io.github.aaravmahajanofficial.extensions
 
 import com.github.spotbugs.snom.Confidence
@@ -22,8 +20,13 @@ import com.github.spotbugs.snom.Effort
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import javax.inject.Inject
 import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.file.*
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
+import org.gradle.api.file.RegularFile
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -33,7 +36,6 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class QualityExtension
@@ -72,8 +74,7 @@ public open class QualityExtension
 
         public fun spotless(action: SpotlessExtension.() -> Unit): Unit = action(spotless)
 
-        public fun owaspDependencyCheck(action: OwaspDependencyCheckExtension.() -> Unit): Unit =
-            action(owaspDependencyCheck)
+        public fun owaspDependencyCheck(action: OwaspDependencyCheckExtension.() -> Unit): Unit = action(owaspDependencyCheck)
 
         public fun pitest(action: PitestExtension.() -> Unit): Unit = action(pitest)
 

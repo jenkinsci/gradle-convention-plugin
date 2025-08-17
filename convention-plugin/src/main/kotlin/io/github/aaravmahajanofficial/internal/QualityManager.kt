@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-@file:Suppress("TooManyFunctions", "ktlint:standard:no-wildcard-imports", "LongMethod", "WildcardImport")
+@file:Suppress("TooManyFunctions", "LongMethod")
 
 package io.github.aaravmahajanofficial.internal
 
@@ -43,9 +43,21 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.attributes.LibraryElements
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.RegularFile
-import org.gradle.api.plugins.quality.*
+import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.plugins.quality.CheckstyleExtension
+import org.gradle.api.plugins.quality.CheckstylePlugin
+import org.gradle.api.plugins.quality.CodeNarc
+import org.gradle.api.plugins.quality.CodeNarcExtension
+import org.gradle.api.plugins.quality.CodeNarcPlugin
+import org.gradle.api.plugins.quality.Pmd
+import org.gradle.api.plugins.quality.PmdExtension
+import org.gradle.api.plugins.quality.PmdPlugin
 import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 import org.gradle.testing.jacoco.plugins.JacocoPlugin
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
@@ -558,8 +570,7 @@ private fun Project.isJavaProject(): Boolean {
     return isJava || isJavaLibrary || isJavaGradlePlugin
 }
 
-private fun Project.isKotlinProject(): Boolean =
-    plugins.hasPlugin("org.jetbrains.kotlin.jvm") || plugins.hasPlugin("kotlin")
+private fun Project.isKotlinProject(): Boolean = plugins.hasPlugin("org.jetbrains.kotlin.jvm") || plugins.hasPlugin("kotlin")
 
 private fun Project.isGroovyProject(): Boolean = plugins.hasPlugin("groovy")
 
