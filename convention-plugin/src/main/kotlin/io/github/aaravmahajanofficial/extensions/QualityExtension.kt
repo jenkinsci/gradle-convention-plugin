@@ -23,10 +23,7 @@ import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.ProjectLayout
-import org.gradle.api.file.RegularFile
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.*
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -111,16 +108,13 @@ public open class CheckstyleExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.CHECKSTYLE_ENABLED,
+                    ConfigurationConstants.Quality.CHECKSTYLE_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.CHECKSTYLE_VERSION,
-                ).orElse(versionFromCatalogOrFail(libs, "checkstyle")),
+                versionFromCatalogOrFail(libs, "checkstyle"),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val source: Property<String> = objects.property<String>().convention("src")
@@ -139,7 +133,7 @@ public open class SpotbugsExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.SPOTBUGS_ENABLED,
+                    ConfigurationConstants.Quality.SPOTBUGS_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -159,15 +153,13 @@ public open class PmdExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.PMD_ENABLED,
+                    ConfigurationConstants.Quality.PMD_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(providers, ConfigurationConstants.PMD_VERSION).orElse(
-                    versionFromCatalogOrFail(libs, "pmd"),
-                ),
+                versionFromCatalogOrFail(libs, "pmd"),
             )
         public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -187,15 +179,13 @@ public open class JacocoExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JACOCO_ENABLED,
+                    ConfigurationConstants.Quality.JACOCO_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(providers, ConfigurationConstants.JACOCO_VERSION).orElse(
-                    versionFromCatalogOrFail(libs, "jacoco"),
-                ),
+                versionFromCatalogOrFail(libs, "jacoco"),
             )
         public val minimumCodeCoverage: Property<Double> =
             objects.property<Double>().convention(
@@ -226,15 +216,13 @@ public open class DetektExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.DETEKT_ENABLED,
+                    ConfigurationConstants.Quality.DETEKT_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(providers, ConfigurationConstants.DETEKT_VERSION).orElse(
-                    versionFromCatalogOrFail(libs, "detekt"),
-                ),
+                versionFromCatalogOrFail(libs, "detekt"),
             )
         public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
@@ -252,7 +240,7 @@ public open class SpotlessExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.SPOTLESS_ENABLED,
+                    ConfigurationConstants.Quality.SPOTLESS_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -269,7 +257,7 @@ public open class OwaspDependencyCheckExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.OWASP_ENABLED,
+                    ConfigurationConstants.Quality.OWASP_ENABLED,
                     String::toBoolean,
                 ).orElse(false),
             )
@@ -310,15 +298,13 @@ public open class PitestExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.PITEST_ENABLED,
+                    ConfigurationConstants.Quality.PITEST_ENABLED,
                     String::toBoolean,
                 ).orElse(false),
             )
         public val pitVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(providers, ConfigurationConstants.PITEST_VERSION).orElse(
-                    versionFromCatalogOrFail(libs, "pit"),
-                ),
+                versionFromCatalogOrFail(libs, "pit"),
             )
         public val threads: Property<Int> = objects.property<Int>().convention(QualityExtension.DEFAULT_THREADS)
         public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))
@@ -328,7 +314,7 @@ public open class PitestExtension
             objects.property<Int>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.PITEST_MUTATION_THRESHOLD,
+                    ConfigurationConstants.Quality.PITEST_MUTATION_THRESHOLD,
                     String::toInt,
                 ).orElse(QualityExtension.DEFAULT_MUTATION_THRESHOLD),
             )
@@ -358,7 +344,7 @@ public open class KoverExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.KOVER_ENABLED,
+                    ConfigurationConstants.Quality.KOVER_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -376,7 +362,7 @@ public open class EslintExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.ESLINT_ENABLED,
+                    ConfigurationConstants.Quality.ESLINT_ENABLED,
                     String::toBoolean,
                 ).orElse(false),
             )
@@ -395,7 +381,7 @@ public open class DokkaExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.DOKKA_ENABLED,
+                    ConfigurationConstants.Quality.DOKKA_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -412,23 +398,16 @@ public open class CodenarcExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.CODENARC_ENABLED,
+                    ConfigurationConstants.Quality.CODENARC_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.CODENARC_VERSION,
-                ).orElse(
-                    versionFromCatalogOrFail(libs, "codenarc"),
-                ),
+                versionFromCatalogOrFail(libs, "codenarc"),
             )
-
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-
-        public val configFile: RegularFileProperty = objects.fileProperty()
+        public val source: ConfigurableFileCollection = objects.fileCollection().from("src")
     }
 
 public open class CpdExtension
@@ -442,7 +421,7 @@ public open class CpdExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.CPD_ENABLED,
+                    ConfigurationConstants.Quality.CPD_ENABLED,
                     String::toBoolean,
                 ).orElse(true),
             )

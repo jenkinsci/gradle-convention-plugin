@@ -18,7 +18,6 @@
 package io.github.aaravmahajanofficial.extensions
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
-import io.github.aaravmahajanofficial.constants.UrlConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.artifacts.VersionCatalog
@@ -45,86 +44,40 @@ public open class PluginExtension
     ) {
         private val projectName = layout.projectDirectory.asFile.name
 
-        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
-        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
-
-        public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
-
-        public fun quality(action: QualityExtension.() -> Unit): QualityExtension = quality.apply(action)
-
         public val jenkinsVersion: Property<String> =
             objects.property<String>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JENKINS_VERSION,
+                    ConfigurationConstants.Plugin.JENKINS_VERSION,
                 ).orElse(versionFromCatalogOrFail(libs, "jenkins-core")),
             )
 
         public val artifactId: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(providers, ConfigurationConstants.ARTIFACT_ID).orElse(
-                    projectName.removePrefix("jenkins-").removeSuffix("-plugin"),
-                ),
-            )
-
-        public val homePage: Property<URI> =
-            objects.property<URI>().convention(URI.create("https://github.com/jenkinsci/${artifactId.get()}"))
-
-        public val sandboxed: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(providers, ConfigurationConstants.SANDBOXED, String::toBoolean).orElse(false),
-            )
-
-        public val usePluginFirstClassLoader: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.USE_PLUGIN_FIRST_CLASS_LOADER,
-                    String::toBoolean,
-                ).orElse(true),
-            )
-
-        public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
-
-        public val minimumJenkinsCoreVersion: Property<String> =
-            objects.property<String>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.MINIMUM_JENKINS_VERSION,
-                ).orElse(versionFromCatalogOrFail(libs, "jenkins-core")),
-            )
+            objects.property<String>().convention(projectName.removePrefix("jenkins-").removeSuffix("-plugin"))
 
         public val gitHub: Property<URI> =
-            objects.property<URI>().convention(URI.create("https://github.com/jenkinsci/${artifactId.get()}"))
+            objects.property<URI>().convention(artifactId.map { id -> URI.create("https://github.com/jenkinsci/$id") })
 
-        public val scmTag: Property<String> = objects.property<String>().convention("HEAD")
+        public val homePage: Property<URI> = objects.property<URI>().convention(gitHub)
 
-        public val generateTests: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.GENERATE_TESTS,
-                    String::toBoolean,
-                ).orElse(false),
-            )
+        public val sandboxed: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-        public val generatedTestClassName: Property<String> = objects.property<String>().convention("InjectedTest")
+        public val usePluginFirstClassLoader: Property<Boolean> = objects.property<Boolean>().convention(true)
 
-        public val extension: Property<String> = objects.property<String>().convention("hpi")
-
-        public val requireEscapeByDefaultInJelly: Property<Boolean> = objects.property<Boolean>().convention(true)
-
-        public val incrementalsRepoUrl: Property<URI> =
-            objects.property<URI>().convention(URI.create(UrlConstants.JENKINS_INCREMENTALS_REPO_URL))
+        public val maskedClassesFromCore: SetProperty<String> = objects.setProperty<String>().convention(emptySet())
 
         public val testJvmArguments: ListProperty<String> =
             objects
                 .listProperty<String>()
                 .convention(
-                    listOf(
-                        "--add-opens=java.base/java.lang=ALL-UNNAMED",
-                        "--add-opens=java.base/java.io=ALL-UNNAMED",
-                        "--add-opens=java.base/java.util=ALL-UNNAMED",
+                    gradleProperty(providers, ConfigurationConstants.Plugin.TEST_JVM_ARGS) {
+                        it.split(",").map(String::trim)
+                    }.orElse(
+                        listOf(
+                            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+                            "--add-opens=java.base/java.io=ALL-UNNAMED",
+                            "--add-opens=java.base/java.util=ALL-UNNAMED",
+                        ),
                     ),
                 )
 
@@ -140,11 +93,23 @@ public open class PluginExtension
 
         public fun developers(configure: DevelopersExtension.() -> Unit) {
             pluginDevelopers.set(emptyList())
-            DevelopersExtension(objects, pluginDevelopers).apply(configure)
+            DevelopersExtension(
+                objects,
+                pluginDevelopers,
+            ).apply(configure)
         }
 
         public fun licenses(configure: LicensesExtension.() -> Unit) {
             pluginLicenses.set(emptyList())
-            LicensesExtension(objects, pluginLicenses).apply(configure)
+            LicensesExtension(objects, pluginLicenses).apply(
+                configure,
+            )
         }
+
+        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
+
+        public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
+
+        public fun quality(action: QualityExtension.() -> Unit): QualityExtension = quality.apply(action)
     }

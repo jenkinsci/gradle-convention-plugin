@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.constants.UrlConstants
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import org.eclipse.jgit.api.Git
 import org.gradle.api.JavaVersion
@@ -56,18 +57,18 @@ public class JpiPluginManager(
             )
             homePage.convention(pluginExtension.homePage)
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
-            minimumJenkinsCoreVersion.convention(pluginExtension.minimumJenkinsCoreVersion)
-            extension.convention(pluginExtension.extension)
-            scmTag.convention(pluginExtension.scmTag)
+            minimumJenkinsCoreVersion.convention(jenkinsVersion)
+            extension.convention("hpi")
+            scmTag.convention("HEAD")
             gitHub.convention(pluginExtension.gitHub)
-            generateTests.convention(pluginExtension.generateTests)
-            generatedTestClassName.convention(pluginExtension.generatedTestClassName)
+            generateTests.convention(false)
+            generatedTestClassName.convention("InjectedTest")
             sandboxed.convention(pluginExtension.sandboxed)
             usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
             maskedClassesFromCore.convention(pluginExtension.maskedClassesFromCore)
-            incrementalsRepoUrl.convention(pluginExtension.incrementalsRepoUrl.toString())
+            incrementalsRepoUrl.convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
             testJvmArguments.convention(pluginExtension.testJvmArguments)
-            requireEscapeByDefaultInJelly.convention(pluginExtension.requireEscapeByDefaultInJelly)
+            requireEscapeByDefaultInJelly.convention(true)
 
             pluginDevelopers.set(
                 pluginExtension.pluginDevelopers.map { developers ->
@@ -105,7 +106,7 @@ public class JpiPluginManager(
         return try {
             Git.open(repoDir).use { git ->
                 git.repository.resolve("HEAD").name
-                    ?: throw IllegalStateException("Cannot resolve HEAD in repo: $repoDir")
+                    ?: error("Cannot resolve HEAD in repo: $repoDir")
             }
         } catch (e: IllegalStateException) {
             throw IllegalStateException("Failed to retrieve Git HEAD SHA in repo: $repoDir", e)
