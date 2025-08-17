@@ -97,7 +97,7 @@ public open class JenkinsBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JENKINS_BOM,
+                    ConfigurationConstants.Bom.JENKINS_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -117,7 +117,7 @@ public open class GroovyBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.GROOVY_BOM,
+                    ConfigurationConstants.Bom.GROOVY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -137,7 +137,7 @@ public open class JacksonBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JACKSON_BOM,
+                    ConfigurationConstants.Bom.JACKSON_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -157,7 +157,7 @@ public open class SpringBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.SPRING_BOM,
+                    ConfigurationConstants.Bom.SPRING_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -177,7 +177,7 @@ public open class NettyBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.NETTY_BOM,
+                    ConfigurationConstants.Bom.NETTY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -197,7 +197,7 @@ public open class SLF4JBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.SLF4J_BOM,
+                    ConfigurationConstants.Bom.SLF4J_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -220,7 +220,7 @@ public open class JettyBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JETTY_BOM,
+                    ConfigurationConstants.Bom.JETTY_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -240,7 +240,7 @@ public open class GuavaBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.GUAVA_BOM,
+                    ConfigurationConstants.Bom.GUAVA_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -260,7 +260,7 @@ public open class Log4JBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.LOG4J_BOM,
+                    ConfigurationConstants.Bom.LOG4J_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -280,7 +280,7 @@ public open class VertxBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.VERTX_BOM,
+                    ConfigurationConstants.Bom.VERTX_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -300,7 +300,7 @@ public open class JUnitBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.JUNIT_BOM,
+                    ConfigurationConstants.Bom.JUNIT_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -320,7 +320,7 @@ public open class MockitoBomExtension
             objects
                 .property<Boolean>()
                 .convention(
-                    gradleProperty(providers, ConfigurationConstants.MOCKITO_BOM, String::toBoolean).orElse(true),
+                    gradleProperty(providers, ConfigurationConstants.Bom.MOCKITO_BOM, String::toBoolean).orElse(true),
                 )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "mockito-bom-coordinates")
@@ -338,7 +338,7 @@ public open class TestcontainersBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.TESTCONTAINERS_BOM,
+                    ConfigurationConstants.Bom.TESTCONTAINERS_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )
@@ -358,7 +358,7 @@ public open class SpockBomExtension
             objects.property<Boolean>().convention(
                 gradleProperty(
                     providers,
-                    ConfigurationConstants.SPOCK_BOM,
+                    ConfigurationConstants.Bom.SPOCK_BOM,
                     String::toBoolean,
                 ).orElse(true),
             )

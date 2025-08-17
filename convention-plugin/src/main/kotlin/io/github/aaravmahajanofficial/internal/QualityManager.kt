@@ -134,6 +134,9 @@ public class QualityManager(
                         "rules.groovy"
                     },
                 ).asFile
+            quality.codenarc.source.forEach { dir ->
+                task.source += project.fileTree(dir) { it.include("**/*.groovy") }
+            }
         }
     }
 
@@ -277,7 +280,7 @@ public class QualityManager(
                 "**/.git/**",
                 "**/generated/**",
                 "**/out/**",
-                "**/.gradle-test-kit/**", // integration test dirs
+                "**/.gradle-test-kit/**",
             )
 
         project.configure<SpotlessExtension> {
