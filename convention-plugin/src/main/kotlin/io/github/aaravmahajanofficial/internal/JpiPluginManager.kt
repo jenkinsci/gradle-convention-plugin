@@ -106,7 +106,7 @@ public class JpiPluginManager(
         return try {
             Git.open(repoDir).use { git ->
                 git.repository.resolve("HEAD").name
-                    ?: throw IllegalStateException("Cannot resolve HEAD in repo: $repoDir")
+                    ?: error("Cannot resolve HEAD in repo: $repoDir")
             }
         } catch (e: IllegalStateException) {
             throw IllegalStateException("Failed to retrieve Git HEAD SHA in repo: $repoDir", e)

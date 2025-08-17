@@ -4,6 +4,6 @@
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:QualityManager.kt$QualityManager$private fun configureCheckTask()</ID>
     <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
-    <ID>UseCheckOrError:JpiPluginManager.kt$JpiPluginManager$throw IllegalStateException("Cannot resolve HEAD in repo: $repoDir")</ID>
+    <ID>WildcardImport:QualityExtension.kt$import org.gradle.api.file.*</ID>
   </CurrentIssues>
 </SmellBaseline>
