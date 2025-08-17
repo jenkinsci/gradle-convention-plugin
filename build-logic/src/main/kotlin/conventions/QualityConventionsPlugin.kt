@@ -114,6 +114,8 @@ private fun Project.configureDetekt(libs: VersionCatalog) {
     configure<DetektExtension> {
         toolVersion = libs.findVersion("detekt").get().requiredVersion
         parallel = true
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.file("config/detekt/detekt.yml"))
         baseline = rootProject.file("config/detekt/detekt-baseline.xml")
     }
 

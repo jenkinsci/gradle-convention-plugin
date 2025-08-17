@@ -20,7 +20,6 @@ import com.github.spotbugs.snom.Effort
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import javax.inject.Inject
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -36,6 +35,7 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
+import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class QualityExtension

@@ -18,7 +18,6 @@ package io.github.aaravmahajanofficial.extensions
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.libraryFromCatalog
-import javax.inject.Inject
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
@@ -28,6 +27,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
+import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class BomExtension
