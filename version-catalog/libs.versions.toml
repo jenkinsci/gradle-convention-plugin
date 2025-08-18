@@ -29,7 +29,7 @@ testContainers-bom = "1.21.3"
 spock-bom = "2.4-M6-groovy-4.0"
 
 # Quality
-spotbugs = "6.2.4"
+spotbugs = "6.2.5"
 detekt = "1.23.8"
 spotless = "7.2.1"
 ktlint = "1.7.1"
