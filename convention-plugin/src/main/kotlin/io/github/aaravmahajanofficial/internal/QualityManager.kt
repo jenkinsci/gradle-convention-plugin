@@ -146,9 +146,22 @@ public class QualityManager(
                         "rules.groovy"
                     },
                 ).asFile
-            quality.codenarc.source.forEach { dir ->
-                task.source += project.fileTree(dir) { it.include("**/*.groovy") }
-            }
+
+            val groovyDirs =
+                listOf(
+                    "src/main/groovy",
+                    "src/main/resources",
+                ) + quality.codenarc.source
+
+            val uniqueGroovyDirs = groovyDirs.distinct()
+
+            task.source =
+                project
+                    .files(
+                        uniqueGroovyDirs.map { dir ->
+                            project.fileTree(dir) { it.include("**/*.groovy") }
+                        },
+                    ).asFileTree
         }
     }
 
@@ -283,6 +296,8 @@ public class QualityManager(
 
         project.variantResolution("spotless")
 
+        val headerFile = project.rootProject.file("config/spotless/license-header.txt")
+
         val commonExcludes =
             listOf(
                 "**/build/**",
@@ -300,11 +315,16 @@ public class QualityManager(
                 t.target(
                     "src/main/kotlin/**/*.kt",
                     "src/test/kotlin/**/*.kt",
+                    "src/main/resources/**/*.kt",
                 )
                 t.targetExclude(commonExcludes)
                 t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+
+                if (headerFile.exists()) {
+                    t.licenseHeaderFile(headerFile)
+                }
             }
             kotlinGradle { t ->
                 t.target(
@@ -316,17 +336,64 @@ public class QualityManager(
                 t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+
+                if (headerFile.exists()) {
+                    t.licenseHeaderFile(
+                        headerFile,
+                        "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                    )
+                }
             }
             java { t ->
                 t.target(
                     "src/main/java/**/*.java",
                     "src/test/java/**/*.java",
+                    "src/main/resources/**/*.java",
                 )
                 t.targetExclude(commonExcludes + "**/gradle/**")
                 t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
                 t.removeUnusedImports()
+
+                if (headerFile.exists()) {
+                    t.licenseHeaderFile(headerFile)
+                }
+            }
+            groovy { t ->
+                t.target(
+                    "src/main/groovy/**/*.groovy",
+                    "src/test/groovy/**/*.groovy",
+                    "src/main/resources/**/*.groovy",
+                )
+                t.targetExclude(commonExcludes + "**/gradle**")
+
+                t.greclipse()
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
+
+                if (headerFile.exists()) {
+                    t.licenseHeaderFile(headerFile)
+                }
+            }
+            groovyGradle { t ->
+                t.target(
+                    "*.gradle",
+                    "**/*.gradle",
+                    "settings.gradle",
+                )
+                t.targetExclude(commonExcludes + "**/gradle/**")
+
+                t.greclipse()
+                t.trimTrailingWhitespace()
+                t.endWithNewline()
+
+                if (headerFile.exists()) {
+                    t.licenseHeaderFile(
+                        headerFile,
+                        "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                    )
+                }
             }
             format("misc") { t ->
                 t.target(

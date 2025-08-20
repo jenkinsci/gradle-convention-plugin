@@ -13,8 +13,6 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-@file:Suppress("UnstableApiUsage")
-
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata
@@ -36,6 +34,10 @@ public class JenkinsConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             GradleVersionUtils.verifyGradleVersion()
+
+            project.group = "org.jenkins-ci.plugins"
+            project.description = "A Jenkins Plugin"
+            project.version = "1.0.0-SNAPSHOT"
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 

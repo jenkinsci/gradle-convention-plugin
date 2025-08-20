@@ -51,8 +51,8 @@ public class JpiPluginManager(
         with(jpiExtension) {
             pluginId.convention(pluginExtension.artifactId)
             humanReadableName.convention(
-                project.provider {
-                    project.description?.takeIf { it.isNotBlank() } ?: project.name
+                pluginExtension.artifactId.map { id ->
+                    id.split("-").joinToString(" ") { part -> part.replaceFirstChar { it.titlecase() } }
                 },
             )
             homePage.convention(pluginExtension.homePage)

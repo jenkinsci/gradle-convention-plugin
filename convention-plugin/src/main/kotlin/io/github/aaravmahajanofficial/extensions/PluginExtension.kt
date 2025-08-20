@@ -104,8 +104,8 @@ public open class PluginExtension
             )
         }
 
-        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
-        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
+        public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
+        public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
 
         public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
 
