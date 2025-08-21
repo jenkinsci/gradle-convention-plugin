@@ -17,14 +17,13 @@ package io.github.aaravmahajanofficial.constants
 
 public object ConfigurationConstants {
     public object Plugin {
-        private const val PLUGIN_PREFIX = "cfg.plg"
-        public const val JENKINS_VERSION: String = "$PLUGIN_PREFIX.jenkinsVersion"
-        public const val ARTIFACT_ID: String = "$PLUGIN_PREFIX.artifactId"
-        public const val TEST_JVM_ARGS: String = "$PLUGIN_PREFIX.test-jvm-args"
+        public const val JENKINS_VERSION: String = "jenkinsVersion"
+        public const val ARTIFACT_ID: String = "artifactId"
+        public const val TEST_JVM_ARGS: String = "test-jvm-args"
     }
 
     public object Bom {
-        private const val BOM_PREFIX = "cfg.bom"
+        private const val BOM_PREFIX = "bom"
         public const val JENKINS_BOM: String = "$BOM_PREFIX.jenkins.enabled"
         public const val GROOVY_BOM: String = "$BOM_PREFIX.groovy.enabled"
         public const val JACKSON_BOM: String = "$BOM_PREFIX.jackson.enabled"
@@ -42,7 +41,7 @@ public object ConfigurationConstants {
     }
 
     public object Quality {
-        private const val QUALITY_PREFIX = "cfg.quality"
+        private const val QUALITY_PREFIX = "quality"
         public const val CHECKSTYLE_ENABLED: String = "$QUALITY_PREFIX.checkstyle.enabled"
         public const val SPOTBUGS_ENABLED: String = "$QUALITY_PREFIX.spotbugs.enabled"
         public const val PMD_ENABLED: String = "$QUALITY_PREFIX.pmd.enabled"
