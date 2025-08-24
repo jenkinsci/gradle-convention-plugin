@@ -18,6 +18,7 @@ package io.github.aaravmahajanofficial.extensions
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
@@ -79,35 +80,37 @@ public open class PluginExtension
                     ),
                 )
 
-        public val pluginDevelopers: ListProperty<DeveloperExtension> =
+        internal val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects.listProperty<DeveloperExtension>().apply {
                 add(objects.newInstance<DeveloperExtension>())
             }
 
-        public val pluginLicenses: ListProperty<LicenseExtension> =
+        internal val pluginLicenses: ListProperty<LicenseExtension> =
             objects.listProperty<LicenseExtension>().apply {
                 add(objects.newInstance<LicenseExtension>())
             }
 
-        public fun developers(configure: DevelopersExtension.() -> Unit) {
-            pluginDevelopers.set(emptyList())
-            DevelopersExtension(
-                objects,
-                pluginDevelopers,
-            ).apply(configure)
+        public val developersExtension: DevelopersExtension by lazy {
+            objects.newInstance<DevelopersExtension>(pluginDevelopers)
+        }
+        public val licensesExtension: LicensesExtension by lazy {
+            objects.newInstance<LicensesExtension>(pluginLicenses)
         }
 
-        public fun licenses(configure: LicensesExtension.() -> Unit) {
+        public fun developers(action: Action<DevelopersExtension>) {
+            pluginDevelopers.set(emptyList())
+            action.execute(developersExtension)
+        }
+
+        public fun licenses(action: Action<LicensesExtension>) {
             pluginLicenses.set(emptyList())
-            LicensesExtension(objects, pluginLicenses).apply(
-                configure,
-            )
+            action.execute(licensesExtension)
         }
 
         public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
         public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
 
-        public fun bom(action: BomExtension.() -> Unit): BomExtension = bom.apply(action)
+        public fun bom(action: Action<BomExtension>): Unit = action.execute(bom)
 
-        public fun quality(action: QualityExtension.() -> Unit): QualityExtension = quality.apply(action)
+        public fun quality(action: Action<QualityExtension>): Unit = action.execute(quality)
     }
