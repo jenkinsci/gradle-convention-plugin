@@ -8,11 +8,11 @@ plugin-publish = "1.3.1"
 # Jenkins
 jenkins-core = "2.524"
 jenkins-stapler = "2010.va_89c7958c1c5"
-jenkins-gradle-jpi2 = "0.55.0"
+jenkins-gradle-jpi2 = "0.55.1"
 
 # Ecosystem BOMs
-jenkins-bom = "5208.vb_69e9d049f68"
-groovy-bom = "4.0.28"
+jenkins-bom = "5294.va_d2e144c80e1"
+groovy-bom = "5.0.0"
 jackson-bom = "2.19.2"
 spring-bom = "6.2.10"
 netty-bom = "4.2.4.Final"
@@ -48,7 +48,7 @@ palantir-java = "2.73.0"
 
 # Testing
 junit = "5.13.4"
-kotest = "6.0.0"
+kotest = "6.0.1"
 mockito = "5.19.0"
 mockk = "1.14.5"
 
