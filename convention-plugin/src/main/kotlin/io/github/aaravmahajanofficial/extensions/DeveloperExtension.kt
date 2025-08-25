@@ -15,9 +15,6 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
-import java.io.File
-import java.net.URI
-import javax.inject.Inject
 import org.eclipse.jgit.lib.RepositoryBuilder
 import org.gradle.api.Action
 import org.gradle.api.file.ProjectLayout
@@ -28,6 +25,9 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
+import java.io.File
+import java.net.URI
+import javax.inject.Inject
 
 public open class DeveloperExtension
     @Inject
