@@ -15,6 +15,9 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
+import java.io.File
+import java.net.URI
+import javax.inject.Inject
 import org.eclipse.jgit.lib.RepositoryBuilder
 import org.gradle.api.Action
 import org.gradle.api.file.ProjectLayout
@@ -25,9 +28,6 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import java.io.File
-import java.net.URI
-import javax.inject.Inject
 
 public open class DeveloperExtension
     @Inject
@@ -57,7 +57,7 @@ public open class DevelopersExtension
         private val developersList: ListProperty<DeveloperExtension>,
     ) {
         public fun developer(action: Action<DeveloperExtension>) {
-            val developer: DeveloperExtension by lazy { objects.newInstance<DeveloperExtension>() }
+            val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
             action.execute(developer)
             developersList.add(developer)
         }

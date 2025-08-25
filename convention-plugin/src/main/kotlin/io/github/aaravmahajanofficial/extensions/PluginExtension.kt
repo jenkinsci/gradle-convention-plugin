@@ -92,12 +92,9 @@ public open class PluginExtension
                 add(objects.newInstance<LicenseExtension>())
             }
 
-        public val developersExtension: DevelopersExtension by lazy {
-            objects.newInstance<DevelopersExtension>(pluginDevelopers)
-        }
-        public val licensesExtension: LicensesExtension by lazy {
-            objects.newInstance<LicensesExtension>(pluginLicenses)
-        }
+        public val developersExtension: DevelopersExtension = objects.newInstance<DevelopersExtension>(pluginDevelopers)
+
+        public val licensesExtension: LicensesExtension = objects.newInstance<LicensesExtension>(pluginLicenses)
 
         public fun developers(action: Action<DevelopersExtension>) {
             pluginDevelopers.set(emptyList())
@@ -109,8 +106,8 @@ public open class PluginExtension
             action.execute(licensesExtension)
         }
 
-        public val bom: BomExtension by lazy { objects.newInstance<BomExtension>(libs) }
-        public val quality: QualityExtension by lazy { objects.newInstance<QualityExtension>(libs) }
+        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
 
         public fun bom(action: Action<BomExtension>): Unit = action.execute(bom)
 

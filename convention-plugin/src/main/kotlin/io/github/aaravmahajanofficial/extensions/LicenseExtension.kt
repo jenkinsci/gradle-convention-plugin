@@ -43,7 +43,7 @@ public open class LicensesExtension
         private val licensesList: ListProperty<LicenseExtension>,
     ) {
         public fun license(action: Action<LicenseExtension>) {
-            val license: LicenseExtension by lazy { objects.newInstance<LicenseExtension>() }
+            val license: LicenseExtension = objects.newInstance<LicenseExtension>()
             action.execute(license)
             licensesList.add(license)
         }
