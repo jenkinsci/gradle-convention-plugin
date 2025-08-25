@@ -49,7 +49,7 @@ palantir-java = "2.73.0"
 # Testing
 junit = "5.13.4"
 junit-launcher = "1.13.4"
-kotest = "6.0.0"
+kotest = "6.0.1"
 
 # Publishing
 maven-gradle-publish-plugin = "0.34.0"
