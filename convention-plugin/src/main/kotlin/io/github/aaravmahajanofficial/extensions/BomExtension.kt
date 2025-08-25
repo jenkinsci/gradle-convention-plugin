@@ -18,6 +18,7 @@ package io.github.aaravmahajanofficial.extensions
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.libraryFromCatalog
+import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
@@ -54,35 +55,35 @@ public open class BomExtension
         public val customBoms: NamedDomainObjectContainer<CustomBomsExtension> =
             objects.domainObjectContainer(CustomBomsExtension::class.java)
 
-        public fun jenkins(action: JenkinsBomExtension.() -> Unit): JenkinsBomExtension = jenkins.apply(action)
+        public fun jenkins(action: Action<JenkinsBomExtension>): Unit = action.execute(jenkins)
 
-        public fun groovy(action: GroovyBomExtension.() -> Unit): GroovyBomExtension = groovy.apply(action)
+        public fun groovy(action: Action<GroovyBomExtension>): Unit = action.execute(groovy)
 
-        public fun jackson(action: JacksonBomExtension.() -> Unit): JacksonBomExtension = jackson.apply(action)
+        public fun jackson(action: Action<JacksonBomExtension>): Unit = action.execute(jackson)
 
-        public fun spring(action: SpringBomExtension.() -> Unit): SpringBomExtension = spring.apply(action)
+        public fun spring(action: Action<SpringBomExtension>): Unit = action.execute(spring)
 
-        public fun netty(action: NettyBomExtension.() -> Unit): NettyBomExtension = netty.apply(action)
+        public fun netty(action: Action<NettyBomExtension>): Unit = action.execute(netty)
 
-        public fun slf4j(action: SLF4JBomExtension.() -> Unit): SLF4JBomExtension = slf4j.apply(action)
+        public fun slf4j(action: Action<SLF4JBomExtension>): Unit = action.execute(slf4j)
 
-        public fun jetty(action: JettyBomExtension.() -> Unit): JettyBomExtension = jetty.apply(action)
+        public fun jetty(action: Action<JettyBomExtension>): Unit = action.execute(jetty)
 
-        public fun guava(action: GuavaBomExtension.() -> Unit): GuavaBomExtension = guava.apply(action)
+        public fun guava(action: Action<GuavaBomExtension>): Unit = action.execute(guava)
 
-        public fun log4j(action: Log4JBomExtension.() -> Unit): Log4JBomExtension = log4j.apply(action)
+        public fun log4j(action: Action<Log4JBomExtension>): Unit = action.execute(log4j)
 
-        public fun vertx(action: VertxBomExtension.() -> Unit): VertxBomExtension = vertx.apply(action)
+        public fun vertx(action: Action<VertxBomExtension>): Unit = action.execute(vertx)
 
-        public fun junit(action: JUnitBomExtension.() -> Unit): JUnitBomExtension = junit.apply(action)
+        public fun junit(action: Action<JUnitBomExtension>): Unit = action.execute(junit)
 
-        public fun mockito(action: MockitoBomExtension.() -> Unit): MockitoBomExtension = mockito.apply(action)
+        public fun mockito(action: Action<MockitoBomExtension>): Unit = action.execute(mockito)
 
-        public fun testContainers(action: TestcontainersBomExtension.() -> Unit): TestcontainersBomExtension = testContainers.apply(action)
+        public fun spock(action: Action<SpockBomExtension>): Unit = action.execute(spock)
 
-        public fun customBoms(
-            action: NamedDomainObjectContainer<CustomBomsExtension>.() -> Unit,
-        ): NamedDomainObjectContainer<CustomBomsExtension> = customBoms.apply(action)
+        public fun testContainers(action: Action<TestcontainersBomExtension>): Unit = action.execute(testContainers)
+
+        public fun customBoms(action: Action<NamedDomainObjectContainer<CustomBomsExtension>>): Unit = action.execute(customBoms)
     }
 
 public open class JenkinsBomExtension

@@ -95,10 +95,7 @@ class PluginApplicationIntegrationTest {
                 .withSettingsGradle()
                 .withGradleProperties(
                     mapOf(
-                        "cfg.plg.artifactId" to "property-plugin-test",
-                        "cfg.plg.jenkinsVersion" to "2.520",
-                        "cfg.quality.jacoco.enabled" to "enabled",
-                        "cfg.bom.jenkins" to "enabled",
+                        "jenkinsVersion" to "2.520",
                     ),
                 ).withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()
@@ -106,7 +103,7 @@ class PluginApplicationIntegrationTest {
         val result = builder.runGradle("jenkinsConventionPluginInfo")
 
         result.task(":jenkinsConventionPluginInfo")?.outcome shouldBe TaskOutcome.SUCCESS
-        result.output shouldContain "test-plugin"
+        result.output shouldContain "jenkinsVersion: 2.520"
     }
 
     @Test

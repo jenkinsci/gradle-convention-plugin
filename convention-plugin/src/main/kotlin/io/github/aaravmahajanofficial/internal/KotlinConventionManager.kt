@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
@@ -26,48 +27,47 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-private const val JAVA_VERSION = 21
-
 public class KotlinConventionManager(
     private val project: Project,
 ) {
     private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     public fun configure() {
-        project.pluginManager.apply("org.jetbrains.kotlin.jvm")
-
-        project.configure<KotlinJvmProjectExtension> {
-            jvmToolchain(JAVA_VERSION)
-//            explicitApi()
-        }
-
-        val kotlinVersion =
-            libs
-                .findVersion("kotlin")
-                .get()
-                .requiredVersion
-                .split(".")
-                .let { "${it[0]}.${it[1]}" }
-
-        project.tasks.withType<KotlinCompile>().configureEach { t ->
-            t.compilerOptions {
-                languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                jvmTarget.set(JvmTarget.JVM_21)
-                allWarningsAsErrors.set(true)
-                freeCompilerArgs.addAll(
-                    "-Xjsr305=strict",
-                    "-opt-in=kotlin.RequiresOptIn",
-                )
+        project.plugins.withId("org.jetbrains.kotlin.jvm") {
+            project.configure<KotlinJvmProjectExtension> {
+                jvmToolchain(JAVA_VERSION)
+//              explicitApi()
             }
-        }
 
-        project.dependencies {
-            add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-            add("implementation", libs.findLibrary("kotlin-stdlib").get())
-            add("implementation", libs.findLibrary("kotlin-reflect").get())
+            val kotlinVersion =
+                libs
+                    .findVersion("kotlin")
+                    .get()
+                    .requiredVersion
+                    .split(".")
+                    .let { "${it[0]}.${it[1]}" }
 
-            add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
+            project.tasks.withType<KotlinCompile>().configureEach { t ->
+                t.compilerOptions {
+                    languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    jvmTarget.set(JvmTarget.JVM_21)
+                    allWarningsAsErrors.set(true)
+                    progressiveMode.set(true)
+                    freeCompilerArgs.addAll(
+                        "-Xjsr305=strict",
+                        "-opt-in=kotlin.RequiresOptIn",
+                    )
+                }
+            }
+
+            project.dependencies {
+                add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
+                add("implementation", libs.findLibrary("kotlin-stdlib").get())
+                add("implementation", libs.findLibrary("kotlin-reflect").get())
+
+                add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
+            }
         }
     }
 }

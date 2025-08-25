@@ -224,15 +224,18 @@ public class QualityManager(
         project.configure<JacocoPluginExtension> {
             toolVersion = quality.jacoco.toolVersion.get()
         }
+
+        val jacocoReportTasks = project.tasks.withType<JacocoReport>()
+        val jacocoVerificationTasks = project.tasks.withType<JacocoCoverageVerification>()
+
         project.tasks.withType<Test>().configureEach { t ->
-            t.finalizedBy("jacocoTestReport")
+            t.finalizedBy(jacocoReportTasks)
         }
-        project.tasks.withType<JacocoReport>().configureEach { jacocoReport ->
-            jacocoReport.dependsOn(project.tasks.withType<Test>())
+
+        jacocoReportTasks.configureEach { jacocoReport ->
             jacocoReport.reports { t ->
                 t.xml.required.set(true)
                 t.html.required.set(true)
-                t.csv.required.set(true)
             }
 
             val allExcludes = quality.jacoco.excludes.get()
@@ -247,8 +250,9 @@ public class QualityManager(
                     }
             jacocoReport.classDirectories.setFrom(classDirectories)
         }
-        project.tasks.withType<JacocoCoverageVerification>().configureEach { t ->
-            t.dependsOn("jacocoTestReport")
+
+        jacocoVerificationTasks.configureEach { t ->
+            t.dependsOn(project.tasks.withType<JacocoReport>())
             t.violationRules { rules ->
                 rules.rule { rule ->
                     rule.excludes = quality.jacoco.excludes.get()

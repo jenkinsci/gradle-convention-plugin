@@ -228,9 +228,9 @@ class BomManagementIntegrationTest {
                 .withSettingsGradle()
                 .withGradleProperties(
                     mapOf(
-                        "cfg.bom.jenkins.enabled" to "false",
-                        "cfg.bom.jackson.enabled" to "false",
-                        "cfg.bom.spring.enabled" to "false",
+                        "bom.jenkins.enabled" to "false",
+                        "bom.jackson.enabled" to "false",
+                        "bom.spring.enabled" to "false",
                     ),
                 ).withBuildGradle(basicPluginConfiguration())
                 .withJavaSource()

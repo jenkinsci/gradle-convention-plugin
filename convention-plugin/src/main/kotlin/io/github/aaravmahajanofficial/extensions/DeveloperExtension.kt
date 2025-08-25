@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial.extensions
 
 import org.eclipse.jgit.lib.RepositoryBuilder
+import org.gradle.api.Action
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -55,8 +56,10 @@ public open class DevelopersExtension
         private val objects: ObjectFactory,
         private val developersList: ListProperty<DeveloperExtension>,
     ) {
-        public fun developer(action: DeveloperExtension.() -> Unit) {
-            developersList.add(objects.newInstance<DeveloperExtension>().apply(action))
+        public fun developer(action: Action<DeveloperExtension>) {
+            val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
+            action.execute(developer)
+            developersList.add(developer)
         }
     }
 

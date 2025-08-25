@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
+import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -41,7 +42,9 @@ public open class LicensesExtension
         private val objects: ObjectFactory,
         private val licensesList: ListProperty<LicenseExtension>,
     ) {
-        public fun license(action: LicenseExtension.() -> Unit) {
-            licensesList.add(objects.newInstance<LicenseExtension>().apply(action))
+        public fun license(action: Action<LicenseExtension>) {
+            val license: LicenseExtension = objects.newInstance<LicenseExtension>()
+            action.execute(license)
+            licensesList.add(license)
         }
     }

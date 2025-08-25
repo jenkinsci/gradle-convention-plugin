@@ -18,7 +18,6 @@ package io.github.aaravmahajanofficial.constants
 public object ConfigurationConstants {
     public object Plugin {
         public const val JENKINS_VERSION: String = "jenkinsVersion"
-        public const val ARTIFACT_ID: String = "artifactId"
         public const val TEST_JVM_ARGS: String = "test-jvm-args"
     }
 

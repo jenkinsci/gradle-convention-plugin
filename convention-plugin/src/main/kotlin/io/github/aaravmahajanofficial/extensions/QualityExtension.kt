@@ -20,6 +20,7 @@ import com.github.spotbugs.snom.Effort
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -52,7 +53,7 @@ public open class QualityExtension
         public val jacoco: JacocoExtension = objects.newInstance(libs)
         public val detekt: DetektExtension = objects.newInstance(libs)
         public val spotless: SpotlessExtension = objects.newInstance(libs)
-        public val owaspDependencyCheck: OwaspDependencyCheckExtension = objects.newInstance()
+        public val owaspDependencyCheck: OwaspDepCheckExtension = objects.newInstance()
         public val versions: GradleVersionExtension = objects.newInstance()
         public val pitest: PitestExtension = objects.newInstance(libs)
         public val kover: KoverExtension = objects.newInstance()
@@ -60,33 +61,33 @@ public open class QualityExtension
         public val dokka: DokkaExtension = objects.newInstance()
         public val cpd: CpdExtension = objects.newInstance(libs)
 
-        public fun checkstyle(action: CheckstyleExtension.() -> Unit): Unit = action(checkstyle)
+        public fun checkstyle(action: Action<CheckstyleExtension>): Unit = action.execute(checkstyle)
 
-        public fun codenarc(action: CodenarcExtension.() -> Unit): Unit = action(codenarc)
+        public fun codenarc(action: Action<CodenarcExtension>): Unit = action.execute(codenarc)
 
-        public fun spotbugs(action: SpotbugsExtension.() -> Unit): Unit = action(spotbugs)
+        public fun spotbugs(action: Action<SpotbugsExtension>): Unit = action.execute(spotbugs)
 
-        public fun pmd(action: PmdExtension.() -> Unit): Unit = action(pmd)
+        public fun pmd(action: Action<PmdExtension>): Unit = action.execute(pmd)
 
-        public fun jacoco(action: JacocoExtension.() -> Unit): Unit = action(jacoco)
+        public fun jacoco(action: Action<JacocoExtension>): Unit = action.execute(jacoco)
 
-        public fun detekt(action: DetektExtension.() -> Unit): Unit = action(detekt)
+        public fun detekt(action: Action<DetektExtension>): Unit = action.execute(detekt)
 
-        public fun spotless(action: SpotlessExtension.() -> Unit): Unit = action(spotless)
+        public fun spotless(action: Action<SpotlessExtension>): Unit = action.execute(spotless)
 
-        public fun owaspDependencyCheck(action: OwaspDependencyCheckExtension.() -> Unit): Unit = action(owaspDependencyCheck)
+        public fun owaspDepCheck(action: Action<OwaspDepCheckExtension>): Unit = action.execute(owaspDependencyCheck)
 
-        public fun pitest(action: PitestExtension.() -> Unit): Unit = action(pitest)
+        public fun pitest(action: Action<PitestExtension>): Unit = action.execute(pitest)
 
-        public fun versions(action: GradleVersionExtension.() -> Unit): Unit = action(versions)
+        public fun versions(action: Action<GradleVersionExtension>): Unit = action.execute(versions)
 
-        public fun kover(action: KoverExtension.() -> Unit): Unit = action(kover)
+        public fun kover(action: Action<KoverExtension>): Unit = action.execute(kover)
 
-        public fun eslint(action: EslintExtension.() -> Unit): Unit = action(eslint)
+        public fun eslint(action: Action<EslintExtension>): Unit = action.execute(eslint)
 
-        public fun dokka(action: DokkaExtension.() -> Unit): Unit = action(dokka)
+        public fun dokka(action: Action<DokkaExtension>): Unit = action.execute(dokka)
 
-        public fun cpd(action: CpdExtension.() -> Unit): Unit = action(cpd)
+        public fun cpd(action: Action<CpdExtension>): Unit = action.execute(cpd)
 
         public companion object {
             public const val DEFAULT_CODE_COVERAGE_THRESHOLD: Double = 0.8
@@ -247,7 +248,7 @@ public open class SpotlessExtension
             )
     }
 
-public open class OwaspDependencyCheckExtension
+public open class OwaspDepCheckExtension
     @Inject
     constructor(
         objects: ObjectFactory,
