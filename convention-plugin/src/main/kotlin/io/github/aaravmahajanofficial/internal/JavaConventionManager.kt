@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -22,8 +23,6 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
-
-private const val JAVA_VERSION = 21
 
 public class JavaConventionManager(
     private val project: Project,

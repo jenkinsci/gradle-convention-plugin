@@ -15,11 +15,10 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.kotlin.dsl.withType
-
-private const val JAVA_VERSION = 21
 
 public class GroovyConventionManager(
     private val project: Project,

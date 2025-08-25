@@ -81,7 +81,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
-                implementation(libs.kotest.gradle.plugin)
+                implementation(libs.kotest.assertions.core)
             }
 
             targets.configureEach {

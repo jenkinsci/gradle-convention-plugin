@@ -19,5 +19,6 @@ public object PluginMetadata {
     public const val EXTENSION_NAME: String = "jenkinsConvention"
     public const val QUALITY_EXTENSION: String = "quality"
     public const val BOM_EXTENSION: String = "bom"
+    public const val JAVA_VERSION: Int = 21
     public const val MIN_GRADLE_VERSION: String = "9.0"
 }

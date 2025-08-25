@@ -55,7 +55,9 @@ public open class PluginExtension
             objects.property<String>().convention(projectName.removePrefix("jenkins-").removeSuffix("-plugin"))
 
         public val gitHub: Property<URI> =
-            objects.property<URI>().convention(artifactId.map { id -> URI.create("https://github.com/jenkinsci/$id") })
+            objects.property<URI>().convention(
+                artifactId.map { id -> URI.create("https://github.com/jenkinsci/$id") },
+            )
 
         public val homePage: Property<URI> = objects.property<URI>().convention(gitHub)
 

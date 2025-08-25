@@ -48,8 +48,9 @@ palantir-java = "2.73.0"
 
 # Testing
 junit = "5.13.4"
-junit-launcher = "1.13.4"
 kotest = "6.0.0"
+mockito = "5.19.0"
+mockk = "1.14.5"
 
 # Publishing
 maven-gradle-publish-plugin = "0.34.0"
@@ -109,9 +110,11 @@ codenarc-gradle-plugin = { module = "org.codenarc:CodeNarc", version.ref = "code
 palantir-java-format = { module = "com.palantir.javaformat:gradle-palantir-java-format", version.ref = "palantir-java" }
 
 # Testing
-junit-gradle-plugin = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-junit-launcher-gradle-plugin = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-launcher" }
-kotest-gradle-plugin = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+mockk-kotlin = { module = "io.mockk:mockk", version.ref = "mockk"}
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito"}
+mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito"}
 
 # Miscellaneous
 jgit-gradle-plugin = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
