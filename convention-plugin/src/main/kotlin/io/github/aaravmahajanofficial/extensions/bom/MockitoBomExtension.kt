@@ -43,4 +43,9 @@ public open class MockitoBomExtension
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "mockito-bom-coordinates")
         public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun testOnly(value: Boolean): Unit = testOnly.set(value)
     }

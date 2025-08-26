@@ -30,18 +30,18 @@ public open class QualityExtension
     ) {
         public val checkstyle: CheckstyleExtension = objects.newInstance(libs)
         public val codenarc: CodenarcExtension = objects.newInstance(libs)
-        public val spotbugs: SpotbugsExtension = objects.newInstance(libs)
+        public val spotbugs: SpotbugsExtension = objects.newInstance()
         public val pmd: PmdExtension = objects.newInstance(libs)
         public val jacoco: JacocoExtension = objects.newInstance(libs)
         public val detekt: DetektExtension = objects.newInstance(libs)
-        public val spotless: SpotlessExtension = objects.newInstance(libs)
+        public val spotless: SpotlessExtension = objects.newInstance()
         public val owaspDependencyCheck: OwaspDepCheckExtension = objects.newInstance()
         public val versions: GradleVersionExtension = objects.newInstance()
         public val pitest: PitestExtension = objects.newInstance(libs)
         public val kover: KoverExtension = objects.newInstance()
         public val eslint: EslintExtension = objects.newInstance()
         public val dokka: DokkaExtension = objects.newInstance()
-        public val cpd: CpdExtension = objects.newInstance(libs)
+        public val cpd: CpdExtension = objects.newInstance()
 
         public fun checkstyle(action: Action<CheckstyleExtension>): Unit = action.execute(checkstyle)
 

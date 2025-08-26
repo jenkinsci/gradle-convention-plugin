@@ -29,4 +29,11 @@ public open class CustomBomExtension
         public val coordinates: Property<String> = objects.property<String>()
         public val version: Property<String> = objects.property<String>()
         public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+
+        // Groovy DSL setter methods
+        public fun coordinates(value: String): Unit = coordinates.set(value)
+
+        public fun version(value: String): Unit = version.set(value)
+
+        public fun testOnly(value: Boolean): Unit = testOnly.set(value)
     }

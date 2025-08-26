@@ -41,4 +41,9 @@ public open class GroovyBomExtension
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "groovy-bom-coordinates")
         public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(false)
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun testOnly(value: Boolean): Unit = testOnly.set(value)
     }
