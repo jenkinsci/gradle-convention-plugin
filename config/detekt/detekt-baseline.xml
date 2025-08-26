@@ -4,5 +4,6 @@
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:QualityManager.kt$QualityManager$private fun configureCheckTask()</ID>
     <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
+    <ID>TooManyFunctions:PluginExtension.kt$PluginExtension</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -41,6 +41,7 @@ public object ConfigurationConstants {
 
     public object Quality {
         private const val QUALITY_PREFIX = "quality"
+        public const val ENABLE_QUALITY_TOOLS: String = "$QUALITY_PREFIX.enabled"
         public const val CHECKSTYLE_ENABLED: String = "$QUALITY_PREFIX.checkstyle.enabled"
         public const val SPOTBUGS_ENABLED: String = "$QUALITY_PREFIX.spotbugs.enabled"
         public const val PMD_ENABLED: String = "$QUALITY_PREFIX.pmd.enabled"

@@ -50,11 +50,7 @@ public class JpiPluginManager(
     private fun bridgeExtensionProperties() =
         with(jpiExtension) {
             pluginId.convention(pluginExtension.artifactId)
-            humanReadableName.convention(
-                pluginExtension.artifactId.map { id ->
-                    id.split("-").joinToString(" ") { part -> part.replaceFirstChar { it.titlecase() } }
-                },
-            )
+            humanReadableName.convention(pluginExtension.displayName)
             homePage.convention(pluginExtension.homePage)
             jenkinsVersion.convention(pluginExtension.jenkinsVersion)
             minimumJenkinsCoreVersion.convention(jenkinsVersion)
@@ -69,6 +65,7 @@ public class JpiPluginManager(
             incrementalsRepoUrl.convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
             testJvmArguments.convention(pluginExtension.testJvmArguments)
             requireEscapeByDefaultInJelly.convention(true)
+            configureRepositories = false
 
             pluginDevelopers.set(
                 pluginExtension.pluginDevelopers.map { developers ->
@@ -79,7 +76,7 @@ public class JpiPluginManager(
                             email.set(dev.email)
                             url.set(dev.website.get().toString())
                             organization.set(dev.organization)
-                            organizationUrl.set(dev.organizationUrl)
+                            organizationUrl.set(dev.organizationUrl.get().toString())
                             roles.set(dev.roles)
                             timezone.set(dev.timezone)
                         }

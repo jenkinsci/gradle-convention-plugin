@@ -35,7 +35,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
         with(project) {
             GradleVersionUtils.verifyGradleVersion()
 
-            project.group = "org.jenkins-ci.plugins"
+            project.group = "io.jenkins.plugins"
             project.description = "A Jenkins Plugin"
             project.version = "1.0.0-SNAPSHOT"
 

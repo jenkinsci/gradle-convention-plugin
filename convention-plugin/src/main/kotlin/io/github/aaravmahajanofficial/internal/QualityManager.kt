@@ -31,7 +31,10 @@ import de.aaschmid.gradle.plugins.cpd.CpdExtension
 import de.aaschmid.gradle.plugins.cpd.CpdPlugin
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
-import io.github.aaravmahajanofficial.extensions.QualityExtension
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.ENABLE_QUALITY_TOOLS
+import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
+import io.github.aaravmahajanofficial.extensions.quality.excludeList
+import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
@@ -43,6 +46,7 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.attributes.LibraryElements
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.RegularFile
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.plugins.quality.CheckstylePlugin
@@ -57,7 +61,9 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.testing.jacoco.plugins.JacocoPlugin
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
@@ -73,6 +79,10 @@ public class QualityManager(
     private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     public fun apply() {
+        if (!gradleProperty(project.providers, ENABLE_QUALITY_TOOLS, String::toBoolean).getOrElse(true)) {
+            return
+        }
+
         configureSpotless()
         configureCheckstyle()
         configureCodenarc()
@@ -96,7 +106,7 @@ public class QualityManager(
         project.pluginManager.apply(CheckstylePlugin::class.java)
 
         project.configure<CheckstyleExtension> {
-            toolVersion = quality.checkstyle.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "checkstyle")
             configFile = resolveConfigFile("checkstyle", "checkstyle.xml").asFile
             isIgnoreFailures = !quality.checkstyle.failOnViolation.get()
 
@@ -106,12 +116,18 @@ public class QualityManager(
             }
         }
         project.tasks.withType<Checkstyle>().configureEach { task ->
-            task.group = "Verification"
+            task.group = LifecycleBasePlugin.VERIFICATION_GROUP
             task.description = "Runs Checkstyle."
 
-            task.source = project.fileTree(quality.checkstyle.source)
+            val javaSources =
+                project
+                    .the<JavaPluginExtension>()
+                    .sourceSets
+                    .getByName("main")
+                    .allSource
+            task.source = javaSources.plus(quality.checkstyle.source.get()).asFileTree
             task.include(quality.checkstyle.include.get())
-            task.exclude(quality.checkstyle.exclude.get())
+            task.exclude(excludeList.plus(quality.checkstyle.exclude.get()))
 
             task.reports {
                 it.xml.required.set(true)
@@ -127,11 +143,11 @@ public class QualityManager(
         project.pluginManager.apply(CodeNarcPlugin::class.java)
 
         project.configure<CodeNarcExtension> {
-            toolVersion = quality.codenarc.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "codenarc")
             isIgnoreFailures = !quality.codenarc.failOnViolation.get()
         }
         project.tasks.withType<CodeNarc>().configureEach { task ->
-            task.group = "Verification"
+            task.group = LifecycleBasePlugin.VERIFICATION_GROUP
             task.description = "Runs Codenarc."
             task.reports {
                 it.xml.required.set(true)
@@ -140,28 +156,25 @@ public class QualityManager(
             task.configFile =
                 resolveConfigFile(
                     toolName = "codenarc",
-                    if (task.name.contains("Test", ignoreCase = true)) {
-                        "rules-test.groovy"
-                    } else {
-                        "rules.groovy"
-                    },
+                    fileName =
+                        if (task.name.contains("Test", ignoreCase = true)) {
+                            "rules-test.groovy"
+                        } else {
+                            "rules.groovy"
+                        },
                 ).asFile
-
-            val groovyDirs =
-                listOf(
-                    "src/main/groovy",
-                    "src/main/resources",
-                ) + quality.codenarc.source
-
-            val uniqueGroovyDirs = groovyDirs.distinct()
 
             task.source =
                 project
                     .files(
-                        uniqueGroovyDirs.map { dir ->
-                            project.fileTree(dir) { it.include("**/*.groovy") }
-                        },
-                    ).asFileTree
+                        "src/main/groovy",
+                        "src/test/groovy",
+                        "src/main/resources",
+                    ).plus(quality.codenarc.source.get())
+                    .asFileTree
+                    .matching {
+                        it.include("**/*.groovy")
+                    }
         }
     }
 
@@ -196,18 +209,18 @@ public class QualityManager(
         project.pluginManager.apply(PmdPlugin::class.java)
 
         project.configure<PmdExtension> {
-            toolVersion = quality.pmd.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "pmd")
             ruleSetFiles = project.files(resolveConfigFile("pmd", "pmd-ruleset.xml"))
             isConsoleOutput = quality.pmd.consoleOutput.get()
             isIgnoreFailures = !quality.pmd.failOnViolation.get()
         }
         project.tasks.withType<Pmd>().configureEach { task ->
-            task.group = "Verification"
-            task.description = "Run PMD."
+            task.group = LifecycleBasePlugin.VERIFICATION_GROUP
+            task.description = "Runs PMD."
 
-            task.source = project.fileTree(quality.pmd.source)
+            task.source = project.files("src/main/java").plus(quality.pmd.source.get()).asFileTree
             task.include(quality.pmd.include.get())
-            task.exclude(quality.pmd.exclude.get())
+            task.exclude(excludeList.plus(quality.pmd.exclude.get()))
 
             task.reports { reports ->
                 reports.xml.required.set(true)
@@ -222,7 +235,7 @@ public class QualityManager(
         project.pluginManager.apply(JacocoPlugin::class.java)
 
         project.configure<JacocoPluginExtension> {
-            toolVersion = quality.jacoco.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "jacoco")
         }
 
         val jacocoReportTasks = project.tasks.withType<JacocoReport>()
@@ -255,7 +268,16 @@ public class QualityManager(
             t.dependsOn(project.tasks.withType<JacocoReport>())
             t.violationRules { rules ->
                 rules.rule { rule ->
-                    rule.excludes = quality.jacoco.excludes.get()
+                    rule.excludes =
+                        listOf(
+                            "**/generated/**",
+                            "**/target/**",
+                            "**/build/**",
+                            "**/Messages.class",
+                            "**/*Descriptor.class",
+                            "**/jelly/**",
+                            "**/tags/**",
+                        ).plus(quality.jacoco.excludes.get())
                     rule.limit {
                         it.counter = "LINE"
                         it.value = "COVEREDRATIO"
@@ -275,7 +297,7 @@ public class QualityManager(
         project.pluginManager.apply(DetektPlugin::class.java)
 
         project.configure<DetektExtension> {
-            toolVersion = quality.detekt.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "detekt")
             autoCorrect = quality.detekt.autoCorrect.get()
             buildUponDefaultConfig = true
             isIgnoreFailures = !quality.detekt.failOnViolation.get()
@@ -454,7 +476,7 @@ public class QualityManager(
 
         project.configure<PitestPluginExtension> {
             threads.set(quality.pitest.threads)
-            pitestVersion.set(quality.pitest.pitVersion.get())
+            pitestVersion.set(versionFromCatalogOrFail(libs, "pit"))
             targetClasses.set(quality.pitest.targetClasses)
             excludedClasses.set(quality.pitest.excludedClasses)
             mutationThreshold.set(quality.pitest.mutationThreshold)
@@ -511,7 +533,7 @@ public class QualityManager(
         project.pluginManager.apply(NodePlugin::class.java)
 
         project.tasks.register<NpmTask>("eslint") {
-            group = "Verification"
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
             description = "Run ESLint."
 
             dependsOn("npmInstall")
@@ -554,15 +576,24 @@ public class QualityManager(
         project.pluginManager.apply(CpdPlugin::class.java)
 
         project.configure<CpdExtension> {
-            toolVersion = quality.pmd.toolVersion.get()
+            toolVersion = versionFromCatalogOrFail(libs, "cpd")
             isIgnoreFailures = !quality.cpd.failOnViolation.get()
             minimumTokenCount = quality.cpd.minimumTokenCount.get()
         }
         project.tasks.withType<Cpd>().configureEach { task ->
-            task.group = "Verification"
+            task.group = LifecycleBasePlugin.VERIFICATION_GROUP
             task.description = "Runs CPD."
 
-            task.source = project.fileTree(quality.cpd.source)
+            task.source =
+                project
+                    .files(
+                        "src/main/java",
+                        "src/main/groovy",
+                    ).plus(quality.cpd.source.get())
+                    .asFileTree
+                    .matching {
+                        it.include("**/*.java", "**/*.groovy")
+                    }
 
             task.reports {
                 it.xml.required.set(true)

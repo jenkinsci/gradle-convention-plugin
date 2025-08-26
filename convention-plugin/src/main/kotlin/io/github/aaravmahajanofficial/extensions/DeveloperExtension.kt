@@ -44,20 +44,40 @@ public open class DeveloperExtension
         public val email: Property<String> =
             objects.property<String>().convention(gitUser.email ?: "$userName@users.noreply.github.com")
         public val website: Property<URI> = objects.property<URI>().convention(URI.create("https://github.com"))
-        public val organization: Property<String> = objects.property<String>().convention("")
-        public val organizationUrl: Property<String> = objects.property<String>().convention("https://github.com")
+        public val organization: Property<String> = objects.property<String>().convention("io.jenkins.plugins")
+        public val organizationUrl: Property<URI> = objects.property<URI>().convention(URI.create("https://github.com"))
         public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("developer"))
         public val timezone: Property<String> = objects.property<String>().convention("UTC")
+
+        // Groovy DSL setter methods
+        public fun id(value: String): Unit = id.set(value)
+
+        public fun name(value: String): Unit = name.set(value)
+
+        public fun email(value: String): Unit = email.set(value)
+
+        public fun website(value: URI): Unit = website.set(value)
+
+        public fun organization(value: String): Unit = organization.set(value)
+
+        public fun organizationUrl(value: URI): Unit = organizationUrl.set(value)
+
+        public fun timeZone(value: String): Unit = timezone.set(value)
+
+        public fun roles(vararg values: String): Unit = roles.set(values.toSet())
+
+        public fun roles(values: Collection<String>): Unit = roles.set(values.toSet())
     }
 
 public open class DevelopersExtension
     @Inject
     constructor(
-        private val objects: ObjectFactory,
+        objects: ObjectFactory,
         private val developersList: ListProperty<DeveloperExtension>,
     ) {
+        internal val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
+
         public fun developer(action: Action<DeveloperExtension>) {
-            val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
             action.execute(developer)
             developersList.add(developer)
         }
