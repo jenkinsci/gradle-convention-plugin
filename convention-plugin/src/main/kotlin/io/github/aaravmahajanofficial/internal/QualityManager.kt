@@ -589,7 +589,7 @@ public class QualityManager(
                     .files(
                         "src/main/java",
                         "src/main/groovy",
-                    ).plus(quality.codenarc.source.get())
+                    ).plus(quality.cpd.source.get())
                     .asFileTree
                     .matching {
                         it.include("**/*.java", "**/*.groovy")
