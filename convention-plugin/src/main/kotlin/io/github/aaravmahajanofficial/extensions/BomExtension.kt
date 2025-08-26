@@ -15,9 +15,23 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
-import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.GROOVY_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.GUAVA_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.JACKSON_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.JENKINS_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.JETTY_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.JUNIT_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.LOG4J_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.MOCKITO_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.NETTY_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.SLF4J_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.SPOCK_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.SPRING_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.TESTCONTAINERS_BOM
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Bom.VERTX_BOM
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.libraryFromCatalog
+import javax.inject.Inject
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
@@ -28,7 +42,6 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class BomExtension
@@ -83,7 +96,9 @@ public open class BomExtension
 
         public fun testContainers(action: Action<TestcontainersBomExtension>): Unit = action.execute(testContainers)
 
-        public fun customBoms(action: Action<NamedDomainObjectContainer<CustomBomsExtension>>): Unit = action.execute(customBoms)
+        public fun customBoms(action: Action<NamedDomainObjectContainer<CustomBomsExtension>>) {
+            action.execute(customBoms)
+        }
     }
 
 public open class JenkinsBomExtension
@@ -95,11 +110,7 @@ public open class JenkinsBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.JENKINS_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, JENKINS_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "jenkins-bom-coordinates")
@@ -115,11 +126,7 @@ public open class GroovyBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.GROOVY_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, GROOVY_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "groovy-bom-coordinates")
@@ -135,11 +142,7 @@ public open class JacksonBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.JACKSON_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, JACKSON_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "jackson-bom-coordinates")
@@ -155,11 +158,7 @@ public open class SpringBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.SPRING_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, SPRING_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "spring-bom-coordinates")
@@ -175,11 +174,7 @@ public open class NettyBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.NETTY_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, NETTY_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "netty-bom-coordinates")
@@ -195,11 +190,7 @@ public open class SLF4JBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.SLF4J_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, SLF4J_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(
@@ -218,11 +209,7 @@ public open class JettyBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.JETTY_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, JETTY_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "jetty-bom-coordinates")
@@ -238,11 +225,7 @@ public open class GuavaBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.GUAVA_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, GUAVA_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "guava-bom-coordinates")
@@ -258,11 +241,7 @@ public open class Log4JBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.LOG4J_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, LOG4J_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "log4j-bom-coordinates")
@@ -278,11 +257,7 @@ public open class VertxBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.VERTX_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, VERTX_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "vertx-bom-coordinates")
@@ -298,11 +273,7 @@ public open class JUnitBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.JUNIT_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, JUNIT_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "junit-bom-coordinates")
@@ -320,7 +291,7 @@ public open class MockitoBomExtension
             objects
                 .property<Boolean>()
                 .convention(
-                    gradleProperty(providers, ConfigurationConstants.Bom.MOCKITO_BOM, String::toBoolean).orElse(true),
+                    gradleProperty(providers, MOCKITO_BOM, String::toBoolean).orElse(true),
                 )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "mockito-bom-coordinates")
@@ -336,11 +307,7 @@ public open class TestcontainersBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.TESTCONTAINERS_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, TESTCONTAINERS_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "testContainers-bom-coordinates")
@@ -356,11 +323,7 @@ public open class SpockBomExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Bom.SPOCK_BOM,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, SPOCK_BOM, String::toBoolean).orElse(true),
             )
         internal val coordinates: Provider<MinimalExternalModuleDependency> =
             libraryFromCatalog(libs, "spock-bom-coordinates")

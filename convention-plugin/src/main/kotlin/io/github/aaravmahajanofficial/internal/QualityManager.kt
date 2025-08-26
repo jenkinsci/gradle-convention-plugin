@@ -31,7 +31,9 @@ import de.aaschmid.gradle.plugins.cpd.CpdExtension
 import de.aaschmid.gradle.plugins.cpd.CpdPlugin
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.ENABLE_QUALITY_TOOLS
 import io.github.aaravmahajanofficial.extensions.QualityExtension
+import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektPlugin
@@ -73,6 +75,15 @@ public class QualityManager(
     private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     public fun apply() {
+        if (!gradleProperty(
+                project.providers,
+                ENABLE_QUALITY_TOOLS,
+                String::toBoolean,
+            ).getOrElse(true)
+        ) {
+            return
+        }
+
         configureSpotless()
         configureCheckstyle()
         configureCodenarc()

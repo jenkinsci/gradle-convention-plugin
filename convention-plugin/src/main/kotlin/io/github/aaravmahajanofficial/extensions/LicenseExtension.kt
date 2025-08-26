@@ -34,6 +34,15 @@ public open class LicenseExtension
             objects.property<URI>().convention(URI.create("https://www.apache.org/licenses/LICENSE-2.0.txt"))
         public val distribution: Property<String> = objects.property<String>().convention("repo")
         public val comments: Property<String> = objects.property<String>().convention("Apache License Version 2.0")
+
+        // Groovy DSL setter methods
+        public fun name(value: String): Unit = name.set(value)
+
+        public fun url(value: URI): Unit = url.set(value)
+
+        public fun distribution(value: String): Unit = distribution.set(value)
+
+        public fun comments(value: String): Unit = comments.set(value)
     }
 
 public open class LicensesExtension

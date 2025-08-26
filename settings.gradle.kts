@@ -16,7 +16,6 @@
 pluginManagement {
     includeBuild("build-logic")
     repositories {
-        mavenCentral()
         gradlePluginPortal()
     }
 }
@@ -27,14 +26,14 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
     repositories {
         mavenCentral()
         gradlePluginPortal()
 
         maven {
-            name = "Jenkins"
+            name = "jenkinsPublic"
             url = uri("https://repo.jenkins-ci.org/public/")
         }
     }
@@ -48,5 +47,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "jenkins-gradle-convention-plugin"
 
-include(":convention-plugin")
-include("version-catalog")
+include("convention-plugin", "version-catalog")

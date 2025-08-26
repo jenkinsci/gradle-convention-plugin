@@ -17,9 +17,23 @@ package io.github.aaravmahajanofficial.extensions
 
 import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
-import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CHECKSTYLE_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CODENARC_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CPD_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.DETEKT_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.DOKKA_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.ESLINT_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.JACOCO_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.KOVER_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.OWASP_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.PITEST_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.PITEST_MUTATION_THRESHOLD
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.PMD_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.SPOTBUGS_ENABLED
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.SPOTLESS_ENABLED
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import javax.inject.Inject
 import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.ConfigurableFileCollection
@@ -36,7 +50,6 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class QualityExtension
@@ -108,11 +121,7 @@ public open class CheckstyleExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.CHECKSTYLE_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, CHECKSTYLE_ENABLED, String::toBoolean).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
@@ -133,11 +142,7 @@ public open class SpotbugsExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.SPOTBUGS_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, SPOTBUGS_ENABLED, String::toBoolean).orElse(true),
             )
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
@@ -152,13 +157,7 @@ public open class PmdExtension
         libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.PMD_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
-            )
+            objects.property<Boolean>().convention(gradleProperty(providers, PMD_ENABLED, String::toBoolean).orElse(true))
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
                 versionFromCatalogOrFail(libs, "pmd"),
@@ -179,11 +178,7 @@ public open class JacocoExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.JACOCO_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, JACOCO_ENABLED, String::toBoolean).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
@@ -216,11 +211,7 @@ public open class DetektExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.DETEKT_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, DETEKT_ENABLED, String::toBoolean).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
@@ -240,11 +231,7 @@ public open class SpotlessExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.SPOTLESS_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, SPOTLESS_ENABLED, String::toBoolean).orElse(true),
             )
     }
 
@@ -257,11 +244,7 @@ public open class OwaspDepCheckExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.OWASP_ENABLED,
-                    String::toBoolean,
-                ).orElse(false),
+                gradleProperty(providers, OWASP_ENABLED, String::toBoolean).orElse(false),
             )
         public val failOnCvss: Property<Float> =
             objects.property<Float>().convention(QualityExtension.DEFAULT_OWASP_THRESHOLD)
@@ -298,11 +281,7 @@ public open class PitestExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.PITEST_ENABLED,
-                    String::toBoolean,
-                ).orElse(false),
+                gradleProperty(providers, PITEST_ENABLED, String::toBoolean).orElse(false),
             )
         public val pitVersion: Property<String> =
             objects.property<String>().convention(
@@ -314,11 +293,8 @@ public open class PitestExtension
             objects.listProperty<String>().convention(listOf("*Test*"))
         public val mutationThreshold: Property<Int> =
             objects.property<Int>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.PITEST_MUTATION_THRESHOLD,
-                    String::toInt,
-                ).orElse(QualityExtension.DEFAULT_MUTATION_THRESHOLD),
+                gradleProperty(providers, PITEST_MUTATION_THRESHOLD, String::toInt)
+                    .orElse(QualityExtension.DEFAULT_MUTATION_THRESHOLD),
             )
         public val outputFormats: ListProperty<String> =
             objects.listProperty<String>().convention(
@@ -344,11 +320,7 @@ public open class KoverExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.KOVER_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, KOVER_ENABLED, String::toBoolean).orElse(true),
             )
         public val coverageThreshold: Property<Int> =
             objects.property<Int>().convention(QualityExtension.DEFAULT_KOVER_THRESHOLD)
@@ -362,11 +334,7 @@ public open class EslintExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.ESLINT_ENABLED,
-                    String::toBoolean,
-                ).orElse(false),
+                gradleProperty(providers, ESLINT_ENABLED, String::toBoolean).orElse(false),
             )
         public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val configFile: RegularFileProperty = objects.fileProperty()
@@ -381,11 +349,7 @@ public open class DokkaExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.DOKKA_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, DOKKA_ENABLED, String::toBoolean).orElse(true),
             )
     }
 
@@ -398,11 +362,7 @@ public open class CodenarcExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.CODENARC_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, CODENARC_ENABLED, String::toBoolean).orElse(true),
             )
         public val toolVersion: Property<String> =
             objects.property<String>().convention(
@@ -421,11 +381,7 @@ public open class CpdExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(
-                    providers,
-                    ConfigurationConstants.Quality.CPD_ENABLED,
-                    String::toBoolean,
-                ).orElse(true),
+                gradleProperty(providers, CPD_ENABLED, String::toBoolean).orElse(true),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
         public val source: Property<String> = objects.property<String>().convention("src")

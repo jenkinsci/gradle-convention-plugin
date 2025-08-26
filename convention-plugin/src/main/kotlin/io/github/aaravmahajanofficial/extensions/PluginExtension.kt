@@ -18,6 +18,8 @@ package io.github.aaravmahajanofficial.extensions
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import java.net.URI
+import javax.inject.Inject
 import org.gradle.api.Action
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.ProjectLayout
@@ -30,8 +32,6 @@ import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import java.net.URI
-import javax.inject.Inject
 
 public open class PluginExtension
     @Inject
@@ -53,6 +53,13 @@ public open class PluginExtension
 
         public val artifactId: Property<String> =
             objects.property<String>().convention(projectName.removePrefix("jenkins-").removeSuffix("-plugin"))
+
+        public val displayName: Property<String> =
+            objects.property<String>().convention(
+                artifactId.map { id ->
+                    id.split("-").joinToString(" ") { part -> part.replaceFirstChar { it.titlecase() } }
+                },
+            )
 
         public val gitHub: Property<URI> =
             objects.property<URI>().convention(
@@ -82,6 +89,29 @@ public open class PluginExtension
                     ),
                 )
 
+        // Groovy DSL setter methods
+        public fun jenkinsVersions(value: String): Unit = jenkinsVersion.set(value)
+
+        public fun artifactId(value: String): Unit = artifactId.set(value)
+
+        public fun displayName(value: String): Unit = displayName.set(value)
+
+        public fun gitHub(value: URI): Unit = gitHub.set(value)
+
+        public fun homePage(value: URI): Unit = homePage.set(value)
+
+        public fun sandboxed(value: Boolean): Unit = sandboxed.set(value)
+
+        public fun usePluginFirstClassLoader(value: Boolean): Unit = usePluginFirstClassLoader.set(value)
+
+        public fun maskedClassesFromCore(vararg values: String): Unit = maskedClassesFromCore.set(values.toSet())
+
+        public fun maskedClassesFromCore(values: Collection<String>): Unit = maskedClassesFromCore.set(values.toSet())
+
+        public fun testJvmArguments(vararg values: String): Unit = testJvmArguments.set(values.toList())
+
+        public fun testJvmArguments(values: Collection<String>): Unit = testJvmArguments.set(values.toList())
+
         internal val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects.listProperty<DeveloperExtension>().apply {
                 add(objects.newInstance<DeveloperExtension>())
@@ -93,8 +123,9 @@ public open class PluginExtension
             }
 
         public val developersExtension: DevelopersExtension = objects.newInstance<DevelopersExtension>(pluginDevelopers)
-
         public val licensesExtension: LicensesExtension = objects.newInstance<LicensesExtension>(pluginLicenses)
+        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
 
         public fun developers(action: Action<DevelopersExtension>) {
             pluginDevelopers.set(emptyList())
@@ -106,10 +137,11 @@ public open class PluginExtension
             action.execute(licensesExtension)
         }
 
-        public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
-        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
+        public fun bom(action: Action<BomExtension>) {
+            action.execute(bom)
+        }
 
-        public fun bom(action: Action<BomExtension>): Unit = action.execute(bom)
-
-        public fun quality(action: Action<QualityExtension>): Unit = action.execute(quality)
+        public fun quality(action: Action<QualityExtension>) {
+            action.execute(quality)
+        }
     }
