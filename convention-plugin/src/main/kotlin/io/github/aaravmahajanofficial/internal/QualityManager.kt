@@ -32,7 +32,7 @@ import de.aaschmid.gradle.plugins.cpd.CpdPlugin
 import info.solidsoft.gradle.pitest.PitestPlugin
 import info.solidsoft.gradle.pitest.PitestPluginExtension
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.ENABLE_QUALITY_TOOLS
-import io.github.aaravmahajanofficial.extensions.QualityExtension
+import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import io.gitlab.arturbosch.detekt.Detekt
