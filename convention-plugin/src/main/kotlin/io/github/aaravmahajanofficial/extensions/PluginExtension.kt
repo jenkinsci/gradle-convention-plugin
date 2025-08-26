@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial.extensions
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.extensions.bom.BomExtension
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail

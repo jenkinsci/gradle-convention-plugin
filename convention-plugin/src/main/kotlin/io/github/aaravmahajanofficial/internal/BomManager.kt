@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal
 
-import io.github.aaravmahajanofficial.extensions.BomExtension
+import io.github.aaravmahajanofficial.extensions.bom.BomExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
