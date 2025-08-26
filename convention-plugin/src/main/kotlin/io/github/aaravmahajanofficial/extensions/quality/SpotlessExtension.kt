@@ -33,4 +33,7 @@ public open class SpotlessExtension
             objects.property<Boolean>().convention(
                 gradleProperty(providers, SPOTLESS_ENABLED, String::toBoolean).orElse(true),
             )
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
     }

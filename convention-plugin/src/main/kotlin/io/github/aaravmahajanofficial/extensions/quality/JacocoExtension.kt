@@ -18,8 +18,6 @@ package io.github.aaravmahajanofficial.extensions.quality
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.JACOCO_ENABLED
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension.Companion.DEFAULT_CODE_COVERAGE_THRESHOLD
 import io.github.aaravmahajanofficial.utils.gradleProperty
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -33,30 +31,23 @@ public open class JacocoExtension
     constructor(
         objects: ObjectFactory,
         providers: ProviderFactory,
-        libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(providers, JACOCO_ENABLED, String::toBoolean).orElse(true),
             )
-        public val toolVersion: Property<String> =
-            objects.property<String>().convention(
-                versionFromCatalogOrFail(libs, "jacoco"),
-            )
         public val minimumCodeCoverage: Property<Double> =
             objects.property<Double>().convention(
                 DEFAULT_CODE_COVERAGE_THRESHOLD,
             )
-        public val excludes: ListProperty<String> =
-            objects.listProperty<String>().convention(
-                listOf(
-                    "**/generated/**",
-                    "**/target/**",
-                    "**/build/**",
-                    "**/Messages.class",
-                    "**/*Descriptor.class",
-                    "**/jelly/**",
-                    "**/tags/**",
-                ),
-            )
+        public val excludes: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun minimumCodeCoverage(value: Double): Unit = minimumCodeCoverage.set(value)
+
+        public fun excludes(vararg values: String): Unit = excludes.set(values.toList())
+
+        public fun excludes(values: Collection<String>): Unit = excludes.set(values.toList())
     }

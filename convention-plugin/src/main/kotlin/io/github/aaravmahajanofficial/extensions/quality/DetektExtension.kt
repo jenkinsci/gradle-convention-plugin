@@ -17,13 +17,10 @@ package io.github.aaravmahajanofficial.extensions.quality
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.DETEKT_ENABLED
 import io.github.aaravmahajanofficial.utils.gradleProperty
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ProviderFactory
-import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
@@ -32,17 +29,13 @@ public open class DetektExtension
     constructor(
         objects: ObjectFactory,
         providers: ProviderFactory,
-        libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(providers, DETEKT_ENABLED, String::toBoolean).orElse(true),
             )
-        public val toolVersion: Property<String> =
-            objects.property<String>().convention(
-                versionFromCatalogOrFail(libs, "detekt"),
-            )
         public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val source: ListProperty<String> = objects.listProperty<String>().convention(listOf("src/main/kotlin"))
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
     }

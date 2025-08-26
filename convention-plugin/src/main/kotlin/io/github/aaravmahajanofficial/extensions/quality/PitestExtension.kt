@@ -20,8 +20,6 @@ import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.P
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension.Companion.DEFAULT_MUTATION_THRESHOLD
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension.Companion.DEFAULT_THREADS
 import io.github.aaravmahajanofficial.utils.gradleProperty
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -37,15 +35,10 @@ public open class PitestExtension
     constructor(
         objects: ObjectFactory,
         providers: ProviderFactory,
-        libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(providers, PITEST_ENABLED, String::toBoolean).orElse(false),
-            )
-        public val pitVersion: Property<String> =
-            objects.property<String>().convention(
-                versionFromCatalogOrFail(libs, "pit"),
             )
         public val threads: Property<Int> = objects.property<Int>().convention(DEFAULT_THREADS)
         public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))

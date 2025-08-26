@@ -16,7 +16,6 @@
 package io.github.aaravmahajanofficial.extensions.quality
 
 import org.gradle.api.Action
-import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.model.ObjectFactory
 import org.gradle.kotlin.dsl.newInstance
 import javax.inject.Inject
@@ -26,18 +25,17 @@ public open class QualityExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        libs: VersionCatalog,
     ) {
-        public val checkstyle: CheckstyleExtension = objects.newInstance(libs)
-        public val codenarc: CodenarcExtension = objects.newInstance(libs)
+        public val checkstyle: CheckstyleExtension = objects.newInstance()
+        public val codenarc: CodenarcExtension = objects.newInstance()
         public val spotbugs: SpotbugsExtension = objects.newInstance()
-        public val pmd: PmdExtension = objects.newInstance(libs)
-        public val jacoco: JacocoExtension = objects.newInstance(libs)
-        public val detekt: DetektExtension = objects.newInstance(libs)
+        public val pmd: PmdExtension = objects.newInstance()
+        public val jacoco: JacocoExtension = objects.newInstance()
+        public val detekt: DetektExtension = objects.newInstance()
         public val spotless: SpotlessExtension = objects.newInstance()
         public val owaspDependencyCheck: OwaspDepCheckExtension = objects.newInstance()
         public val versions: GradleVersionExtension = objects.newInstance()
-        public val pitest: PitestExtension = objects.newInstance(libs)
+        public val pitest: PitestExtension = objects.newInstance()
         public val kover: KoverExtension = objects.newInstance()
         public val eslint: EslintExtension = objects.newInstance()
         public val dokka: DokkaExtension = objects.newInstance()

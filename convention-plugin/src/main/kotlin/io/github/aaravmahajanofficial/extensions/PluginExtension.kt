@@ -127,7 +127,7 @@ public open class PluginExtension
         public val developersExtension: DevelopersExtension = objects.newInstance<DevelopersExtension>(pluginDevelopers)
         public val licensesExtension: LicensesExtension = objects.newInstance<LicensesExtension>(pluginLicenses)
         public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
-        public val quality: QualityExtension = objects.newInstance<QualityExtension>(libs)
+        public val quality: QualityExtension = objects.newInstance<QualityExtension>()
 
         public fun developers(action: Action<DevelopersExtension>) {
             pluginDevelopers.set(emptyList())

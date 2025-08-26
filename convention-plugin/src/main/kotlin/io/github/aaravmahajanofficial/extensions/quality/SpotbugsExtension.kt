@@ -38,4 +38,13 @@ public open class SpotbugsExtension
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
         public val failOnError: Property<Boolean> = objects.property<Boolean>().convention(true)
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun effortLevel(value: Effort): Unit = effortLevel.set(value)
+
+        public fun reportLevel(value: Confidence): Unit = reportLevel.set(value)
+
+        public fun failOnError(value: Boolean): Unit = failOnError.set(value)
     }

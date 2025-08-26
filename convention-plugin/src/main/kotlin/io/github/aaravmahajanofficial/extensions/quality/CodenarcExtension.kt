@@ -17,9 +17,7 @@ package io.github.aaravmahajanofficial.extensions.quality
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CODENARC_ENABLED
 import io.github.aaravmahajanofficial.utils.gradleProperty
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import org.gradle.api.artifacts.VersionCatalog
-import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ProviderFactory
@@ -31,16 +29,19 @@ public open class CodenarcExtension
     constructor(
         objects: ObjectFactory,
         providers: ProviderFactory,
-        libs: VersionCatalog,
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
                 gradleProperty(providers, CODENARC_ENABLED, String::toBoolean).orElse(true),
             )
-        public val toolVersion: Property<String> =
-            objects.property<String>().convention(
-                versionFromCatalogOrFail(libs, "codenarc"),
-            )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val source: ConfigurableFileCollection = objects.fileCollection().from("src")
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun failOnViolation(value: Boolean): Unit = failOnViolation.set(value)
+
+        public fun source(path: FileCollection): Unit = source.set(path)
     }

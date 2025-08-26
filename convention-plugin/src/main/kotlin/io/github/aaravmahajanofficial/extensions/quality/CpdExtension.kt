@@ -18,6 +18,7 @@ package io.github.aaravmahajanofficial.extensions.quality
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CPD_ENABLED
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension.Companion.DEFAULT_TOKEN_COUNT
 import io.github.aaravmahajanofficial.utils.gradleProperty
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ProviderFactory
@@ -35,7 +36,17 @@ public open class CpdExtension
                 gradleProperty(providers, CPD_ENABLED, String::toBoolean).orElse(true),
             )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val source: Property<String> = objects.property<String>().convention("src")
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
         public val minimumTokenCount: Property<Int> =
             objects.property<Int>().convention(DEFAULT_TOKEN_COUNT)
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun failOnViolation(value: Boolean): Unit = failOnViolation.set(value)
+
+        public fun source(path: FileCollection): Unit = source.set(path)
+
+        public fun minimumTokenCount(value: Int): Unit = minimumTokenCount.set(value)
     }

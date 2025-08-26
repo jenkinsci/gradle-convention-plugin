@@ -17,8 +17,7 @@ package io.github.aaravmahajanofficial.extensions.quality
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.CHECKSTYLE_ENABLED
 import io.github.aaravmahajanofficial.utils.gradleProperty
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
-import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -30,7 +29,6 @@ import javax.inject.Inject
 public open class CheckstyleExtension
     @Inject
     constructor(
-        libs: VersionCatalog,
         objects: ObjectFactory,
         providers: ProviderFactory,
     ) {
@@ -38,12 +36,24 @@ public open class CheckstyleExtension
             objects.property<Boolean>().convention(
                 gradleProperty(providers, CHECKSTYLE_ENABLED, String::toBoolean).orElse(true),
             )
-        public val toolVersion: Property<String> =
-            objects.property<String>().convention(
-                versionFromCatalogOrFail(libs, "checkstyle"),
-            )
         public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-        public val source: Property<String> = objects.property<String>().convention("src")
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
         public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
-        public val exclude: ListProperty<String> = objects.listProperty<String>().convention(excludeList)
+        public val exclude: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
+
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+
+        public fun failOnViolation(value: Boolean): Unit = failOnViolation.set(value)
+
+        public fun source(path: FileCollection): Unit = source.set(path)
+
+        public fun include(vararg values: String): Unit = include.set(values.toList())
+
+        public fun include(values: Collection<String>): Unit = include.set(values.toList())
+
+        public fun exclude(vararg values: String): Unit = exclude.set(values.toList())
+
+        public fun exclude(values: Collection<String>): Unit = exclude.set(values.toList())
     }
