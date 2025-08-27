@@ -690,7 +690,7 @@ private fun Project.variantResolution(config: String) {
 
 private fun Project.hasJavaSources(): Boolean = fileTree("src").matching { it.include("**/*.java") }.files.isNotEmpty()
 
-private fun Project.hasKotlinSources(): Boolean = fileTree("src").matching { it.include("**/*.kotlin") }.files.isNotEmpty()
+private fun Project.hasKotlinSources(): Boolean = fileTree("src").matching { it.include("**/*.kt") }.files.isNotEmpty()
 
 private fun Project.hasGroovySources(): Boolean = fileTree("src").matching { it.include("**/*.groovy") }.files.isNotEmpty()
 
