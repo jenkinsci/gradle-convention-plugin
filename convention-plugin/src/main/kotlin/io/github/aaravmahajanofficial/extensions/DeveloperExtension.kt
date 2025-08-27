@@ -37,17 +37,25 @@ public open class DeveloperExtension
     ) {
         private val gitUser = readGitUserMetadata(layout.projectDirectory.asFile)
         private val userName = System.getProperty("user.name")
+        private val systemTimeZone =
+            java.util.TimeZone
+                .getDefault()
+                .id
 
         public val id: Property<String> = objects.property<String>().convention(userName)
         public val name: Property<String> =
             objects.property<String>().convention(gitUser.name ?: userName.replaceFirstChar { it.uppercaseChar() })
         public val email: Property<String> =
             objects.property<String>().convention(gitUser.email ?: "$userName@users.noreply.github.com")
-        public val website: Property<URI> = objects.property<URI>().convention(URI.create("https://github.com"))
-        public val organization: Property<String> = objects.property<String>().convention("io.jenkins.plugins")
-        public val organizationUrl: Property<URI> = objects.property<URI>().convention(URI.create("https://github.com"))
-        public val roles: SetProperty<String> = objects.setProperty<String>().convention(setOf("developer"))
-        public val timezone: Property<String> = objects.property<String>().convention("UTC")
+        public val website: Property<URI> = objects.property<URI>()
+        public val organization: Property<String> = objects.property<String>().convention("Jenkins Community")
+        public val organizationUrl: Property<URI> =
+            objects
+                .property<URI>()
+                .convention(URI.create("https://github.com/jenkinsci"))
+        public val roles: SetProperty<String> =
+            objects.setProperty<String>().convention(setOf("developer", "contributor"))
+        public val timezone: Property<String> = objects.property<String>().convention(systemTimeZone)
 
         // Groovy DSL setter methods
         public fun id(value: String): Unit = id.set(value)

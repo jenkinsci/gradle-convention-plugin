@@ -97,11 +97,10 @@ public class QualityManager(
         configureEsLint()
         configureDokka()
         configureCpd()
-        configureCheckTask()
     }
 
     private fun configureCheckstyle() {
-        if (!quality.checkstyle.enabled.get() || !project.isJavaProject()) return
+        if (!quality.checkstyle.enabled.get() || !project.hasJavaSources()) return
 
         project.pluginManager.apply(CheckstylePlugin::class.java)
 
@@ -135,10 +134,13 @@ public class QualityManager(
                 it.sarif.required.set(true)
             }
         }
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("checkstyleMain")
+        }
     }
 
     private fun configureCodenarc() {
-        if (!quality.codenarc.enabled.get() || !project.isGroovyProject()) return
+        if (!quality.codenarc.enabled.get() || !project.hasGroovySources()) return
 
         project.pluginManager.apply(CodeNarcPlugin::class.java)
 
@@ -176,10 +178,14 @@ public class QualityManager(
                         it.include("**/*.groovy")
                     }
         }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("codenarcMain")
+        }
     }
 
     private fun configureSpotBugs() {
-        if (!quality.spotbugs.enabled.get() || !project.isJavaProject()) return
+        if (!quality.spotbugs.enabled.get() || !project.hasJavaSources()) return
 
         project.pluginManager.apply(SpotBugsPlugin::class.java)
 
@@ -201,10 +207,14 @@ public class QualityManager(
                 report.required.set(true)
             }
         }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("spotbugsMain")
+        }
     }
 
     private fun configurePmd() {
-        if (!quality.pmd.enabled.get() || !project.isJavaProject()) return
+        if (!quality.pmd.enabled.get() || !project.hasJavaSources()) return
 
         project.pluginManager.apply(PmdPlugin::class.java)
 
@@ -226,6 +236,9 @@ public class QualityManager(
                 reports.xml.required.set(true)
                 reports.html.required.set(true)
             }
+        }
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("pmdMain")
         }
     }
 
@@ -289,10 +302,14 @@ public class QualityManager(
                 }
             }
         }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("jacocoTestCoverageVerification")
+        }
     }
 
     private fun configureDetekt() {
-        if (!quality.detekt.enabled.get() || !project.isKotlinProject()) return
+        if (!quality.detekt.enabled.get() || !project.hasKotlinSources()) return
 
         project.pluginManager.apply(DetektPlugin::class.java)
 
@@ -312,6 +329,9 @@ public class QualityManager(
                 it.html.required.set(true)
                 it.sarif.required.set(true)
             }
+        }
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("detekt")
         }
     }
 
@@ -337,88 +357,96 @@ public class QualityManager(
             )
 
         project.configure<SpotlessExtension> {
-            kotlin { t ->
-                t.target(
-                    "src/main/kotlin/**/*.kt",
-                    "src/test/kotlin/**/*.kt",
-                    "src/main/resources/**/*.kt",
-                )
-                t.targetExclude(commonExcludes)
-                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
-                t.trimTrailingWhitespace()
-                t.endWithNewline()
-
-                if (headerFile.exists()) {
-                    t.licenseHeaderFile(headerFile)
-                }
-            }
-            kotlinGradle { t ->
-                t.target(
-                    "*.gradle.kts",
-                    "**/*.gradle.kts",
-                    "settings.gradle.kts",
-                )
-                t.targetExclude(commonExcludes + "**/gradle/**")
-                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
-                t.trimTrailingWhitespace()
-                t.endWithNewline()
-
-                if (headerFile.exists()) {
-                    t.licenseHeaderFile(
-                        headerFile,
-                        "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+            if (project.hasKotlinSources()) {
+                kotlin { t ->
+                    t.target(
+                        "src/main/kotlin/**/*.kt",
+                        "src/test/kotlin/**/*.kt",
+                        "src/main/resources/**/*.kt",
                     )
+                    t.targetExclude(commonExcludes)
+                    t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                    t.trimTrailingWhitespace()
+                    t.endWithNewline()
+
+                    if (headerFile.exists()) {
+                        t.licenseHeaderFile(headerFile)
+                    }
                 }
-            }
-            java { t ->
-                t.target(
-                    "src/main/java/**/*.java",
-                    "src/test/java/**/*.java",
-                    "src/main/resources/**/*.java",
-                )
-                t.targetExclude(commonExcludes + "**/gradle/**")
-                t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
-                t.trimTrailingWhitespace()
-                t.endWithNewline()
-                t.removeUnusedImports()
-
-                if (headerFile.exists()) {
-                    t.licenseHeaderFile(headerFile)
-                }
-            }
-            groovy { t ->
-                t.target(
-                    "src/main/groovy/**/*.groovy",
-                    "src/test/groovy/**/*.groovy",
-                    "src/main/resources/**/*.groovy",
-                )
-                t.targetExclude(commonExcludes + "**/gradle**")
-
-                t.greclipse()
-                t.trimTrailingWhitespace()
-                t.endWithNewline()
-
-                if (headerFile.exists()) {
-                    t.licenseHeaderFile(headerFile)
-                }
-            }
-            groovyGradle { t ->
-                t.target(
-                    "*.gradle",
-                    "**/*.gradle",
-                    "settings.gradle",
-                )
-                t.targetExclude(commonExcludes + "**/gradle/**")
-
-                t.greclipse()
-                t.trimTrailingWhitespace()
-                t.endWithNewline()
-
-                if (headerFile.exists()) {
-                    t.licenseHeaderFile(
-                        headerFile,
-                        "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                kotlinGradle { t ->
+                    t.target(
+                        "*.gradle.kts",
+                        "**/*.gradle.kts",
+                        "settings.gradle.kts",
                     )
+                    t.targetExclude(commonExcludes + "**/gradle/**")
+                    t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                    t.trimTrailingWhitespace()
+                    t.endWithNewline()
+
+                    if (headerFile.exists()) {
+                        t.licenseHeaderFile(
+                            headerFile,
+                            "(plugins|pluginManagement|import|buildscript|" +
+                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                        )
+                    }
+                }
+            }
+            if (project.hasJavaSources()) {
+                java { t ->
+                    t.target(
+                        "src/main/java/**/*.java",
+                        "src/test/java/**/*.java",
+                        "src/main/resources/**/*.java",
+                    )
+                    t.targetExclude(commonExcludes + "**/gradle/**")
+                    t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
+                    t.trimTrailingWhitespace()
+                    t.endWithNewline()
+                    t.removeUnusedImports()
+
+                    if (headerFile.exists()) {
+                        t.licenseHeaderFile(headerFile)
+                    }
+                }
+            }
+            if (project.hasGroovySources()) {
+                groovy { t ->
+                    t.target(
+                        "src/main/groovy/**/*.groovy",
+                        "src/test/groovy/**/*.groovy",
+                        "src/main/resources/**/*.groovy",
+                    )
+                    t.targetExclude(commonExcludes + "**/gradle**")
+
+                    t.greclipse()
+                    t.trimTrailingWhitespace()
+                    t.endWithNewline()
+
+                    if (headerFile.exists()) {
+                        t.licenseHeaderFile(headerFile)
+                    }
+                }
+                groovyGradle { t ->
+                    t.target(
+                        "*.gradle",
+                        "**/*.gradle",
+                        "settings.gradle",
+                    )
+                    t.targetExclude(commonExcludes + "**/gradle/**")
+
+                    t.greclipse()
+                    t.trimTrailingWhitespace()
+                    t.endWithNewline()
+
+                    if (headerFile.exists()) {
+                        t.licenseHeaderFile(
+                            headerFile,
+                            "(plugins|pluginManagement|import|buildscript|" +
+                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                        )
+                    }
                 }
             }
             format("misc") { t ->
@@ -436,11 +464,17 @@ public class QualityManager(
                     "*.sh",
                     "*.dockerfile",
                     "Dockerfile*",
+                    ".env",
+                    ".dockerignore",
                 )
                 t.targetExclude(commonExcludes)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
             }
+        }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("spotlessCheck")
         }
     }
 
@@ -467,10 +501,14 @@ public class QualityManager(
                     .asFile.absolutePath
             scanConfigurations = quality.owaspDependencyCheck.scanConfigurations.get()
         }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("dependencyCheckAnalyze")
+        }
     }
 
     private fun configurePitMutation() {
-        if (!quality.pitest.enabled.get()) return
+        if (!quality.pitest.enabled.get() || !project.hasJavaSources()) return
 
         project.pluginManager.apply(PitestPlugin::class.java)
 
@@ -482,6 +520,10 @@ public class QualityManager(
             mutationThreshold.set(quality.pitest.mutationThreshold)
             outputFormats.set(quality.pitest.outputFormats)
             mutators.set(quality.pitest.mutators)
+        }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("pitest")
         }
     }
 
@@ -498,7 +540,7 @@ public class QualityManager(
     }
 
     private fun configureKoverExtension() {
-        if (!quality.kover.enabled.get() || !project.isKotlinProject()) return
+        if (!quality.kover.enabled.get() || !project.hasKotlinSources()) return
 
         project.pluginManager.apply(KoverGradlePlugin::class.java)
 
@@ -521,12 +563,13 @@ public class QualityManager(
                 }
             }
         }
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("koverVerify")
+        }
     }
 
     private fun configureEsLint() {
-        if (!quality.eslint.enabled.get() ||
-            !project.isFrontendProject()
-        ) {
+        if (!quality.eslint.enabled.get() || !project.isFrontendProject()) {
             return
         }
 
@@ -562,16 +605,20 @@ public class QualityManager(
             )
             outputs.dir(project.file("build/eslint-reports"))
         }
+
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("eslint")
+        }
     }
 
     private fun configureDokka() {
-        if (!quality.dokka.enabled.get() || !project.isKotlinProject()) return
+        if (!quality.dokka.enabled.get() || !project.hasKotlinSources()) return
 
         project.pluginManager.apply(DokkaPlugin::class.java)
     }
 
     private fun configureCpd() {
-        if (!quality.cpd.enabled.get() || !project.isJavaProject()) return
+        if (!quality.cpd.enabled.get()) return
 
         project.pluginManager.apply(CpdPlugin::class.java)
 
@@ -600,33 +647,9 @@ public class QualityManager(
                 it.text.required.set(true)
             }
         }
-    }
 
-    private fun configureCheckTask() {
-        project.tasks.named("check").configure { checkTask ->
-
-            val isJava = project.isJavaProject()
-            val isKotlin = project.isKotlinProject()
-            val isGroovy = project.isGroovyProject()
-            val isFrontEnd = project.isFrontendProject()
-
-            val toolTasks =
-                listOfNotNull(
-                    if (isJava && quality.checkstyle.enabled.get()) "checkstyleMain" else null,
-                    if (isGroovy && quality.codenarc.enabled.get()) "codenarcMain" else null,
-                    if (isJava && quality.spotbugs.enabled.get()) "spotbugsMain" else null,
-                    if (isJava && quality.pmd.enabled.get()) "pmdMain" else null,
-                    if (quality.spotless.enabled.get()) "spotlessCheck" else null,
-                    if (isKotlin && quality.detekt.enabled.get()) "detekt" else null,
-                    if (quality.owaspDependencyCheck.enabled.get()) "dependencyCheckAnalyze" else null,
-                    if (quality.jacoco.enabled.get()) "jacocoTestCoverageVerification" else null,
-                    if (isJava && quality.cpd.enabled.get()) "cpdCheck" else null,
-                    if (isKotlin && quality.kover.enabled.get()) "koverVerify" else null,
-                    if (quality.pitest.enabled.get()) "pitest" else null,
-                    if (isFrontEnd && quality.eslint.enabled.get()) "eslint" else null,
-                )
-
-            toolTasks.forEach { checkTask.dependsOn(it) }
+        project.tasks.named("check").configure { t ->
+            t.dependsOn("cpdCheck")
         }
     }
 
@@ -665,30 +688,15 @@ private fun Project.variantResolution(config: String) {
     }
 }
 
-private fun Project.isJavaProject(): Boolean {
-    val isJava = plugins.hasPlugin("java")
-    val isJavaLibrary = plugins.hasPlugin("java-library")
-    val isJavaGradlePlugin = plugins.hasPlugin("java-gradle-plugin")
-    return isJava || isJavaLibrary || isJavaGradlePlugin
-}
+private fun Project.hasJavaSources(): Boolean = fileTree("src").matching { it.include("**/*.java") }.files.isNotEmpty()
 
-private fun Project.isKotlinProject(): Boolean = plugins.hasPlugin("org.jetbrains.kotlin.jvm") || plugins.hasPlugin("kotlin")
+private fun Project.hasKotlinSources(): Boolean = fileTree("src").matching { it.include("**/*.kotlin") }.files.isNotEmpty()
 
-private fun Project.isGroovyProject(): Boolean = plugins.hasPlugin("groovy")
+private fun Project.hasGroovySources(): Boolean = fileTree("src").matching { it.include("**/*.groovy") }.files.isNotEmpty()
 
-private fun Project.isFrontendProject(): Boolean {
-    val frontendRoots =
-        listOf(
-            "package.json",
-            "yarn.lock",
-            "pnpm-lock.yaml",
-        )
-
-    if (frontendRoots.any { file(it).exists() }) return true
-
-    val frontendDirs = listOf("src/main/js", "src/main/ts", "src/main/webapp")
-    return frontendDirs.any { file(it).exists() && file(it).isDirectory }
-}
+private fun Project.isFrontendProject(): Boolean =
+    listOf("package.json", "yarn.lock", "pnpm-lock.yaml").any { file(it).exists() } ||
+        listOf("src/main/js", "src/main/ts", "src/main/webapp").any { file(it).isDirectory }
 
 private fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }

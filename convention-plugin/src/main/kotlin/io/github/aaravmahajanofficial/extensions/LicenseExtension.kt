@@ -29,11 +29,10 @@ public open class LicenseExtension
     constructor(
         objects: ObjectFactory,
     ) {
-        public val name: Property<String> = objects.property<String>().convention("Apache License Version 2.0")
-        public val url: Property<URI> =
-            objects.property<URI>().convention(URI.create("https://www.apache.org/licenses/LICENSE-2.0.txt"))
+        public val name: Property<String> = objects.property<String>().convention("MIT License")
+        public val url: Property<URI> = objects.property<URI>()
         public val distribution: Property<String> = objects.property<String>().convention("repo")
-        public val comments: Property<String> = objects.property<String>().convention("Apache License Version 2.0")
+        public val comments: Property<String> = objects.property<String>().convention("MIT License")
 
         // Groovy DSL setter methods
         public fun name(value: String): Unit = name.set(value)
