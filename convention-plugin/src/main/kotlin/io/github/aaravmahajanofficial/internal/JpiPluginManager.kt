@@ -41,6 +41,8 @@ public class JpiPluginManager(
     public fun applyAndConfigure() {
         project.pluginManager.apply("org.jenkins-ci.jpi")
 
+        pluginExtension.pluginDevelopers.get().forEach { it.validate() }
+
         bridgeExtensionProperties()
         project.tasks.findByName("generateLicenseInfo")?.enabled = false
 
@@ -78,7 +80,7 @@ public class JpiPluginManager(
                                 dev.website
                                     .orElse(gitHub.get())
                                     .get()
-                                    .toString() + "/graphs/contributors",
+                                    .toString(),
                             )
                             organization.set(dev.organization)
                             organizationUrl.set(dev.organizationUrl.get().toString())
