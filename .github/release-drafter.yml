@@ -28,6 +28,9 @@ categories:
   - title: '📝 Documentation'
     labels:
       - 'documentation'
+  - title: '♻️ Refactoring'
+    labels:
+      - 'refactor'
   - title: '✍️ Other changes'
 exclude-labels:
   - 'skip-changelog'
@@ -53,16 +56,22 @@ version-resolver:
 autolabeler:
   - label: 'documentation'
     files:
-      - '*.md'
+      - '**/*.md'
+      - 'docs/**/*'
     branch:
-      - '/docs{0,1}\/.+/'
+      - '/^docs?\/.+/'
   - label: 'bug'
     branch:
-      - '/fix\/.+/'
+      - '/^fix\/.+/'
     title:
-      - '/fix/i'
+      - '/.*fix.*/i'
   - label: 'enhancement'
     branch:
-      - '/feat\/.+/'
+      - '/^feat(ure)?\/.+/'
     title:
-      - '/feat\/.+/'
+      - '/.*feat.*/i'
+  - label: 'refactor'
+    branch:
+      - '/^refactor\/.+/'
+    title:
+      - '/.*refactor.*/i'
