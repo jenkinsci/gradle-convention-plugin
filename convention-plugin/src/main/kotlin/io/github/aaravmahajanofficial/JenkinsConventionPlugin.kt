@@ -29,15 +29,24 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.repositories
 
 public class JenkinsConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             GradleVersionUtils.verifyGradleVersion()
 
-            project.group = "io.jenkins.plugins"
-            project.description = "A Jenkins Plugin"
-            project.version = "1.0.0-SNAPSHOT"
+            group = "io.jenkins.plugins"
+            description = "A Jenkins Plugin"
+            version = "1.0.0-SNAPSHOT"
+            repositories {
+                gradlePluginPortal()
+                mavenCentral()
+                maven {
+                    it.name = "jenkins"
+                    it.url = uri("https://repo.jenkins-ci.org/public/")
+                }
+            }
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 

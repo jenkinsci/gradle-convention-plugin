@@ -74,7 +74,12 @@ public class JpiPluginManager(
                             id.set(dev.id)
                             name.set(dev.name)
                             email.set(dev.email)
-                            url.set(dev.website.get().toString())
+                            url.set(
+                                dev.website
+                                    .orElse(gitHub.get())
+                                    .get()
+                                    .toString() + "/graphs/contributors",
+                            )
                             organization.set(dev.organization)
                             organizationUrl.set(dev.organizationUrl.get().toString())
                             roles.set(dev.roles)
@@ -89,7 +94,12 @@ public class JpiPluginManager(
                     licenses.map { lic ->
                         project.objects.newInstance<PluginLicense>().apply {
                             name.set(lic.name)
-                            url.set(lic.url.get().toString())
+                            url.set(
+                                lic.url
+                                    .orElse(gitHub.get())
+                                    .get()
+                                    .toString() + "/blob/master/LICENSE",
+                            )
                             distribution.set(lic.distribution)
                             comments.set(lic.comments)
                         }
