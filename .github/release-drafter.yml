@@ -28,6 +28,9 @@ categories:
   - title: '📝 Documentation'
     labels:
       - 'documentation'
+  - title: '♻️ Refactoring'
+    labels:
+      - 'refactor'
   - title: '✍️ Other changes'
 exclude-labels:
   - 'skip-changelog'
@@ -66,3 +69,13 @@ autolabeler:
       - '/feat\/.+/'
     title:
       - '/feat\/.+/'
+  - label: 'refactor'
+    branch:
+      - '/refactor\/.+/'
+    title:
+      - '/refactor/i'
+  - label: 'chore'
+    branch:
+      - '/chore\/.+/'
+    title:
+      - '/chore/i'
