@@ -59,7 +59,7 @@ public class JpiPluginManager(
             extension.convention("hpi")
             scmTag.convention("HEAD")
             gitHub.convention(pluginExtension.gitHub)
-            generateTests.convention(false)
+            generateTests.convention(true)
             generatedTestClassName.convention("InjectedTest")
             sandboxed.convention(pluginExtension.sandboxed)
             usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
