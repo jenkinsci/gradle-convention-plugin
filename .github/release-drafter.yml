@@ -56,26 +56,22 @@ version-resolver:
 autolabeler:
   - label: 'documentation'
     files:
-      - '*.md'
+      - '**/*.md'
+      - 'docs/**/*'
     branch:
-      - '/docs{0,1}\/.+/'
+      - '/^docs?\/.+/'
   - label: 'bug'
     branch:
-      - '/fix\/.+/'
+      - '/^fix\/.+/'
     title:
-      - '/fix/i'
+      - '/.*fix.*/i'
   - label: 'enhancement'
     branch:
-      - '/feat\/.+/'
+      - '/^feat(ure)?\/.+/'
     title:
-      - '/feat\/.+/'
+      - '/.*feat.*/i'
   - label: 'refactor'
     branch:
-      - '/refactor\/.+/'
+      - '/^refactor\/.+/'
     title:
-      - '/refactor/i'
-  - label: 'chore'
-    branch:
-      - '/chore\/.+/'
-    title:
-      - '/chore/i'
+      - '/.*refactor.*/i'
