@@ -15,9 +15,7 @@
  */
 package io.github.aaravmahajanofficial.extensions
 
-import org.eclipse.jgit.lib.RepositoryBuilder
 import org.gradle.api.Action
-import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -25,7 +23,6 @@ import org.gradle.api.provider.SetProperty
 import org.gradle.kotlin.dsl.newInstance
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
-import java.io.File
 import java.net.URI
 import javax.inject.Inject
 
@@ -33,20 +30,10 @@ public open class DeveloperExtension
     @Inject
     constructor(
         objects: ObjectFactory,
-        layout: ProjectLayout,
     ) {
-        private val gitUser = readGitUserMetadata(layout.projectDirectory.asFile)
-        private val userName = System.getProperty("user.name")
-        private val systemTimeZone =
-            java.util.TimeZone
-                .getDefault()
-                .id
-
-        public val id: Property<String> = objects.property<String>().convention(userName)
-        public val name: Property<String> =
-            objects.property<String>().convention(gitUser.name ?: userName.replaceFirstChar { it.uppercaseChar() })
-        public val email: Property<String> =
-            objects.property<String>().convention(gitUser.email ?: "$userName@users.noreply.github.com")
+        public val id: Property<String> = objects.property<String>()
+        public val name: Property<String> = objects.property<String>()
+        public val email: Property<String> = objects.property<String>()
         public val website: Property<URI> = objects.property<URI>()
         public val organization: Property<String> = objects.property<String>().convention("Jenkins Community")
         public val organizationUrl: Property<URI> =
@@ -55,7 +42,7 @@ public open class DeveloperExtension
                 .convention(URI.create("https://github.com/jenkinsci"))
         public val roles: SetProperty<String> =
             objects.setProperty<String>().convention(setOf("developer", "contributor"))
-        public val timezone: Property<String> = objects.property<String>().convention(systemTimeZone)
+        public val timezone: Property<String> = objects.property<String>().convention("UTC")
 
         // Groovy DSL setter methods
         public fun id(value: String): Unit = id.set(value)
@@ -75,6 +62,12 @@ public open class DeveloperExtension
         public fun roles(vararg values: String): Unit = roles.set(values.toSet())
 
         public fun roles(values: Collection<String>): Unit = roles.set(values.toSet())
+
+        internal fun validate() {
+            require(!id.orNull.isNullOrBlank()) { "Developer 'id' is required." }
+            require(!name.orNull.isNullOrBlank()) { "Developer 'name' is required." }
+            require(!email.orNull.isNullOrBlank()) { "Developer 'email' is required." }
+        }
     }
 
 public open class DevelopersExtension
@@ -90,20 +83,3 @@ public open class DevelopersExtension
             developersList.add(developer)
         }
     }
-
-private fun readGitUserMetadata(projectDir: File): GitUserMetadata =
-    try {
-        RepositoryBuilder().findGitDir(projectDir).build().use { repo ->
-            val config = repo.config
-            val name = config.getString("user", null, "name")
-            val email = config.getString("user", null, "email")
-            GitUserMetadata(name, email)
-        }
-    } catch (_: Exception) {
-        GitUserMetadata(null, null)
-    }
-
-private data class GitUserMetadata(
-    val name: String?,
-    val email: String?,
-)

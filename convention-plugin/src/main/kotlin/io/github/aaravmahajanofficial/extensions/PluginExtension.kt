@@ -115,9 +115,7 @@ public open class PluginExtension
         public fun testJvmArguments(values: Collection<String>): Unit = testJvmArguments.set(values.toList())
 
         internal val pluginDevelopers: ListProperty<DeveloperExtension> =
-            objects.listProperty<DeveloperExtension>().apply {
-                add(objects.newInstance<DeveloperExtension>())
-            }
+            objects.listProperty<DeveloperExtension>()
 
         internal val pluginLicenses: ListProperty<LicenseExtension> =
             objects.listProperty<LicenseExtension>().apply {
