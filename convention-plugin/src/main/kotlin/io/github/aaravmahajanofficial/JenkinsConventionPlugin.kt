@@ -22,7 +22,7 @@ import io.github.aaravmahajanofficial.internal.GroovyConventionManager
 import io.github.aaravmahajanofficial.internal.JavaConventionManager
 import io.github.aaravmahajanofficial.internal.JpiPluginManager
 import io.github.aaravmahajanofficial.internal.KotlinConventionManager
-import io.github.aaravmahajanofficial.internal.QualityManager
+import io.github.aaravmahajanofficial.internal.quality.QualityManager
 import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project

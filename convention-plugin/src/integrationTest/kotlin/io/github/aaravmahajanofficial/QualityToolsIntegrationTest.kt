@@ -238,7 +238,6 @@ class QualityToolsIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(basicPluginConfiguration())
-                .withJavaSource()
                 .withJavaSource(
                     className = "JavaTestClass",
                     content =
