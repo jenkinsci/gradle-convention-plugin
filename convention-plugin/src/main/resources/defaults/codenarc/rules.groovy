@@ -1,5 +1,5 @@
-package defaults.codenarc
-
+// Generic CodeNarc rules - based on job-dsl-plugin configuration
+// https://github.com/jenkinsci/job-dsl-plugin/blob/master/config/codenarc/rules.groovy
 ruleset {
     ruleset('rulesets/basic.xml')
 
@@ -8,43 +8,39 @@ ruleset {
     ruleset('rulesets/concurrency.xml')
 
     ruleset('rulesets/convention.xml') {
-        // we don't care for now
-        exclude 'FieldTypeRequired'
-        // we don't care for now
-        exclude 'MethodParameterTypeRequired\t'
-        // we don't care for now
-        exclude 'MethodReturnTypeRequired'
-        // we don't care for now
-        exclude 'NoDef'
-        // we don't care for now
-        exclude 'VariableTypeRequired'
-
+        // pending GROOVY-8814
         exclude 'CompileStatic'
+        // we don't care
+        exclude 'CouldBeSwitchStatement'
+        // this rule does not necessarily lead to better code
+        exclude 'IfStatementCouldBeTernary'
+        // this rule does not necessarily lead to better code
         exclude 'ImplicitClosureParameter'
+        // we use UnnecessaryReturnKeyword instead
         exclude 'ImplicitReturnStatement'
-        exclude 'PublicMethodsBeforeNonPublicMethods'
-        exclude 'StaticFieldsBeforeInstanceFields'
+        // satisfying this rule would introduce bugs
+        exclude 'NoDouble'
+        // satisfying this rule would introduce bugs
+        exclude 'NoFloat'
+        // we don't care
         exclude 'StaticMethodsBeforeInstanceMethods'
-
+        // we don't care
+        exclude 'TrailingComma'
     }
 
     ruleset('rulesets/design.xml') {
-        // does not necessarily lead to better code
-        exclude 'Instanceof'
-        // needed for Worker Api
+        // we don't care
         exclude 'AbstractClassWithoutAbstractMethod'
+        // we don't care
+        exclude 'BuilderMethodWithSideEffects'
+        // we don't care
+        exclude 'EmptyMethodInAbstractClass'
+        // we don't care
+        exclude 'Instanceof'
     }
 
-    ruleset('rulesets/dry.xml') {
-        // does not necessarily lead to better code
-        exclude 'DuplicateListLiteral'
-        // does not necessarily lead to better code
-        exclude 'DuplicateMapLiteral'
-        // does not necessarily lead to better code
-        exclude 'DuplicateNumberLiteral'
-        // does not necessarily lead to better code
-        exclude 'DuplicateStringLiteral'
-    }
+    // the DRY rules do not necessarily lead to better code
+    // ruleset('rulesets/dry.xml')
 
     // these rules cause compilation failure warnings
     // ruleset('rulesets/enhanced.xml')
@@ -52,21 +48,47 @@ ruleset {
     ruleset('rulesets/exceptions.xml')
 
     ruleset('rulesets/formatting.xml') {
+        // this rule does not necessarily lead to better code
+        ClassStartsWithBlankLine {
+            blankLineRequired = false
+        }
+
+        // this rule does not necessarily lead to better code
+        ClassEndsWithBlankLine {
+            blankLineRequired = false
+        }
+
+        // empty blocks like {} are OK
+        SpaceAfterOpeningBrace {
+            ignoreEmptyBlock = true
+        }
         // enforce at least one space after map entry colon
         SpaceAroundMapEntryColon {
             characterAfterColonRegex = /\s/
             characterBeforeColonRegex = /./
         }
+        // empty blocks like {} are OK
+        SpaceBeforeClosingBrace {
+            ignoreEmptyBlock = true
+        }
 
         // we don't care for now
         exclude 'ClassJavadoc'
-        exclude 'ClassStartsWithBlankLine'
-        exclude 'ClassEndsWithBlankLine'
+        // causes false positives
+        exclude 'Indentation'
     }
 
     ruleset('rulesets/generic.xml')
 
-    ruleset('rulesets/groovyism.xml')
+    ruleset('rulesets/groovyism.xml') {
+        // framework methods should be allowed to call leftShift explicitly
+        ExplicitCallToLeftShiftMethod {
+            ignoreThisReference = true
+        }
+
+        // not necessarily an issue, problems should be detected by unit tests
+        exclude 'GStringExpressionWithinString'
+    }
 
     ruleset('rulesets/imports.xml') {
         // we order static imports after other imports because that's the default style in IDEA
@@ -78,32 +100,45 @@ ruleset {
     ruleset('rulesets/logging.xml')
 
     ruleset('rulesets/naming.xml') {
-        // Gradle encourages violations of this rule
+        // Remove project-specific field name ignoring - teams can add their own
+        // FieldName configuration can be added per project if needed
+
+        // this is an issue, but some projects may have naming conventions that violate this
         exclude 'ConfusingMethodName'
+        // we don't care for now
+        exclude 'FactoryMethodName'
     }
 
     ruleset('rulesets/security.xml') {
-        // we don't care for the Enterprise Java Bean specification here
+        // we don't care because classes need not satisfy the Java Beans specification
         exclude 'JavaIoPackageAccess'
+        // we don't care for now
+        exclude 'FileCreateTempFile'
     }
 
-    ruleset('rulesets/serialization.xml')
-
-    ruleset('rulesets/size.xml') {
-        NestedBlockDepth {
-            maxNestedBlockDepth = 6
-        }
-
-        // we don't care for now
-        exclude 'AbcMetric'
-        // we have no Cobertura coverage file yet
-        exclude 'CrapMetric'
-        // we don't care for now
-        exclude 'MethodSize'
+    ruleset('rulesets/serialization.xml') {
+        // we don't care because most projects are not using Java serialization heavily
+        exclude 'SerializableClassMustDefineSerialVersionUID'
     }
+
+    // we don't care for now - let teams decide on size constraints
+    // ruleset('rulesets/size.xml')
 
     ruleset('rulesets/unnecessary.xml') {
+        UnnecessaryConstructor {
+            // constructors with annotations are probably necessary
+            ignoreAnnotations = true
+        }
+        UnnecessaryReturnKeyword
+
+        // we don't care, does not necessarily lead to better code
+        exclude 'UnnecessaryElseStatement'
+        // we don't care, does not necessarily lead to better code
         exclude 'UnnecessaryGetter'
+        // we don't care for now, does not necessarily lead to better code
+        exclude 'UnnecessaryObjectReferences'
+        // teams may do "unnecessary" overrides for documentation or other reasons
+        exclude 'UnnecessaryOverridingMethod'
     }
 
     ruleset('rulesets/unused.xml')

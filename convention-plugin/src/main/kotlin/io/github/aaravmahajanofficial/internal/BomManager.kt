@@ -108,7 +108,7 @@ public class BomManager(
     }
 
     private fun DependencyHandler.configureCustomBoms() {
-        bomExtension.customBoms.all { bom ->
+        bomExtension.customBoms.configureEach { bom ->
             val coordinates = bom.coordinates.orNull
             val version = bom.version.orNull
 

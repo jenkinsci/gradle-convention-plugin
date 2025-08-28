@@ -22,6 +22,7 @@ import io.github.aaravmahajanofficial.internal.GroovyConventionManager
 import io.github.aaravmahajanofficial.internal.JavaConventionManager
 import io.github.aaravmahajanofficial.internal.JpiPluginManager
 import io.github.aaravmahajanofficial.internal.KotlinConventionManager
+import io.github.aaravmahajanofficial.internal.TestingConventionManager
 import io.github.aaravmahajanofficial.internal.quality.QualityManager
 import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import org.gradle.api.Plugin
@@ -43,7 +44,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 gradlePluginPortal()
                 mavenCentral()
                 maven {
-                    it.name = "jenkins"
+                    it.name = "jenkinsPublic"
                     it.url = uri("https://repo.jenkins-ci.org/public/")
                 }
             }
@@ -53,14 +54,15 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
             JavaConventionManager(project).configure()
-            KotlinConventionManager(project).configure()
             GroovyConventionManager(project).configure()
+            KotlinConventionManager(project).configure()
 
             JpiPluginManager(project, pluginExtension).applyAndConfigure()
 
             project.afterEvaluate {
                 try {
                     BomManager(project, pluginExtension.bom).configure()
+                    TestingConventionManager(project).configure()
                     QualityManager(project, pluginExtension.quality).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
