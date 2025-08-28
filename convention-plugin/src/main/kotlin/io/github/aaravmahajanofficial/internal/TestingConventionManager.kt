@@ -17,6 +17,7 @@ package io.github.aaravmahajanofficial.internal
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -30,7 +31,7 @@ public class TestingConventionManager(
     private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     public fun configure() {
-        project.plugins.withId("java") {
+        project.plugins.withType<JavaPlugin> {
             configureTestTasks()
             addBaseTestingDependencies()
         }
@@ -45,12 +46,12 @@ public class TestingConventionManager(
     }
 
     private fun configureTestTasks() {
-        project.tasks.withType<Test> {
-            useJUnitPlatform()
+        project.tasks.withType<Test>().configureEach { t ->
+            t.useJUnitPlatform()
 
-            forkEvery = 1L
+            t.forkEvery = 1L
 
-            testLogging { logging ->
+            t.testLogging { logging ->
                 logging.events(
                     TestLogEvent.PASSED,
                     TestLogEvent.SKIPPED,
@@ -64,11 +65,11 @@ public class TestingConventionManager(
                 logging.exceptionFormat = TestExceptionFormat.FULL
             }
 
-            outputs.upToDateWhen { false }
+            t.outputs.upToDateWhen { false }
 
-            maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+            t.maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
 
-            jvmArgs(
+            t.jvmArgs(
                 "-Xms768M",
                 "-Xmx768M",
                 "-XX:+HeapDumpOnOutOfMemoryError",
@@ -76,9 +77,9 @@ public class TestingConventionManager(
                 "-XX:TieredStopAtLevel=1",
             )
 
-            systemProperty("file.encoding", "UTF-8")
-            systemProperty("java.awt.headless", "true")
-            systemProperty(
+            t.systemProperty("file.encoding", "UTF-8")
+            t.systemProperty("java.awt.headless", "true")
+            t.systemProperty(
                 "java.io.tmpdir",
                 project.layout.buildDirectory
                     .dir("tmp")
@@ -91,6 +92,7 @@ public class TestingConventionManager(
     private fun addBaseTestingDependencies() {
         project.dependencies {
             add("testImplementation", libs.findLibrary("junit-jupiter").get())
+            add("testImplementation", libs.findLibrary("junit-platform-launcher").get())
             add("testImplementation", libs.findLibrary("assertj-core").get())
             add("testImplementation", libs.findLibrary("mockito-core").get())
             add("testImplementation", libs.findLibrary("mockito-junit-jupiter").get())

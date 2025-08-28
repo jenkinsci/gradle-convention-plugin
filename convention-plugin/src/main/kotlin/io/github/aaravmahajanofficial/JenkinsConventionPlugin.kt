@@ -47,10 +47,6 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     it.name = "jenkinsPublic"
                     it.url = uri("https://repo.jenkins-ci.org/public/")
                 }
-                maven {
-                    it.name = "jenkinsReleases"
-                    it.url = uri("https://repo.jenkins-ci.org/releases/")
-                }
             }
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
@@ -58,17 +54,19 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
             JavaConventionManager(project).configure()
-            KotlinConventionManager(project).configure()
             GroovyConventionManager(project).configure()
+            KotlinConventionManager(project).configure()
 
             JpiPluginManager(project, pluginExtension).applyAndConfigure()
 
-            try {
-                BomManager(project, pluginExtension.bom).configure()
-                TestingConventionManager(project).configure()
-                QualityManager(project, pluginExtension.quality).apply()
-            } catch (e: IllegalStateException) {
-                error("Failed to configure Jenkins convention plugin: ${e.message}")
+            project.afterEvaluate {
+                try {
+                    BomManager(project, pluginExtension.bom).configure()
+                    TestingConventionManager(project).configure()
+                    QualityManager(project, pluginExtension.quality).apply()
+                } catch (e: IllegalStateException) {
+                    error("Failed to configure Jenkins convention plugin: ${e.message}")
+                }
             }
 
             tasks.register("jenkinsConventionPluginInfo") { t ->

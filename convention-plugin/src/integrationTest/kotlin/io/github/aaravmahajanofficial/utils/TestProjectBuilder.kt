@@ -325,6 +325,9 @@ class TestProjectBuilder(
             node-gradle = "7.1.0"
             cpd = "3.5"
             palantir-java = "2.73.0"
+            kotest = "6.0.1"
+            mockk = "1.14.5"
+            assertj = "4.0.0-M1"
 
             [libraries]
             # Kotlin
@@ -353,6 +356,16 @@ class TestProjectBuilder(
             mockito-bom-coordinates = { module = "org.mockito:mockito-bom", version = "5.18.0" }
             testContainers-bom-coordinates = { module = "org.testcontainers:testcontainers-bom", version = "1.21.3" }
             spock-bom-coordinates = { module = "org.spockframework:spock-bom", version = "2.4-M6-groovy-4.0" }
+            
+            # Testing
+            junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+            junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+            kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+            mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+            mockito-core = { module = "org.mockito:mockito-core" }
+            mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
+            spock-core = { module = "org.spockframework:spock-core" }
+            assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
             """.trimIndent()
 
         private val defaultSettings =
