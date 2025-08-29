@@ -15,9 +15,13 @@
  */
 package io.github.aaravmahajanofficial.utils
 
+import io.github.aaravmahajanofficial.constants.PluginMetadata.VERSION_CATALOG
+import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.provider.Provider
+import org.gradle.kotlin.dsl.getByType
 import kotlin.jvm.optionals.getOrElse
 
 internal fun versionFromCatalogOrFail(
@@ -36,3 +40,5 @@ internal fun libraryFromCatalog(
     libs: VersionCatalog,
     alias: String,
 ): Provider<MinimalExternalModuleDependency> = libs.findLibrary(alias).get()
+
+internal fun Project.libsCatalog(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named(VERSION_CATALOG)

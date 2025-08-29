@@ -15,6 +15,6 @@
  */
 plugins {
     base
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.maven.gradle.publish.plugin) apply false
+    alias(baseLibs.plugins.kotlin.jvm) apply false
+    alias(baseLibs.plugins.maven.gradle.publish.plugin) apply false
 }

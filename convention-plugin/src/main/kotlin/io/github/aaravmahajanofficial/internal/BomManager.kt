@@ -120,7 +120,7 @@ public class BomManager(
                 "Missing version for BOM '${bom.name}'."
             }
 
-            val platformDependency = enforcedPlatform("$coordinates:$version")
+            val platformDependency = platform("$coordinates:$version")
             add("implementation", platformDependency)
             add("testImplementation", platformDependency)
         }
@@ -132,7 +132,7 @@ public class BomManager(
         testOnly: Property<Boolean>,
     ) {
         if (enabled.getOrElse(true)) {
-            val platformDependency = enforcedPlatform(coordinates.get())
+            val platformDependency = platform(coordinates.get())
             if (!testOnly.getOrElse(false)) {
                 add("implementation", platformDependency)
             }

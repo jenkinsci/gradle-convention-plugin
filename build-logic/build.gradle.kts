@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     `java-gradle-plugin`
-    alias(libs.plugins.kotlin.dsl)
+    alias(baseLibs.plugins.kotlin.dsl)
 }
 
 val javaToolchainVersion: Provider<Int> =
@@ -75,8 +75,8 @@ gradlePlugin {
 
 dependencies {
     implementation(gradleApi())
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin)
+    implementation(baseLibs.kotlin.gradle.plugin)
+    implementation(baseLibs.spotless.gradle.plugin)
+    implementation(baseLibs.detekt.gradle.plugin)
+    implementation(baseLibs.ktlint.gradle.plugin)
 }

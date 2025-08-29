@@ -25,9 +25,9 @@ import io.github.aaravmahajanofficial.internal.KotlinConventionManager
 import io.github.aaravmahajanofficial.internal.TestingConventionManager
 import io.github.aaravmahajanofficial.internal.quality.QualityManager
 import io.github.aaravmahajanofficial.utils.GradleVersionUtils
+import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.repositories
@@ -49,7 +49,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 }
             }
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = libsCatalog()
 
             val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
