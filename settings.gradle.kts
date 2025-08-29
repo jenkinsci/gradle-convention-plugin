@@ -39,7 +39,7 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs {
-        create("libs") {
+        create("baseLibs") {
             from(files("version-catalog/libs.versions.toml"))
         }
     }

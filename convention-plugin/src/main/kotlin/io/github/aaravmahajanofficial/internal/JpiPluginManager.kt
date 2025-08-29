@@ -59,14 +59,11 @@ public class JpiPluginManager(
             extension.convention("hpi")
             scmTag.convention("HEAD")
             gitHub.convention(pluginExtension.gitHub)
-            generateTests.convention(true)
-            generatedTestClassName.convention("InjectedTest")
             sandboxed.convention(pluginExtension.sandboxed)
             usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
             maskedClassesFromCore.convention(pluginExtension.maskedClassesFromCore)
             incrementalsRepoUrl.convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
             testJvmArguments.convention(pluginExtension.testJvmArguments)
-            requireEscapeByDefaultInJelly.convention(true)
             configureRepositories = false
 
             pluginDevelopers.set(

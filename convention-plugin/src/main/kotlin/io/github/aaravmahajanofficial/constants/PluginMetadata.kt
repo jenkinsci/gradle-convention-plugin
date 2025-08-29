@@ -21,4 +21,5 @@ public object PluginMetadata {
     public const val BOM_EXTENSION: String = "bom"
     public const val JAVA_VERSION: Int = 21
     public const val MIN_GRADLE_VERSION: String = "9.0"
+    public const val VERSION_CATALOG: String = "baseLibs"
 }

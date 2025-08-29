@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 public class QualityConventionsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
 
             pluginManager.apply("com.diffplug.spotless")
             pluginManager.apply("io.gitlab.arturbosch.detekt")

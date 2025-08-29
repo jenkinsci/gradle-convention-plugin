@@ -20,15 +20,14 @@ package io.github.aaravmahajanofficial.internal.quality
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.ENABLE_QUALITY_TOOLS
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.kotlin.dsl.getByType
 
 public class QualityManager(
     private val project: Project,
     private val quality: QualityExtension,
 ) {
-    private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+    private val libs = project.libsCatalog()
 
     public fun apply() {
         if (!gradleProperty(project.providers, ENABLE_QUALITY_TOOLS, String::toBoolean).getOrElse(true)) {

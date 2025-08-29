@@ -33,7 +33,7 @@ public class KotlinConventionsPlugin : Plugin<Project> {
         with(project) {
             pluginManager.apply("org.jetbrains.kotlin.jvm")
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
             project.configureKotlin(libs)
             project.configureCommonDependencies(libs)
         }
