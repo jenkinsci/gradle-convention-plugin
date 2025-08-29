@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.utils
 
+import io.github.aaravmahajanofficial.constants.PluginMetadata.VERSION_CATALOG
 import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.VersionCatalog
@@ -40,4 +41,4 @@ internal fun libraryFromCatalog(
     alias: String,
 ): Provider<MinimalExternalModuleDependency> = libs.findLibrary(alias).get()
 
-internal fun Project.libsCatalog(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
+internal fun Project.libsCatalog(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named(VERSION_CATALOG)

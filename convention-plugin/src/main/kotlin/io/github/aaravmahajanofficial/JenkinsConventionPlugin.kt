@@ -56,13 +56,13 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             JavaConventionManager(project).configure()
             GroovyConventionManager(project).configure()
             KotlinConventionManager(project).configure()
-            TestingConventionManager(project).configure()
 
             JpiPluginManager(project, pluginExtension).applyAndConfigure()
 
             project.afterEvaluate {
                 try {
                     BomManager(project, pluginExtension.bom).configure()
+                    TestingConventionManager(project).configure()
                     QualityManager(project, pluginExtension.quality).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
