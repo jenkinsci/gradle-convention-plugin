@@ -15,20 +15,19 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 
 public class TestingConventionManager(
     private val project: Project,
 ) {
-    private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+    private val libs = project.libsCatalog()
 
     public fun configure() {
         project.plugins.withType<JavaPlugin> {

@@ -373,7 +373,6 @@ class TestProjectBuilder(
             pluginManagement {
                 repositories {
                     mavenLocal()
-                    mavenCentral()
                     gradlePluginPortal()
                 }
             }
@@ -383,10 +382,14 @@ class TestProjectBuilder(
             dependencyResolutionManagement {
                 repositories {
                     mavenCentral()
-                    gradlePluginPortal()
                     maven {
                         name = "Jenkins"
                         url = uri("https://repo.jenkins-ci.org/public/")
+                    }
+                }
+                versionCatalogs {
+                    create("baseLibs") {
+                        from(files("gradle/libs.versions.toml"))
                     }
                 }
             }
