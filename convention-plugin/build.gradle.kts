@@ -19,7 +19,7 @@ plugins {
     `jvm-test-suite`
     id("conventions.kotlin")
     id("conventions.quality")
-    alias(libs.plugins.plugin.publish)
+    alias(baseLibs.plugins.plugin.publish)
 }
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
@@ -27,22 +27,22 @@ description = "Gradle plugin that provides conventions for developing Jenkins pl
 dependencies {
     implementation(gradleApi())
     implementation(gradleKotlinDsl())
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.jenkins.gradle.jpi2)
-    implementation(libs.spotless.gradle.plugin)
-    implementation(libs.detekt.gradle.plugin)
-    implementation(libs.spotbugs.gradle.plugin)
-    implementation(libs.owasp.depcheck.gradle.plugin)
-    implementation(libs.benmanes.versions.gradle.plugin)
-    implementation(libs.pit.gradle.plugin)
-    implementation(libs.kover.gradle.plugin)
-    implementation(libs.node.gradle.plugin)
-    implementation(libs.dokka.gradle.plugin)
-    implementation(libs.cpd.gradle.plugin)
-    implementation(libs.ktlint.gradle.plugin) {
+    implementation(baseLibs.kotlin.gradle.plugin)
+    implementation(baseLibs.jenkins.gradle.jpi2)
+    implementation(baseLibs.spotless.gradle.plugin)
+    implementation(baseLibs.detekt.gradle.plugin)
+    implementation(baseLibs.spotbugs.gradle.plugin)
+    implementation(baseLibs.owasp.depcheck.gradle.plugin)
+    implementation(baseLibs.benmanes.versions.gradle.plugin)
+    implementation(baseLibs.pit.gradle.plugin)
+    implementation(baseLibs.kover.gradle.plugin)
+    implementation(baseLibs.node.gradle.plugin)
+    implementation(baseLibs.dokka.gradle.plugin)
+    implementation(baseLibs.cpd.gradle.plugin)
+    implementation(baseLibs.ktlint.gradle.plugin) {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
     }
-    implementation(libs.jgit.gradle.plugin)
+    implementation(baseLibs.jgit.gradle.plugin)
 }
 
 gradlePlugin {
@@ -81,7 +81,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(gradleTestKit())
-                implementation(libs.kotest.assertions.core)
+                implementation(baseLibs.kotest.assertions.core)
             }
 
             targets.configureEach {

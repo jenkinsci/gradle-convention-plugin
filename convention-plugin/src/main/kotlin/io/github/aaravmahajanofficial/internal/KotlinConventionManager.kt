@@ -16,11 +16,10 @@
 package io.github.aaravmahajanofficial.internal
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
+import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -30,7 +29,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 public class KotlinConventionManager(
     private val project: Project,
 ) {
-    private val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+    private val libs = project.libsCatalog()
 
     public fun configure() {
         project.plugins.withId("org.jetbrains.kotlin.jvm") {

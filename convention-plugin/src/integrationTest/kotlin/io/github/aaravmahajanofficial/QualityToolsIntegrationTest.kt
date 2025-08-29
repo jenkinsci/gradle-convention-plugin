@@ -322,7 +322,6 @@ class QualityToolsIntegrationTest {
 //                            "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" +
 //                            "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED" +
 //                            "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
-//                        "org.gradle.daemon" to "false",
 //                    ),
 //                ).withBuildGradle(
 //                    """

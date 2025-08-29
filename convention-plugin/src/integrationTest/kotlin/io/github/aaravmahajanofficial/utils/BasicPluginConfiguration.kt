@@ -24,7 +24,7 @@ fun basicPluginConfiguration(
     """
     plugins {
         ${if (applyKotlin) "kotlin(\"jvm\")" else ""}
-        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "999-SNAPSHOT"
+        id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "0.0.0-SNAPSHOT"
     }
 
     jenkinsConvention {
