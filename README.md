@@ -9,9 +9,12 @@
 
 ## Overview
 
-The **Jenkins Gradle Convention Plugin** is a 🐘 [Gradle](https://github.com/gradle/gradle) convention plugin that standardizes and streamlines the process of building, testing, and publishing Jenkins plugins. This plugin encapsulates best practices, enforces consistent configurations, and wires in essential quality, testing, and publishing tools — so you can focus on your plugin's logic, not your build scripts.
+The **Jenkins Gradle Convention Plugin** is a Kotlin-first, 🐘 [Gradle](https://github.com/gradle/gradle) convention plugin that acts as the Maven Parent POM equivalent for Jenkins plugin development with Gradle. It provides a unified, opinionated foundation for building, testing, and publishing Jenkins plugins—standardizing best practices, automating quality checks, and eliminating boilerplate.
 
-> **Stop copy-pasting boilerplate** — get reproducible, high-quality, CI-ready Jenkins plugins out of the box.
+Built on top of the well-established [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin), this plugin extends JPI with extra conventions, integrated quality tools, and CI-friendly defaults—so you can focus on your plugin’s logic, not your build scripts.
+
+> **&check; Stop copy-pasting boilerplate:**  
+> Get reproducible, high-quality, CI-ready Jenkins plugins out of the box!
 
 ---
 
