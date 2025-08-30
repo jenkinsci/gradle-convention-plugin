@@ -1,17 +1,16 @@
 # Jenkins Gradle Convention Plugin
 
+<img src="docs/img/logo.png" alt="Banner Logo" width="600px">
+  
 [![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%2330363c&color=%237b53fb)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?&labelColor=%2330363c)](https://opensource.org/licenses/Apache-2.0)
 [![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-4A154B?&logo=slack&logoColor=white&&labelColor=%2330363c)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
-<div style="text-align:center;">
-  <img src="docs/img/logo.png" alt="Jenkins and Gradle logos" width="600">
-</div>
 
 ## Overview
 
 **The Jenkins Gradle Convention Plugin** is the modern foundation for building high-quality Jenkins plugins. By
-leveraging the simplicity and power of  [Gradle](https://github.com/gradle/gradle), it eliminates the complexity of
+leveraging the simplicity and power of 🐘 [Gradle](https://github.com/gradle/gradle), it eliminates the complexity of
 configuration by automatically handling
 essential tasks.
 
@@ -19,23 +18,7 @@ essential tasks.
 > integrates
 > quality tools, allowing you to build Jenkins plugins **faster** and **more reliably**.
 
-### Why This Plugin?
-
-Traditional Jenkins plugin development involves:
-
-&cross; Manual dependency version management  
-&cross; Fragmented quality tool configuration  
-&cross; Inconsistent project structures  
-&cross; Complex testing setups  
-&cross; Repetitive boilerplate across projects
-
-This plugin provides:
-
-&check; Unified, opinionated conventions  
-&check; Automatic dependency alignment via BOMs  
-&check; Preconfigured quality toolchain  
-&check; Modern testing framework integration  
-&check; Minimal configuration required
+---
 
 ## Core Features
 
@@ -113,6 +96,8 @@ hell_](https://en.wikipedia.org/wiki/Dependency_hell).
 - Multi-module support: Consistent conventions across large projects
 - Kotlin DSL optimized: First-class Kotlin build script support
 
+---
+
 ## Quick Start
 
 ### Step 1: Define the plugin in the projects `libs.versions.toml` file
@@ -163,6 +148,8 @@ jenkinsConvention {
 > This is the **minimal working configuration**.  
 > All later examples (BOMs, quality, etc.) assume you already have this block in place.
 
+---
+
 ## Usage Examples
 
 ### Customizing BOMs
@@ -188,7 +175,7 @@ jenkinsConvention {
 }
 ```
 
-*See full DSL reference →*.
+*See full DSL reference →*. [TODO]
 
 ### Customizing Quality Tools
 
@@ -211,6 +198,8 @@ jenkinsConvention {
     }
 }
 ```
+
+---
 
 ## Compatibility
 
@@ -275,4 +264,5 @@ the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-
 &copy; 2025 Aarav Mahajan
 
 ---
+
 [⬆ Back to Top](#jenkins-gradle-convention-plugin)
