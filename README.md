@@ -262,7 +262,7 @@ for guidelines.
 This project began
 during [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) with guidance
 from
-mentors [Oleg Nenashev]("https://github.com/oleg-nenashev"), [Steve Hill](https://github.com/sghill) & [Rahul Somasunderam](https://github.com/rahulsom)
+mentors [Oleg Nenashev](https://github.com/oleg-nenashev), [Steve Hill](https://github.com/sghill) & [Rahul Somasunderam](https://github.com/rahulsom)
 and support from the [Kotlin Foundation](https://kotlinfoundation.org/), and continues to be actively maintained.
 
 ---
