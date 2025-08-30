@@ -38,8 +38,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             GradleVersionUtils.verifyGradleVersion()
 
             group = "io.jenkins.plugins"
-            description = "A Jenkins Plugin"
-            version = "1.0.0-SNAPSHOT"
+
             repositories {
                 gradlePluginPortal()
                 mavenCentral()

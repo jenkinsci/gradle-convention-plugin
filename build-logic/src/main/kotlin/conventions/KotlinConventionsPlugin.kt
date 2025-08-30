@@ -51,10 +51,10 @@ private fun Project.configureKotlin(libs: VersionCatalog) {
         compilerOptions {
             apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
             languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
 
             allWarningsAsErrors.set(true)
-            progressiveMode.set(false)
+            progressiveMode.set(true)
 
             freeCompilerArgs.addAll(
                 "-Xjsr305=strict",
@@ -68,9 +68,6 @@ private fun Project.configureKotlin(libs: VersionCatalog) {
 private fun Project.configureCommonDependencies(libs: VersionCatalog) {
     dependencies {
         add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-        add("implementation", libs.findLibrary("kotlin-stdlib").get())
-        add("implementation", libs.findLibrary("kotlin-reflect").get())
-
         add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
     }
 }

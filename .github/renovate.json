@@ -3,6 +3,14 @@
   "extends": [
     "config:recommended"
   ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "org.spockframework:spock-core"
+      ],
+      "enabled": false
+    }
+  ],
   "automerge": true,
   "labels": [
     "dependencies"

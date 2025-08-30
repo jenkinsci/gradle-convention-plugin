@@ -1,6 +1,8 @@
 # Jenkins Gradle Convention Plugin
 
-<img src="docs/img/logo.png" alt="Banner Logo" width="600px">
+<div align="center">
+  <img src="docs/img/logo.png" alt="Banner Logo" width="600px">
+</div>
 
 ## Overview
 
@@ -42,8 +44,8 @@ Goodbye, [_dependency
 hell_](https://en.wikipedia.org/wiki/Dependency_hell).
 
 - **Zero Version Conflicts**: All major dependencies automatically aligned
-- **Supported BOMs**: Jenkins Core, Groovy, Spring, Jackson, Jetty, Netty, SLF4J, Guava, Log4j, Vert.x, JUnit, Mockito,
-  Testcontainers, Spock
+- **Supported BOMs**: Jenkins Core, Spring, Jackson, Jetty, Netty, SLF4J, Guava, Log4j, Vert.x, JUnit, Mockito,
+  Testcontainers
 - **Custom BOM Support**: Project-specific BOMs with runtime/test scoping
 
 ### Comprehensive Quality Gates
