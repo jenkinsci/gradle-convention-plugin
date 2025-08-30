@@ -1,49 +1,133 @@
-[![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
-[![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%2330363c&color=%237b53fb)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
-
-
 # Jenkins Gradle Convention Plugin
 
-A Gradle convention plugin for developing Jenkins plugins with modern practices.
+[![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
+[![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%2330363c&color=%237b53fb)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?&labelColor=%2330363c)](https://opensource.org/licenses/Apache-2.0)
+[![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-4A154B?&logo=slack&logoColor=white&&labelColor=%2330363c)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
+<div style="text-align:center;">
+  <img src="docs/img/logo.png" alt="Jenkins and Gradle logos" width="600">
+</div>
 
-# Purpose
+## Overview
 
-The Jenkins Gradle Convention Plugin simplifies and standardizes the development of Jenkins plugins using Gradle. It integrates Jenkins best practices, modern Gradle conventions, and idiomatic Kotlin DSL to provide a robust and developer-friendly build system.
+**The Jenkins Gradle Convention Plugin** is the modern foundation for building high-quality Jenkins plugins. By
+leveraging the simplicity and power of  [Gradle](https://github.com/gradle/gradle), it eliminates the complexity of
+configuration by automatically handling
+essential tasks.
 
-This plugin is designed for:
+> **Stop copy-pasting boilerplate.** This single plugin encapsulates best practices, enforces consistency, and
+> integrates
+> quality tools, allowing you to build Jenkins plugins **faster** and **more reliably**.
 
-Jenkins plugin developers looking to move beyond traditional Maven-based workflows.
-Gradle users seeking a streamlined and compliant Jenkins plugin development experience.
+### Why This Plugin?
 
-## Features
+Traditional Jenkins plugin development involves:
 
-- **Modern Build System**: Leverages the latest Gradle features, including configuration caching, build caching, and Kotlin DSL.
-- **Dependency Management**: First-class support for Jenkins Bill of Materials (BOM).
-- **Quality Tools Integration**: SpotBugs, PMD, Checkstyle, OWASP Dependency Check, and more.
-- **Code Style Enforcement**: Built-in support for Kotlin and Java code formatting via Spotless.
-- **Testing Enhancements**: PIT mutation testing, JaCoCo code coverage, and compatibility tests for Jenkins versions.
+&cross; Manual dependency version management  
+&cross; Fragmented quality tool configuration  
+&cross; Inconsistent project structures  
+&cross; Complex testing setups  
+&cross; Repetitive boilerplate across projects
 
-This plugin builds upon the [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin) while adding modern Gradle practices and enhanced features.
+This plugin provides:
 
-## How to Apply
+&check; Unified, opinionated conventions  
+&check; Automatic dependency alignment via BOMs  
+&check; Preconfigured quality toolchain  
+&check; Modern testing framework integration  
+&check; Minimal configuration required
 
-To use the Jenkins Gradle Convention Plugin in your project, follow these steps:
+## Core Features
 
-### Step 1: Add the Plugin to Your `build.gradle.kts`
+### Language & Build Conventions
 
-Add the plugin to your Gradle project using the `plugins {}` block:
+**Modern Language Standards Enforcement**
 
-```kotlin
-plugins {
-    id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "<latest-version>"
-}
+- Java 21 via toolchains (future-proof)
+- Kotlin explicit API mode for better maintainability
+- Groovy 4+ conventions for all source sets
+- Cross-language compatibility and best practices
+
+### Smart Dependency Management
+
+**Automatic BOM (Bill of Materials) Alignment**
+
+Goodbye, [_dependency
+hell_](https://en.wikipedia.org/wiki/Dependency_hell).
+
+- **Zero Version Conflicts**: All major dependencies automatically aligned
+- **Supported BOMs**: Jenkins Core, Groovy, Spring, Jackson, Jetty, Netty, SLF4J, Guava, Log4j, Vert.x, JUnit, Mockito,
+  Testcontainers, Spock
+- **Custom BOM Support**: Project-specific BOMs with runtime/test scoping
+
+### Comprehensive Quality Gates
+
+> [!NOTE]
+**Quality tools are applied conditionally based on project sources.**
+
+| Category            | Tools                  | Languages                        | Purpose                                 |
+|---------------------|------------------------|----------------------------------|-----------------------------------------|
+| **Code Style**      | Spotless               | Java, Kotlin, Groovy, JSON, YAML | Universal formatting and style          |
+|                     | Checkstyle             | Java                             | Java-specific style checks              |
+|                     | Codenarc               | Groovy                           | Groovy-specific style checks            |
+| **Static Analysis** | PMD                    | Java                             | Java bug detection and best practices   |
+|                     | SpotBugs               | Java                             | Java bytecode analysis for bugs         |
+|                     | Detekt                 | Kotlin                           | Kotlin-specific linting and style       |
+| **Security**        | OWASP Dependency-Check | All                              | Vulnerability scanning for dependencies |
+| **Coverage**        | Jacoco                 | Java, Groovy                     | JVM test coverage enforcement           |
+|                     | Kover                  | Kotlin                           | Kotlin-native coverage analysis         |
+| **Testing**         | Pitest                 | Java                             | Mutation testing for robust test suites |
+| **Frontend**        | ESLint                 | JavaScript, TypeScript           | Frontend code quality                   |
+| **Documentation**   | Dokka                  | Kotlin                           | Kotlin API documentation                |
+| **Duplication**     | CPD                    | Java, Groovy                     | Copy-paste detection                    |
+
+**Unified Reporting**
+
+- All reports in standard locations (`build/reports/`)
+- Multiple formats: `HTML`, `XML`, `SARIF`
+- CI-ready integration with `check` lifecycle
+
+### Modern Testing Ecosystem
+
+**Preconfigured Testing Stack**
+
+- JUnit Jupiter 5.x - Modern test framework
+- Kotest - Kotlin-native testing
+- MockK & Mockito - Comprehensive mocking
+- AssertJ - Fluent assertions
+- Spock - Groovy testing framework
+- Testcontainers - Integration testing
+
+**Optimized Execution**
+
+- Forked JVMs with sensible memory defaults
+- Parallel test execution
+- Structured logging and reporting
+
+### Configuration & Extensibility
+
+**Multiple Configuration Approaches**
+
+- Properties-based: Perfect for CI/CD environments
+- DSL-based: Rich, type-safe configuration in build scripts
+- Multi-module support: Consistent conventions across large projects
+- Kotlin DSL optimized: First-class Kotlin build script support
+
+## Quick Start
+
+### Step 1: Define the plugin in the projects `libs.versions.toml` file
+
+```toml
+[versions]
+jenkinsConvention = "<LATEST_VERSION>"
+
+[plugins]
+jenkinsConvention = { id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin", version.ref = "jenkinsConvention" }
 ```
 
-Replace `<latest-version>` with the latest version of the plugin available on the Gradle Plugin Portal.
+### Step 2: Configure the Version Catalog
 
-### Step 2: Version Catalog Requirements
-
-In the root `settings.gradle.kts` of the project. Specify the version catalog:
+In the root `settings.gradle.kts`, add the plugin’s version catalog:
 
 ```kts
 dependencyResolutionManagement {
@@ -51,54 +135,65 @@ dependencyResolutionManagement {
         mavenCentral()
     }
     versionCatalogs {
-        create("libs") {
-            from("io.github.aaravmahajanofficial:version-catalog:<latest-version>")
+        create("baseLibs") {
+            from("io.github.aaravmahajanofficial:version-catalog:<LATEST_VERSION>")
         }
     }
 }
 ```
 
-Replace `<latest-version>` with the latest version of the plugin available on the GitHub Releases.
-
-### Step 3: Configure the Plugin
-
-The plugin provides a highly configurable DSL for Jenkins plugin development. Example configuration:
+### Step 3: Basic Build Script
 
 ```kotlin
-jenkinsConvention {
-    // only modify the required fields
-    homepage = uri("https://example.com/your-plugin")
+plugins {
+    alias("libs.plugins.jenkinsConvention")
+}
 
-    // By default: (id, website, email) would be derived as per configured in git
+jenkinsConvention {
+    // Required: at least one developer
     developer {
         id = "exampleDev"
         name = "Example Developer"
         email = "example@example.com"
-        website = uri("https://example.com")
-        organization = "Example Inc."
     }
 }
 ```
 
-### Step 4: Run the Build
+> [!IMPORTANT]  
+> This is the **minimal working configuration**.  
+> All later examples (BOMs, quality, etc.) assume you already have this block in place.
 
-Execute the following commands to build and test your Jenkins plugin:
+## Usage Examples
 
-```sh
-./gradlew clean build --no-configuration-cache
+### Customizing BOMs
+
+By default, common BOMs (like Jackson) are applied automatically.  
+You can disable or add your own:
+
+```kotlin
+jenkinsConvention {
+    bom {
+        // Disable a default BOM
+        jackson { enabled = false }
+
+        // Add a custom BOM
+        customBoms {
+            create("aws-bom") {
+                coordinates = "com.amazonaws:aws-java-sdk-bom"
+                version = "<AWS_BOM_VERSION>"
+                testOnly = false
+            }
+        }
+    }
+}
 ```
 
-**Notes:**
-- The `--no-configuration-cache` flag ensures a clean build and avoids issues when developing plugins.
+*See full DSL reference →*.
 
-## Configuration Options
+### Customizing Quality Tools
 
-The plugin provides several extensions to customize your build:
-- **QualityExtension**: Configure code quality tools like SpotBugs, Detekt, PMD, etc.
-- **BomExtension**: Manage dependencies using Jenkins BOMs.
-- **PluginExtension**: Set plugin metadata, developers, licenses, and more.
-
-### Quality Tools Example
+The plugin integrates Spotless, OWASP Dependency Check, Detekt, and more.  
+You can enforce stricter rules or relax defaults:
 
 ```kotlin
 jenkinsConvention {
@@ -106,28 +201,78 @@ jenkinsConvention {
         spotless {
             enabled = false
         }
-    }
-}
-```
-
-### BOM Management Example
-
-```kotlin
-jenkinsConvention {
-    bom {
-        netty {
-            enabled = false
+        detekt {
+            failOnViolation = false // Default: true
         }
-        customBoms {
-            create("aws-bom") {
-                coordinates = "com.amazonaws:aws-java-sdk-bom"
-                testOnly = false
-            }
-        } 
+        owaspDepCheck {
+            enabled = true
+            failOnCvss = 7.5f // Default: 7.0f
+        }
     }
 }
 ```
+
+## Compatibility
+
+| Component   | Supported Versions                                               |
+|-------------|------------------------------------------------------------------|
+| **Gradle**  | 9.0 or newer                                                     |
+| **Jenkins** | Jenkins Core **2.516.2+ (LTS)** – defined via Jenkins Plugin BOM |
+| **Java**    | 21 (via toolchains, enforced)                                    |
+| **Kotlin**  | 2.2.x+                                                           |
+| **Groovy**  | 4.0+ (with BOM alignment)                                        |
+| **OS**      | Linux, macOS, Windows                                            |
+
+- **Requires:** Kotlin DSL or Groovy DSL
+
+--- 
+
+## Project Structure
+
+- **`convention-plugin/src/main/kotlin`**: Core plugin implementation
+- **`convention-plugin/src/integrationTest`**: Comprehensive integration tests
+- **`build-logic`**: Reusable convention and quality plugins
+- **`version-catalogs`**: Centralized dependency versions (libs.versions.toml)
+
+---
+
+## Contributing
+
+Want to help improve this plugin?
+
+- Fork and open an issue or submit a pull request for any bugs/improvements.
+- Review [CONTRIBUTING.md](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/CONTRIBUTING.md)
+for guidelines.
+
+---
+
+## Additional Resources
+
+- [ Gradle Community Project Page ](https://community.gradle.org/events/gsoc/2025/jenkins-plugins-toolchain/) - Overview
+  of the project's goals and progress
+- [ Gradle Plugin Portal ](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin/) -
+  Official plugin page with installation instructions.
+- **Community/Support**: Join the `#jenkins-plugin-toolchain` channel on
+  the [Gradle Community Slack](https://community.gradle.org/contributing/community-slack/).
+
+---
+
+## Acknowledgements
+
+This project began
+during [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) with guidance
+from
+mentors [Oleg Nenashev]("https://github.com/oleg-nenashev"), [Steve Hill](https://github.com/sghill) & [Rahul Somasunderam](https://github.com/rahulsom)
+and support from the [Kotlin Foundation](https://kotlinfoundation.org/), and continues to be actively maintained.
+
+---
 
 ## License
 
-This project is licensed under the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE) license.
+This project is licensed under
+the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE).
+
+&copy; 2025 Aarav Mahajan
+
+---
+[⬆ Back to Top](#jenkins-gradle-convention-plugin)
