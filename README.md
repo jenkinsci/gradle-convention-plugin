@@ -146,7 +146,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 plugins {
-    alias("libs.plugins.jenkinsConvention")
+    alias(libs.plugins.jenkinsConvention)
 }
 
 jenkinsConvention {
