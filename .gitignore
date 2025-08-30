@@ -1,72 +1,44 @@
-.gradle
+### Gradle ###
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+!**/src/**/build/
 
 ### IntelliJ IDEA ###
 .idea/
-*.iws
 *.iml
-*.ipr
 out/
-.idea_modules/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### Kotlin ###
-.kotlin
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+!**/src/**/out/
 
 ### VS Code ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 *.code-workspace
 
-### Mac OS ###
+### Kotlin ###
+.kotlin/
+
+### OS-specific files ###
+# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
 
-### Windows ###
+# Windows
 Thumbs.db
-ehthumbs.db
-ehthumbs_vista.db
 Desktop.ini
 $RECYCLE.BIN/
 
-### Linux ###
+# Linux
 *~
 .fuse_hidden*
 .directory
 .Trash-*
 .nfs*
 
-### Vim ###
+### Editors ###
+# Vim
 [._]*.s[a-w][a-z]
-[._]s[a-w][a-z]
 *.un~
 Session.vim
 .netrwhist
@@ -79,14 +51,10 @@ gradle-user-home/
 .jenkins/
 
 ### Test outputs ###
-**/test/resources/output
+**/test/resources/output/
 
 ### Secrets and local configuration ###
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*
 *.local.properties
 local.properties
 credentials.properties
