@@ -343,7 +343,6 @@ class TestProjectBuilder(
 
             # BOM
             jenkins-bom-coordinates = { module = "io.jenkins.tools.bom:bom-2.504.x", version.ref = "jenkins-bom" }
-            groovy-bom-coordinates = { module = "org.apache.groovy:groovy-bom", version = "4.0.27" }
             jackson-bom-coordinates = { module = "com.fasterxml.jackson:jackson-bom", version = "2.19.2" }
             spring-bom-coordinates = { module = "org.springframework:spring-framework-bom", version = "6.2.9" }
             netty-bom-coordinates = { module = "io.netty:netty-bom", version = "4.2.3.Final" }

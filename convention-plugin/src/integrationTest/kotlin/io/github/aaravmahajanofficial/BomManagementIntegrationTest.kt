@@ -52,7 +52,6 @@ class BomManagementIntegrationTest {
                 "io.jenkins.tools.bom:bom-2.504.x:{strictly 5015.vb_52d36583443} -> 5015.vb_52d36583443",
                 "org.springframework:spring-framework-bom:{strictly 6.2.9} -> 6.2.9",
                 "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2",
-                "org.apache.groovy:groovy-bom:{strictly 4.0.27} -> 4.0.27",
                 "io.netty:netty-bom:{strictly 4.2.3.Final} -> 4.2.3.Final",
                 "org.slf4j:slf4j-bom:{strictly 2.0.17} -> 2.0.17",
                 "org.eclipse.jetty:jetty-bom:{strictly 12.0.23} -> 12.0.23",
@@ -71,7 +70,6 @@ class BomManagementIntegrationTest {
                 "org.junit:junit-bom",
                 "org.mockito:mockito-bom",
                 "org.testcontainers:testcontainers-bom",
-                "org.spockframework:spock-bom",
             )
         testBoms.forEach { bom ->
             result.output shouldNotContain bom
@@ -96,7 +94,6 @@ class BomManagementIntegrationTest {
         result.output shouldContain "org.junit:junit-bom:{strictly 5.13.4} -> 5.13.4"
         result.output shouldContain "org.mockito:mockito-bom:{strictly 5.18.0} -> 5.18.0"
         result.output shouldContain "org.testcontainers:testcontainers-bom:{strictly 1.21.3} -> 1.21.3"
-        result.output shouldContain "org.spockframework:spock-bom:{strictly 2.4-M6-groovy-4.0} -> 2.4-M6-groovy-4.0"
     }
 
     @Test

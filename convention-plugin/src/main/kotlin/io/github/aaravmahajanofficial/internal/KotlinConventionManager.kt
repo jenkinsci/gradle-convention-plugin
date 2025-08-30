@@ -35,7 +35,6 @@ public class KotlinConventionManager(
         project.plugins.withId("org.jetbrains.kotlin.jvm") {
             project.configure<KotlinJvmProjectExtension> {
                 jvmToolchain(JAVA_VERSION)
-                explicitApi()
             }
 
             val kotlinVersion =
@@ -50,7 +49,7 @@ public class KotlinConventionManager(
                 t.compilerOptions {
                     languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
                     apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    jvmTarget.set(JvmTarget.JVM_21)
+                    jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)
                     freeCompilerArgs.addAll(
@@ -62,9 +61,6 @@ public class KotlinConventionManager(
 
             project.dependencies {
                 add("implementation", platform(libs.findLibrary("kotlin-bom").get()))
-                add("implementation", libs.findLibrary("kotlin-stdlib").get())
-                add("implementation", libs.findLibrary("kotlin-reflect").get())
-
                 add("compileOnly", libs.findLibrary("jetbrains-annotations").get())
             }
         }

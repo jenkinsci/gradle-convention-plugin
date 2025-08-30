@@ -41,11 +41,6 @@ public class BomManager(
             bomExtension.jenkins.testOnly,
         )
         applyBomIfEnabled(
-            bomExtension.groovy.enabled,
-            bomExtension.groovy.coordinates,
-            bomExtension.groovy.testOnly,
-        )
-        applyBomIfEnabled(
             bomExtension.jackson.enabled,
             bomExtension.jackson.coordinates,
             bomExtension.jackson.testOnly,
@@ -99,11 +94,6 @@ public class BomManager(
             bomExtension.testContainers.enabled,
             bomExtension.testContainers.coordinates,
             bomExtension.testContainers.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.spock.enabled,
-            bomExtension.spock.coordinates,
-            bomExtension.spock.testOnly,
         )
     }
 

@@ -30,7 +30,6 @@ public open class BomExtension
         libs: VersionCatalog,
     ) {
         public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
-        public val groovy: GroovyBomExtension = objects.newInstance(libs)
         public val jackson: JacksonBomExtension = objects.newInstance(libs)
         public val spring: SpringBomExtension = objects.newInstance(libs)
         public val netty: NettyBomExtension = objects.newInstance(libs)
@@ -42,13 +41,10 @@ public open class BomExtension
         public val junit: JUnitBomExtension = objects.newInstance(libs)
         public val mockito: MockitoBomExtension = objects.newInstance(libs)
         public val testContainers: TestContainersBomExtension = objects.newInstance(libs)
-        public val spock: SpockBomExtension = objects.newInstance(libs)
         public val customBoms: NamedDomainObjectContainer<CustomBomExtension> =
             objects.domainObjectContainer(CustomBomExtension::class.java)
 
         public fun jenkins(action: Action<JenkinsBomExtension>): Unit = action.execute(jenkins)
-
-        public fun groovy(action: Action<GroovyBomExtension>): Unit = action.execute(groovy)
 
         public fun jackson(action: Action<JacksonBomExtension>): Unit = action.execute(jackson)
 
@@ -69,8 +65,6 @@ public open class BomExtension
         public fun junit(action: Action<JUnitBomExtension>): Unit = action.execute(junit)
 
         public fun mockito(action: Action<MockitoBomExtension>): Unit = action.execute(mockito)
-
-        public fun spock(action: Action<SpockBomExtension>): Unit = action.execute(spock)
 
         public fun testContainers(action: Action<TestContainersBomExtension>): Unit = action.execute(testContainers)
 
