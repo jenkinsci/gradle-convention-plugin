@@ -72,12 +72,6 @@ Thank you for your interest in contributing! Your help makes this project better
 
 ---
 
-## Code of Conduct
-
-Be respectful and constructive. See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
-
----
-
 ## Resources
 
 - [Gradle Convention Plugins Guide](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
