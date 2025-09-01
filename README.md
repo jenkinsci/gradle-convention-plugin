@@ -1,8 +1,3 @@
-> [!CAUTION]
-> **This repository is archived and read-only.**
-> 
-> New home: [jenkinsci/gradle-convention-plugin](https://github.com/jenkinsci/gradle-convention-plugin)
->
 # Jenkins Gradle Convention Plugin
 
 <div align="center">
