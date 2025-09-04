@@ -140,12 +140,10 @@ plugins {
 }
 
 jenkinsConvention {
-    // Required: at least one developer
-    developer {
-        id = "exampleDev"
-        name = "Example Developer"
-        email = "example@example.com"
-    }
+    // Only override the defaults that need to be customized for your plugin.
+
+    // Set the Jenkins version (default: as per version catalog).
+    jenkinsVersion = "2.525"
 }
 ```
 
@@ -241,6 +239,7 @@ Want to help improve this plugin?
 
 - [ Gradle Community Project Page ](https://community.gradle.org/events/gsoc/2025/jenkins-plugins-toolchain/) - Overview
   of the project's goals and progress
+- [Jenkins.io Blog](https://www.jenkins.io/blog/2025/08/31/aarav-mahajan-gsoc-gradle-convention-plugin-for-jenkins-plugin-development/)
 - [ Gradle Plugin Portal ](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin/) -
   Official plugin page with installation instructions.
 - **Community/Support**: Join the `#jenkins-plugin-toolchain` channel on
