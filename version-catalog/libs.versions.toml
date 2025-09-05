@@ -11,7 +11,7 @@ jenkins-stapler = "2010.va_89c7958c1c5"
 jenkins-gradle-jpi2 = "0.55.1"
 
 # Ecosystem BOMs
-jenkins-bom = "5294.va_d2e144c80e1"
+jenkins-bom = "5353.v3dec76e40169"
 jackson-bom = "2.20.0"
 spring-bom = "6.2.10"
 netty-bom = "4.2.5.Final"
