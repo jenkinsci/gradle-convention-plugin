@@ -49,22 +49,25 @@ gradlePlugin {
     website = "https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin"
     vcsUrl = "https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin"
     plugins {
-        create("jenkinsConventions") {
-            id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin"
-            displayName = "Jenkins Gradle Convention Plugin"
-            description = "Convention plugin for developing Jenkins plugins with Gradle"
-            tags =
-                listOf(
-                    "jenkins",
-                    "convention-plugin",
-                    "jenkins-plugin-development",
-                    "build-automation",
-                    "standardization",
-                    "build-logic",
-                    "version-catalog",
-                )
-            implementationClass = "io.github.aaravmahajanofficial.JenkinsConventionPlugin"
-        }
+        create(
+            "jenkinsConventions",
+            Action {
+                id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin"
+                displayName = "Jenkins Gradle Convention Plugin"
+                description = "Convention plugin for developing Jenkins plugins with Gradle"
+                tags =
+                    listOf(
+                        "jenkins",
+                        "convention-plugin",
+                        "jenkins-plugin-development",
+                        "build-automation",
+                        "standardization",
+                        "build-logic",
+                        "version-catalog",
+                    )
+                implementationClass = "io.github.aaravmahajanofficial.JenkinsConventionPlugin"
+            },
+        )
     }
 }
 
