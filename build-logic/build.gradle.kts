@@ -55,21 +55,21 @@ kotlin {
 
 gradlePlugin {
     plugins {
-        create("javaConventions") {
+        create("javaConventions", Action {
             id = "conventions.java"
             displayName = "Java Conventions"
             implementationClass = "conventions.JavaConventionsPlugin"
-        }
-        create("kotlinConventions") {
+        })
+        create("kotlinConventions", Action {
             id = "conventions.kotlin"
             displayName = "Kotlin Conventions"
             implementationClass = "conventions.KotlinConventionsPlugin"
-        }
-        create("qualityConventions") {
+        })
+        create("qualityConventions", Action {
             id = "conventions.quality"
             displayName = "Quality Conventions"
             implementationClass = "conventions.QualityConventionsPlugin"
-        }
+        })
     }
 }
 
