@@ -41,8 +41,6 @@ public class JpiPluginManager(
     public fun applyAndConfigure() {
         project.pluginManager.apply("org.jenkins-ci.jpi")
 
-        pluginExtension.pluginDevelopers.get().forEach { it.validate() }
-
         bridgeExtensionProperties()
         project.tasks.findByName("generateLicenseInfo")?.enabled = false
 
