@@ -62,12 +62,6 @@ public open class DeveloperExtension
         public fun roles(vararg values: String): Unit = roles.set(values.toSet())
 
         public fun roles(values: Collection<String>): Unit = roles.set(values.toSet())
-
-        internal fun validate() {
-            require(!id.orNull.isNullOrBlank()) { "Developer 'id' is required." }
-            require(!name.orNull.isNullOrBlank()) { "Developer 'name' is required." }
-            require(!email.orNull.isNullOrBlank()) { "Developer 'email' is required." }
-        }
     }
 
 public open class DevelopersExtension
