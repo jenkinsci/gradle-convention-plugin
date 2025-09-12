@@ -2,7 +2,7 @@ import com.vanniktech.maven.publish.VersionCatalog
 
 plugins {
     `version-catalog`
-    alias(baseLibs.plugins.maven.gradle.publish.plugin)
+    alias(baseLibs.plugins.maven.gradle.publish)
 }
 
 catalog {

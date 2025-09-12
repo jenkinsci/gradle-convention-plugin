@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import kotlin.collections.addAll
 
 public class KotlinConventionManager(
     private val project: Project,
@@ -42,8 +43,7 @@ public class KotlinConventionManager(
                     .findVersion("kotlin")
                     .get()
                     .requiredVersion
-                    .split(".")
-                    .let { "${it[0]}.${it[1]}" }
+                    .substringBeforeLast(".")
 
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
@@ -52,9 +52,9 @@ public class KotlinConventionManager(
                     jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)
+                    optIn.add("kotlin.RequiresOptIn")
                     freeCompilerArgs.addAll(
                         "-Xjsr305=strict",
-                        "-opt-in=kotlin.RequiresOptIn",
                     )
                 }
             }

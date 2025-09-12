@@ -14,17 +14,15 @@
  * permissions and limitations under the License.
  */
 dependencyResolutionManagement {
-    versionCatalogs {
-        create("baseLibs") {
-            from(files("../version-catalog/libs.versions.toml"))
-        }
-    }
-
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-
     repositories {
         mavenCentral()
         gradlePluginPortal()
+    }
+    versionCatalogs {
+        create("baseLibs", Action {
+            from(files("../version-catalog/libs.versions.toml"))
+        })
     }
 }
 

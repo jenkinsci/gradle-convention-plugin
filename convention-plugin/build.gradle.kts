@@ -17,17 +17,14 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     `jvm-test-suite`
-    id("conventions.kotlin")
-    id("conventions.quality")
+    id("kotlin-conventions")
+    id("quality-conventions")
     alias(baseLibs.plugins.plugin.publish)
 }
 
 description = "Gradle plugin that provides conventions for developing Jenkins plugins"
 
 dependencies {
-    implementation(gradleApi())
-    implementation(gradleKotlinDsl())
-    implementation(baseLibs.kotlin.gradle.plugin)
     implementation(baseLibs.jenkins.gradle.jpi2)
     implementation(baseLibs.spotless.gradle.plugin)
     implementation(baseLibs.detekt.gradle.plugin)

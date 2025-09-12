@@ -13,40 +13,32 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    `java-gradle-plugin`
-    `kotlin-dsl`
+    id("org.jetbrains.kotlin.jvm")
 }
 
-val javaToolchainVersion: Provider<Int> =
-    providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(21)
-
-java {
-    toolchain {
-        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
-    }
-}
+private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
 
 kotlin {
-    jvmToolchain {
-        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
-    }
+    jvmToolchain(21)
 
     explicitApi()
 
-    val kotlinVersion = baseLibs.plugins.kotlin.jvm.get().version.requiredVersion.substringBeforeLast(".")
+    val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion.substringBeforeLast(".")
 
     compilerOptions {
         apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
         languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        jvmTarget = JvmTarget.JVM_21
+        jvmTarget.set(JvmTarget.JVM_21)
 
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")
+        jvmDefault.set(JvmDefaultMode.ENABLE)
         freeCompilerArgs.addAll(
             "-Xjsr305=strict",
         )
@@ -54,13 +46,9 @@ kotlin {
 }
 
 dependencies {
-    implementation(plugin(baseLibs.plugins.kotlin.jvm))
-    implementation(plugin(baseLibs.plugins.spotless))
-    implementation(plugin(baseLibs.plugins.detekt))
+    implementation(gradleApi())
+    implementation(gradleKotlinDsl())
+    compileOnly(libs.findLibrary("kotlin-gradle-plugin").get())
+    implementation(platform(libs.findLibrary("kotlin-bom").get()))
+    compileOnly(libs.findLibrary("jetbrains-annotations").get())
 }
-
-// Helper function that transforms a Gradle Plugin alias from a
-// Version Catalog into a valid dependency notation for buildSrc
-// See https://docs.gradle.org/current/userguide/version_catalogs.html#sec:buildsrc-version-catalog
-fun plugin(plugin: Provider<PluginDependency>) =
-    plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }
