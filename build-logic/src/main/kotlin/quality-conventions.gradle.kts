@@ -25,20 +25,21 @@ plugins {
 
 private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
 
+private val licensePath = rootProject.layout.projectDirectory.file("config/license-header.txt")
+private val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
+
 configure<SpotlessExtension> {
 
     val commonExcludes = listOf(
-        "**/build/**",
-        "**/.gradle/**",
-        "**/.idea/**",
-        "**/node_modules/**",
-        "**/.git/**",
-        "**/generated/**",
-        "**/out/**",
-        "**/.gradle-test-kit/**"
+        "build/**",
+        ".gradle/**",
+        ".idea/**",
+        "node_modules/**",
+        ".git/**",
+        "generated/**",
+        "out/**",
+        ".gradle-test-kit/**"
     )
-
-    val licensePath = "config/license-header.txt"
 
     kotlin {
         target(
@@ -46,11 +47,11 @@ configure<SpotlessExtension> {
             "src/test/kotlin/**/*.kt"
         )
         targetExclude(commonExcludes)
-        ktlint(libs.findVersion("ktlint").get().requiredVersion)
+        ktlint(ktlintVersion)
         trimTrailingWhitespace()
         endWithNewline()
         licenseHeaderFile(
-            rootProject.file(licensePath),
+            licensePath,
             "(package |@file:|import )",
         )
     }
@@ -60,30 +61,20 @@ configure<SpotlessExtension> {
             "**/*.gradle.kts",
             "settings.gradle.kts"
         )
-        targetExclude(commonExcludes + "**/gradle/**")
-        ktlint(libs.findVersion("ktlint").get().requiredVersion)
+        targetExclude(commonExcludes + "gradle/**")
+        ktlint(ktlintVersion)
         trimTrailingWhitespace()
         endWithNewline()
         licenseHeaderFile(
-            rootProject.file(licensePath),
+            licensePath,
             "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
         )
     }
     format("misc") {
         target(
-            "*.md",
-            "*.txt",
-            ".gitignore",
-            ".gitattributes",
-            "*.properties",
-            "*.yml",
-            "*.yaml",
-            "*.json",
-            ".editorconfig",
-            "*.xml",
-            "*.sh",
-            "*.dockerfile",
-            "Dockerfile*"
+            "*.md", "*.txt", ".gitignore", ".gitattributes",
+            "*.properties", "*.yml", "*.yaml",
+            ".editorconfig", "*.xml"
         )
         targetExclude(commonExcludes)
         trimTrailingWhitespace()
@@ -95,8 +86,8 @@ configure<DetektExtension> {
     toolVersion = libs.findVersion("detekt").get().requiredVersion
     parallel = true
     buildUponDefaultConfig = true
-    config.setFrom(rootProject.file("config/detekt/detekt.yml"))
-    baseline = rootProject.file("config/detekt/detekt-baseline.xml")
+    config.setFrom(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))
+    baseline = rootProject.layout.projectDirectory.file("config/detekt/detekt-baseline.xml").asFile
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
@@ -106,8 +97,6 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     reports {
         html.required.set(true)
         xml.required.set(true)
-        sarif.required.set(true)
-        txt.required.set(true)
     }
 }
 

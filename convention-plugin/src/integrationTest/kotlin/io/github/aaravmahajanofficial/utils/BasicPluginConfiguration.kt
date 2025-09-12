@@ -16,36 +16,18 @@
 package io.github.aaravmahajanofficial.utils
 
 fun basicPluginConfiguration(
-    applyKotlin: Boolean = false,
     bomBlock: String = "",
     qualityBlock: String = "",
     dependenciesBlock: String = "",
 ): String =
     """
     plugins {
-        ${if (applyKotlin) "kotlin(\"jvm\")" else ""}
+        "kotlin(\"jvm\") version \"2.2.0\""
         id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "0.0.0-SNAPSHOT"
     }
 
     jenkinsConvention {
         artifactId = "test-plugin"
-        homePage = uri("https://github.com")
-
-        developers {
-            developer {
-                id = "dev-123"
-                name = "Test Dev"
-                email = "testDev@gmail.com"
-            }
-        }
-
-        licenses {
-            license {
-                name = "MIT"
-                url = uri("https://opensource.org/license/mit")
-            }
-        }
-
         ${bomBlock.ifBlank { "" }}
         ${qualityBlock.ifBlank { "" }}
     }

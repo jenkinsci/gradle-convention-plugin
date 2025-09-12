@@ -49,15 +49,15 @@ class BomManagementIntegrationTest {
 
         val expectedBoms =
             listOf(
-                "io.jenkins.tools.bom:bom-2.504.x:{strictly 5015.vb_52d36583443} -> 5015.vb_52d36583443",
-                "org.springframework:spring-framework-bom:{strictly 6.2.9} -> 6.2.9",
-                "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2",
-                "io.netty:netty-bom:{strictly 4.2.3.Final} -> 4.2.3.Final",
-                "org.slf4j:slf4j-bom:{strictly 2.0.17} -> 2.0.17",
-                "org.eclipse.jetty:jetty-bom:{strictly 12.0.23} -> 12.0.23",
-                "com.google.guava:guava-bom:{strictly 33.4.8-jre} -> 33.4.8-jre",
-                "org.apache.logging.log4j:log4j-bom:{strictly 2.25.1} -> 2.25.1",
-                "io.vertx:vertx-stack-depchain:{strictly 5.0.1} -> 5.0.1",
+                "io.jenkins.tools.bom:bom-2.504.x:5015.vb_52d36583443",
+                "org.springframework:spring-framework-bom:6.2.9",
+                "com.fasterxml.jackson:jackson-bom:2.19.2",
+                "io.netty:netty-bom:4.2.3.Final",
+                "org.slf4j:slf4j-bom:2.0.17",
+                "org.eclipse.jetty:jetty-bom:12.0.23",
+                "com.google.guava:guava-bom:33.4.8-jre",
+                "org.apache.logging.log4j:log4j-bom:2.25.1",
+                "io.vertx:vertx-stack-depchain:5.0.1",
             )
 
         expectedBoms.forEach { bom ->
@@ -91,9 +91,9 @@ class BomManagementIntegrationTest {
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        result.output shouldContain "org.junit:junit-bom:{strictly 5.13.4} -> 5.13.4"
-        result.output shouldContain "org.mockito:mockito-bom:{strictly 5.18.0} -> 5.18.0"
-        result.output shouldContain "org.testcontainers:testcontainers-bom:{strictly 1.21.3} -> 1.21.3"
+        result.output shouldContain "org.junit:junit-bom:5.13.4"
+        result.output shouldContain "org.mockito:mockito-bom:5.18.0"
+        result.output shouldContain "org.testcontainers:testcontainers-bom:1.21.3"
     }
 
     @Test
@@ -110,9 +110,9 @@ class BomManagementIntegrationTest {
                             """
                             bom {
                                 customBoms {
-                                    create("aws-bom") {
-                                        coordinates = "com.amazonaws:aws-java-sdk-bom"
-                                        version = "1.12.788"
+                                    create("micrometer-bom") {
+                                        coordinates = "io.micrometer:micrometer-bom"
+                                        version = "1.15.4"
                                         testOnly = false
                                     }
                                 }
@@ -126,7 +126,7 @@ class BomManagementIntegrationTest {
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        result.output shouldContain "com.amazonaws:aws-java-sdk-bom:{strictly 1.12.788} -> 1.12.788"
+        result.output shouldContain "io.micrometer:micrometer-bom:1.15.4"
     }
 
     @Test
@@ -143,8 +143,8 @@ class BomManagementIntegrationTest {
                             """
                             bom {
                                 customBoms {
-                                    create("aws-bom") {
-                                        version = "1.12.788"
+                                    create("micrometer-bom") {
+                                        version = "1.15.4"
                                         testOnly = false
                                     }
                                 }
@@ -155,7 +155,7 @@ class BomManagementIntegrationTest {
 
         val result = builder.runGradleAndFail("help")
 
-        result.output shouldContain "Missing coordinates for BOM 'aws-bom'."
+        result.output shouldContain "Missing coordinates for BOM 'micrometer-bom'."
     }
 
     @Test
@@ -172,8 +172,8 @@ class BomManagementIntegrationTest {
                             """
                             bom {
                                 customBoms {
-                                    create("aws-bom") {
-                                        coordinates = "com.amazonaws:aws-java-sdk-bom"
+                                    create("micrometer-bom") {
+                                        coordinates = "io.micrometer:micrometer-bom"
                                         testOnly = false
                                     }
                                 }
@@ -184,7 +184,7 @@ class BomManagementIntegrationTest {
 
         val result = builder.runGradleAndFail("help")
 
-        result.output shouldContain "Missing version for BOM 'aws-bom'."
+        result.output shouldContain "Missing version for BOM 'micrometer-bom'."
     }
 
     @Test
@@ -211,7 +211,7 @@ class BomManagementIntegrationTest {
 
         result.task(":dependencies")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        result.output shouldContain "com.fasterxml.jackson:jackson-bom:{strictly 2.19.2} -> 2.19.2"
+        result.output shouldContain "com.fasterxml.jackson:jackson-bom:2.19.2"
         result.output shouldContain "com.fasterxml.jackson.core:jackson-core:2.19.2"
     }
 

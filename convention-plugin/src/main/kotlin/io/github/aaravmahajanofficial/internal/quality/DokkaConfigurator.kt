@@ -16,12 +16,24 @@
 package io.github.aaravmahajanofficial.internal.quality
 
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
-import io.github.aaravmahajanofficial.utils.hasKotlinSources
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.DokkaPlugin
 
 internal fun Project.configureDokka(quality: QualityExtension) {
-    if (!quality.dokka.enabled.get() || !hasKotlinSources()) return
+    if (!quality.dokka.enabled.get()) return
 
     pluginManager.apply(DokkaPlugin::class.java)
+
+    configure<DokkaExtension> {
+        dokkaPublications.named("html") {
+            it.outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+        }
+        dokkaSourceSets.configureEach {
+            it.sourceRoots.from(
+                fileTree("src/main/kotlin"),
+            )
+        }
+    }
 }

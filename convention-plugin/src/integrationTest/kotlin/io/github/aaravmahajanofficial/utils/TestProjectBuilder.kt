@@ -50,7 +50,7 @@ class TestProjectBuilder(
         return this
     }
 
-    fun withGradleProperties(properties: Map<String, String>): TestProjectBuilder {
+    fun withGradleProperties(properties: Map<String, String> = emptyMap()): TestProjectBuilder {
         val content =
             buildString {
                 appendLine(defaultGradleProperties)
@@ -113,8 +113,8 @@ class TestProjectBuilder(
                     """
                     package $packageName
 
-                    public class $className {
-                        public fun getMessage(): String = "Hello from $className :)"
+                    class $className {
+                        fun getMessage(): String = "Hello from $className :)"
                     }
 
                     """.trimIndent()
@@ -316,7 +316,7 @@ class TestProjectBuilder(
             owaspCheck = "12.1.3"
             versions = "0.52.0"
             kover = "0.9.1"
-            dokka = "2.0.0"
+            dokka = "2.1.0-Beta"
             pit = "1.15.0"
             checkstyle = "10.12.4"
             jacoco = "0.8.13"
@@ -332,8 +332,6 @@ class TestProjectBuilder(
             [libraries]
             # Kotlin
             kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
-            kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
-            kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
             kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
             jetbrains-annotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
 

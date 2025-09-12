@@ -374,7 +374,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withBuildGradle(basicPluginConfiguration())
                 .withKotlinSource(
                     content =
                         """
@@ -413,7 +413,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withBuildGradle(basicPluginConfiguration())
                 .withKotlinSource(
                     content =
                         """
@@ -454,7 +454,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withBuildGradle(basicPluginConfiguration())
                 .withKotlinSource(
                     content =
                         """
@@ -496,7 +496,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration(applyKotlin = true))
+                .withBuildGradle(basicPluginConfiguration())
                 .withKotlinSource(
                     content =
                         """
@@ -518,10 +518,8 @@ class QualityToolsIntegrationTest {
                         }
                         """.trimIndent(),
                 )
-
-        val result = builder.runGradle("dokkaHtml")
-        result.task(":dokkaHtml")?.outcome shouldBe TaskOutcome.SUCCESS
-
+        val result = builder.runGradle("dokkaGenerate")
+        result.task(":dokkaGenerate")?.outcome shouldBe TaskOutcome.SUCCESS
         val htmlReport = builder.projectDir.resolve("build/dokka/html/index.html")
         htmlReport.shouldExist()
     }
