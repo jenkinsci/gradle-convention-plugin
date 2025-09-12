@@ -37,18 +37,22 @@ internal fun Project.configureSpotless(
 
     variantResolution("spotless")
 
-    val headerFile = rootProject.file("config/spotless/license-header.txt")
+    val headerFile =
+        rootProject.layout.projectDirectory
+            .file("config/spotless/license-header.txt")
+            .asFile
+    val ktlintVersion = versionFromCatalogOrFail(libs, "ktlint")
 
     val commonExcludes =
         listOf(
-            "**/build/**",
-            "**/.gradle/**",
-            "**/.idea/**",
-            "**/node_modules/**",
-            "**/.git/**",
-            "**/generated/**",
-            "**/out/**",
-            "**/.gradle-test-kit/**",
+            "build/**",
+            ".gradle/**",
+            ".idea/**",
+            "node_modules/**",
+            ".git/**",
+            "generated/**",
+            "out/**",
+            ".gradle-test-kit/**",
         )
 
     configure<SpotlessExtension> {
@@ -60,7 +64,7 @@ internal fun Project.configureSpotless(
                     "src/main/resources/**/*.kt",
                 )
                 t.targetExclude(commonExcludes)
-                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
 
@@ -74,8 +78,8 @@ internal fun Project.configureSpotless(
                     "**/*.gradle.kts",
                     "settings.gradle.kts",
                 )
-                t.targetExclude(commonExcludes + "**/gradle/**")
-                t.ktlint(versionFromCatalogOrFail(libs, "ktlint"))
+                t.targetExclude(commonExcludes + "gradle/**")
+                t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
 
@@ -95,7 +99,7 @@ internal fun Project.configureSpotless(
                     "src/test/java/**/*.java",
                     "src/main/resources/**/*.java",
                 )
-                t.targetExclude(commonExcludes + "**/gradle/**")
+                t.targetExclude(commonExcludes + "gradle/**")
                 t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
@@ -113,7 +117,7 @@ internal fun Project.configureSpotless(
                     "src/test/groovy/**/*.groovy",
                     "src/main/resources/**/*.groovy",
                 )
-                t.targetExclude(commonExcludes + "**/gradle**")
+                t.targetExclude(commonExcludes + "gradle**")
 
                 t.greclipse()
                 t.trimTrailingWhitespace()
@@ -129,7 +133,7 @@ internal fun Project.configureSpotless(
                     "**/*.gradle",
                     "settings.gradle",
                 )
-                t.targetExclude(commonExcludes + "**/gradle/**")
+                t.targetExclude(commonExcludes + "gradle/**")
 
                 t.greclipse()
                 t.trimTrailingWhitespace()

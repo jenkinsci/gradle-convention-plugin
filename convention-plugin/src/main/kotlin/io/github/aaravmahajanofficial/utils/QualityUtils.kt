@@ -37,7 +37,7 @@ internal fun Project.resolveConfigFile(
     fileName: String,
 ): RegularFile {
     val configPath = "config/$toolName/$fileName"
-    val userConfig = project.layout.projectDirectory.file(configPath)
+    val userConfig = rootProject.layout.projectDirectory.file(configPath)
 
     if (userConfig.asFile.exists()) return userConfig
 
@@ -59,9 +59,9 @@ internal fun Project.variantResolution(config: String) {
         it.attributes { at ->
             at.attribute(
                 LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
-                project.objects.named(LibraryElements.JAR),
+                objects.named(LibraryElements.JAR),
             )
-            at.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage.JAVA_RUNTIME))
+            at.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
         }
     }
 }
