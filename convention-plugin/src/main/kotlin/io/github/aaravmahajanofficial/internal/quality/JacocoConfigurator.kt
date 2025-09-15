@@ -50,6 +50,7 @@ internal fun Project.configureJacoco(
         jacocoReport.reports { t ->
             t.xml.required.set(true)
             t.html.required.set(true)
+            t.csv.required.set(false)
         }
 
         val allExcludes = quality.jacoco.excludes.get()

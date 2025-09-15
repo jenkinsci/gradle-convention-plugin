@@ -357,7 +357,6 @@ class QualityToolsIntegrationTest {
 //
 //        val xmlReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.xml")
 //        val htmlReport = builder.projectDir.resolve("build/reports/jacoco/test/html/index.html")
-//        val csvReport = builder.projectDir.resolve("build/reports/jacoco/test/jacocoTestReport.csv")
 //
 //        println(xmlReport.readText())
 //
