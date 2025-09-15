@@ -20,8 +20,10 @@ import com.github.spotbugs.snom.Effort
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Quality.SPOTBUGS_ENABLED
 import io.github.aaravmahajanofficial.utils.gradleProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.ProviderFactory
+import org.gradle.kotlin.dsl.listProperty
 import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
@@ -38,6 +40,7 @@ public open class SpotbugsExtension
         public val effortLevel: Property<Effort> = objects.property<Effort>().convention(Effort.MAX)
         public val reportLevel: Property<Confidence> = objects.property<Confidence>().convention(Confidence.LOW)
         public val failOnError: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val omitVisitors: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
 
         // Groovy DSL setter methods
         public fun enabled(value: Boolean): Unit = enabled.set(value)
@@ -47,4 +50,8 @@ public open class SpotbugsExtension
         public fun reportLevel(value: Confidence): Unit = reportLevel.set(value)
 
         public fun failOnError(value: Boolean): Unit = failOnError.set(value)
+
+        public fun omitVisitors(values: Collection<String>): Unit = omitVisitors.set(values.toList())
+
+        public fun omitVisitors(vararg values: String): Unit = omitVisitors.set(values.toList())
     }
