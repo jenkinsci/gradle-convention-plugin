@@ -31,10 +31,20 @@ internal fun Project.configureSpotBugs(quality: QualityExtension) {
     pluginManager.apply(SpotBugsPlugin::class.java)
 
     configure<SpotBugsExtension> {
-        effort.set(quality.spotbugs.effortLevel.get())
-        reportLevel.set(quality.spotbugs.reportLevel.get())
-        ignoreFailures.set(!quality.spotbugs.failOnError.get())
+        effort.set(quality.spotbugs.effortLevel)
+        reportLevel.set(quality.spotbugs.reportLevel)
+        ignoreFailures.set(quality.spotbugs.failOnError.map { !it })
         excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml"))
+        omitVisitors.addAll(
+            listOf(
+                "ConstructorThrow",
+                "FindReturnRef",
+                "MultipleInstantiationsOfSingletons",
+                "SharedVariableAtomicityDetector",
+                "ThrowingExceptions",
+            ),
+        )
+        omitVisitors.addAll(quality.spotbugs.omitVisitors)
     }
 
     tasks.withType<SpotBugsTask>().configureEach {
