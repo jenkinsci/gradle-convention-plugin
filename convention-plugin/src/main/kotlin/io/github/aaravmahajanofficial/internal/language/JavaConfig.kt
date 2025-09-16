@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -31,14 +31,14 @@ public class JavaConfig(
         project.pluginManager.apply("java")
 
         project.configure<JavaPluginExtension> {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(PluginMetadata.JAVA_VERSION))
+            toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
             withSourcesJar()
             withJavadocJar()
         }
 
         project.tasks.withType<JavaCompile>().configureEach {
             it.options.encoding = "UTF-8"
-            it.options.release.set(PluginMetadata.JAVA_VERSION)
+            it.options.release.set(JAVA_VERSION)
             it.options.compilerArgs.addAll(
                 listOf(
                     "-parameters",

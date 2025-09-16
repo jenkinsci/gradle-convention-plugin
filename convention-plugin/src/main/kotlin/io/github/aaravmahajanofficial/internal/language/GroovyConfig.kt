@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.kotlin.dsl.withType
@@ -28,7 +28,7 @@ public class GroovyConfig(
             project.tasks.withType<GroovyCompile>().configureEach { t ->
                 t.groovyOptions.encoding = "UTF-8"
                 t.groovyOptions.optimizationOptions?.put("indy", true)
-                t.options.release.set(PluginMetadata.JAVA_VERSION)
+                t.options.release.set(JAVA_VERSION)
                 t.options.compilerArgs.addAll(listOf("-parameters"))
             }
         }

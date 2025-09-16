@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata
+import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -34,7 +34,7 @@ public class KotlinConfig(
     public fun configure() {
         project.plugins.withId("org.jetbrains.kotlin.jvm") {
             project.configure<KotlinJvmProjectExtension> {
-                jvmToolchain(PluginMetadata.JAVA_VERSION)
+                jvmToolchain(JAVA_VERSION)
             }
 
             val kotlinVersion =
@@ -46,9 +46,9 @@ public class KotlinConfig(
 
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
-                    languageVersion.set(KotlinVersion.Companion.fromVersion(kotlinVersion))
-                    apiVersion.set(KotlinVersion.Companion.fromVersion(kotlinVersion))
-                    jvmTarget.set(JvmTarget.Companion.fromTarget(PluginMetadata.JAVA_VERSION.toString()))
+                    languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)
                     optIn.add("kotlin.RequiresOptIn")
