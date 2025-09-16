@@ -42,6 +42,7 @@ internal fun Project.configureSpotless(
             .file("config/spotless/license-header.txt")
             .asFile
     val ktlintVersion = versionFromCatalogOrFail(libs, "ktlint")
+    val palantirJavaVersion = versionFromCatalogOrFail(libs, "palantir-java")
 
     val commonExcludes =
         listOf(
@@ -100,10 +101,13 @@ internal fun Project.configureSpotless(
                     "src/main/resources/**/*.java",
                 )
                 t.targetExclude(commonExcludes + "gradle/**")
-                t.palantirJavaFormat(versionFromCatalogOrFail(libs, "palantir-java"))
+
+                t.palantirJavaFormat(palantirJavaVersion)
+                t.importOrder()
+                t.removeUnusedImports()
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
-                t.removeUnusedImports()
+                t.toggleOffOn()
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile)
