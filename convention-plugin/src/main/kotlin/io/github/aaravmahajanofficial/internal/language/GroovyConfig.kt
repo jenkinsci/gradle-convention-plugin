@@ -13,14 +13,14 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package io.github.aaravmahajanofficial.internal
+package io.github.aaravmahajanofficial.internal.language
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.kotlin.dsl.withType
 
-public class GroovyConventionManager(
+public class GroovyConfig(
     private val project: Project,
 ) {
     public fun configure() {

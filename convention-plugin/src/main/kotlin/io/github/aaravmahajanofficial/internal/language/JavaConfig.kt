@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package io.github.aaravmahajanofficial.internal
+package io.github.aaravmahajanofficial.internal.language
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import org.gradle.api.Project
@@ -24,7 +24,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
-public class JavaConventionManager(
+public class JavaConfig(
     private val project: Project,
 ) {
     public fun configure() {

@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package io.github.aaravmahajanofficial.internal
+package io.github.aaravmahajanofficial.internal.language
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import io.github.aaravmahajanofficial.utils.libsCatalog
@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-public class KotlinConventionManager(
+public class KotlinConfig(
     private val project: Project,
 ) {
     private val libs = project.libsCatalog()
