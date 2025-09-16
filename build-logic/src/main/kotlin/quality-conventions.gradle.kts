@@ -72,9 +72,9 @@ configure<SpotlessExtension> {
     }
     format("misc") {
         target(
-            "*.md", "*.txt", ".gitignore", ".gitattributes",
-            "*.properties", "*.yml", "*.yaml",
-            ".editorconfig", "*.xml"
+            "**/*.md", "**/*.txt", "**/*.gitignore", "**/*.gitattributes",
+            "**/*.properties", "**/*.yml", "**/*.yaml",
+            "**/*.editorconfig", "**/*.xml"
         )
         targetExclude(commonExcludes)
         trimTrailingWhitespace()

@@ -150,21 +150,20 @@ internal fun Project.configureSpotless(
         }
         format("misc") { t ->
             t.target(
-                "*.md",
-                "*.txt",
-                ".gitignore",
-                ".gitattributes",
-                "*.properties",
-                "*.yml",
-                "*.yaml",
-                "*.json",
-                ".editorconfig",
-                "*.xml",
-                "*.sh",
-                "*.dockerfile",
-                "Dockerfile*",
-                ".env",
-                ".dockerignore",
+                "**/*.md",
+                "**/*.txt",
+                "**/*.gitignore",
+                "**/*.gitattributes",
+                "**/*.properties",
+                "**/*.yml",
+                "**/*.yaml",
+                "**/*.json",
+                "**/*.editorconfig",
+                "**/*.xml",
+                "**/*.sh",
+                "**/Dockerfile*",
+                "**/*.dockerignore",
+                "Jenkinsfile",
             )
             t.targetExclude(commonExcludes)
             t.trimTrailingWhitespace()
