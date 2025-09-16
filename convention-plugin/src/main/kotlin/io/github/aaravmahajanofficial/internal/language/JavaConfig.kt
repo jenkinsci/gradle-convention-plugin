@@ -13,9 +13,9 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package io.github.aaravmahajanofficial.internal
+package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
+import io.github.aaravmahajanofficial.constants.PluginMetadata
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -24,21 +24,21 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
-public class JavaConventionManager(
+public class JavaConfig(
     private val project: Project,
 ) {
     public fun configure() {
         project.pluginManager.apply("java")
 
         project.configure<JavaPluginExtension> {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
+            toolchain.languageVersion.set(JavaLanguageVersion.of(PluginMetadata.JAVA_VERSION))
             withSourcesJar()
             withJavadocJar()
         }
 
         project.tasks.withType<JavaCompile>().configureEach {
             it.options.encoding = "UTF-8"
-            it.options.release.set(JAVA_VERSION)
+            it.options.release.set(PluginMetadata.JAVA_VERSION)
             it.options.compilerArgs.addAll(
                 listOf(
                     "-parameters",

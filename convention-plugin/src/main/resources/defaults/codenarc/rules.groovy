@@ -1,3 +1,4 @@
+package defaults.codenarc
 // Generic CodeNarc rules - based on job-dsl-plugin configuration
 // https://github.com/jenkinsci/job-dsl-plugin/blob/master/config/codenarc/rules.groovy
 ruleset {

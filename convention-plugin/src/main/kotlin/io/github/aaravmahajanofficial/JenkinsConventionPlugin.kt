@@ -18,11 +18,11 @@ package io.github.aaravmahajanofficial
 import io.github.aaravmahajanofficial.constants.PluginMetadata
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import io.github.aaravmahajanofficial.internal.BomManager
-import io.github.aaravmahajanofficial.internal.GroovyConventionManager
-import io.github.aaravmahajanofficial.internal.JavaConventionManager
-import io.github.aaravmahajanofficial.internal.JpiPluginManager
-import io.github.aaravmahajanofficial.internal.KotlinConventionManager
-import io.github.aaravmahajanofficial.internal.TestingConventionManager
+import io.github.aaravmahajanofficial.internal.JpiPluginConfig
+import io.github.aaravmahajanofficial.internal.TestingConfig
+import io.github.aaravmahajanofficial.internal.language.GroovyConfig
+import io.github.aaravmahajanofficial.internal.language.JavaConfig
+import io.github.aaravmahajanofficial.internal.language.KotlinConfig
 import io.github.aaravmahajanofficial.internal.quality.QualityManager
 import io.github.aaravmahajanofficial.utils.GradleVersionUtils
 import io.github.aaravmahajanofficial.utils.libsCatalog
@@ -52,16 +52,16 @@ public class JenkinsConventionPlugin : Plugin<Project> {
 
             val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
-            JavaConventionManager(project).configure()
-            GroovyConventionManager(project).configure()
-            KotlinConventionManager(project).configure()
+            JavaConfig(project).configure()
+            GroovyConfig(project).configure()
+            KotlinConfig(project).configure()
 
-            JpiPluginManager(project, pluginExtension).applyAndConfigure()
+            JpiPluginConfig(project, pluginExtension).applyAndConfigure()
 
             project.afterEvaluate {
                 try {
                     BomManager(project, pluginExtension.bom).configure()
-                    TestingConventionManager(project).configure()
+                    TestingConfig(project).configure()
                     QualityManager(project, pluginExtension.quality).apply()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")

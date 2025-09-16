@@ -24,7 +24,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 
-public class TestingConventionManager(
+public class TestingConfig(
     private val project: Project,
 ) {
     private val libs = project.libsCatalog()
@@ -55,7 +55,6 @@ public class TestingConventionManager(
                     TestLogEvent.PASSED,
                     TestLogEvent.SKIPPED,
                     TestLogEvent.FAILED,
-                    TestLogEvent.STANDARD_ERROR,
                 )
 
                 logging.showExceptions = true
@@ -91,7 +90,7 @@ public class TestingConventionManager(
     private fun addBaseTestingDependencies() {
         project.dependencies {
             add("testImplementation", libs.findLibrary("junit-jupiter").get())
-            add("testImplementation", libs.findLibrary("junit-platform-launcher").get())
+            add("testRuntimeOnly", libs.findLibrary("junit-platform-launcher").get())
             add("testImplementation", libs.findLibrary("assertj-core").get())
             add("testImplementation", libs.findLibrary("mockito-core").get())
             add("testImplementation", libs.findLibrary("mockito-junit-jupiter").get())

@@ -13,14 +13,14 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package io.github.aaravmahajanofficial.internal
+package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
+import io.github.aaravmahajanofficial.constants.PluginMetadata
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.kotlin.dsl.withType
 
-public class GroovyConventionManager(
+public class GroovyConfig(
     private val project: Project,
 ) {
     public fun configure() {
@@ -28,7 +28,7 @@ public class GroovyConventionManager(
             project.tasks.withType<GroovyCompile>().configureEach { t ->
                 t.groovyOptions.encoding = "UTF-8"
                 t.groovyOptions.optimizationOptions?.put("indy", true)
-                t.options.release.set(JAVA_VERSION)
+                t.options.release.set(PluginMetadata.JAVA_VERSION)
                 t.options.compilerArgs.addAll(listOf("-parameters"))
             }
         }

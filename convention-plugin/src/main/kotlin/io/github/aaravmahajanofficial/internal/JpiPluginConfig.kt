@@ -30,7 +30,7 @@ import org.jenkinsci.gradle.plugins.manifest.GenerateJenkinsManifestTask
 import java.nio.file.Paths
 import java.util.jar.Manifest
 
-public class JpiPluginManager(
+public class JpiPluginConfig(
     private val project: Project,
     private val pluginExtension: PluginExtension,
 ) {
