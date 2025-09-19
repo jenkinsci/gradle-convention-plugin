@@ -82,7 +82,7 @@ class FrontendSetupIntegrationTest {
     }
 
     @Test
-    @DisplayName("lint should depend on frontendTest")
+    @DisplayName("lint should depend on frontendLint")
     fun `lint depend on frontendLint`() {
         runDryRunWithScripts("check", "frontendLint")
     }

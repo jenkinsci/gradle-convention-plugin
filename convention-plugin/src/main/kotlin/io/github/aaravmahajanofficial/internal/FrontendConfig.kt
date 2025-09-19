@@ -24,7 +24,6 @@ import com.github.gradle.node.yarn.task.YarnTask
 import io.github.aaravmahajanofficial.extensions.FrontendExtension
 import io.github.aaravmahajanofficial.extensions.PackageManager
 import io.github.aaravmahajanofficial.utils.isFrontendProject
-import org.apache.commons.lang3.CharSet
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.configure
