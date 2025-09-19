@@ -49,7 +49,7 @@ public class FrontendConfig(
         project.configure<NodeExtension> {
             nodeProjectDir.set(extension.nodeProjectDir)
 
-            if (extension.packageManager.equals(PackageManager.YARN_COREPACK)) {
+            if (extension.packageManager == PackageManager.YARN_COREPACK) {
                 download.set(false)
             } else {
                 download.set(extension.download)

@@ -17,7 +17,6 @@
 
 package io.github.aaravmahajanofficial.utils
 
-import io.kotest.matchers.string.include
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -369,7 +368,7 @@ class TestProjectBuilder(
             junit-bom-coordinates = { module = "org.junit:junit-bom", version = "5.13.4" }
             mockito-bom-coordinates = { module = "org.mockito:mockito-bom", version = "5.18.0" }
             testContainers-bom-coordinates = { module = "org.testcontainers:testcontainers-bom", version = "1.21.3" }
-            
+
             # Testing
             junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
             junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
