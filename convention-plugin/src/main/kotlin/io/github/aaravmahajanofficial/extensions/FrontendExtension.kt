@@ -33,8 +33,8 @@ public open class FrontendExtension
         public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
 
         public val download: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val nodeVersion: Property<String> = objects.property<String>().convention("24.8.0")
         public val npmVersion: Property<String> = objects.property<String>()
-        public val nodeVersion: Property<String> = objects.property<String>()
         public val yarnVersion: Property<String> = objects.property<String>()
 
         public val packageManager: Property<PackageManager> =

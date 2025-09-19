@@ -18,6 +18,7 @@ package io.github.aaravmahajanofficial
 import io.github.aaravmahajanofficial.constants.PluginMetadata
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import io.github.aaravmahajanofficial.internal.BomManager
+import io.github.aaravmahajanofficial.internal.FrontendConfig
 import io.github.aaravmahajanofficial.internal.JpiPluginConfig
 import io.github.aaravmahajanofficial.internal.TestingConfig
 import io.github.aaravmahajanofficial.internal.language.GroovyConfig
@@ -57,6 +58,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             KotlinConfig(project).configure()
 
             JpiPluginConfig(project, pluginExtension).applyAndConfigure()
+            FrontendConfig(project, pluginExtension.frontend).configure()
 
             project.afterEvaluate {
                 try {

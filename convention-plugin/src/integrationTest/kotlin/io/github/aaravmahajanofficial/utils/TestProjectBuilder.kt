@@ -17,6 +17,7 @@
 
 package io.github.aaravmahajanofficial.utils
 
+import io.kotest.matchers.string.include
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -75,8 +76,7 @@ class TestProjectBuilder(
 
         val javaContent =
             content
-                ?:
-                    """
+                ?: """
                     package $packageName;
 
                     /**
@@ -109,8 +109,7 @@ class TestProjectBuilder(
 
         val kotlinContent =
             content
-                ?:
-                    """
+                ?: """
                     package $packageName
 
                     class $className {
@@ -205,22 +204,29 @@ class TestProjectBuilder(
         return this
     }
 
-    fun withPackageJson(content: String? = null): TestProjectBuilder {
+    fun withPackageJson(
+        includeBuild: Boolean = true,
+        includeTest: Boolean = true,
+        includeLint: Boolean = true,
+        includeDev: Boolean = true
+    ): TestProjectBuilder {
+
+        val scripts = buildList {
+            if (includeBuild) add("\"build\": \"echo build\"")
+            if (includeTest) add("\"test\": \"echo test\"")
+            if (includeLint) add("\"lint\": \"echo lint\"")
+            if (includeDev) add("\"dev\": \"echo dev\"")
+        }.joinToString(",")
+
         val packageJsonContent =
-            content
-                ?:
-                    """
-                    {
-                        "name": "test-plugin-frontend",
-                        "version": "1.0.0",
-                        "scripts": {
-                            "lint": "eslint src/main/js/**/*.js"
-                        },
-                        "devDependencies": {
-                            "eslint": "^8.0.0"
-                        }
-                    }
-                    """.trimIndent()
+            """
+                {
+                    "name": "test-plugin-frontend",
+                    "version": "1.0.0",
+                    "scripts": { $scripts },
+                    "devDependencies": {}
+                }
+            """.trimIndent()
 
         projectDir.resolve("package.json").writeText(packageJsonContent)
         return this
@@ -238,6 +244,16 @@ class TestProjectBuilder(
             """.trimIndent()
 
         jsDir.writeText(jsContent)
+        return this
+    }
+
+    fun withResourceFile(
+        path: String = "src/main/resources/application.properties",
+        content: String = "foobar"
+    ): TestProjectBuilder {
+        val resourceFile = projectDir.resolve(path)
+        Files.createDirectories(resourceFile.parent)
+        resourceFile.writeText(content)
         return this
     }
 
@@ -328,6 +344,7 @@ class TestProjectBuilder(
             kotest = "6.0.1"
             mockk = "1.14.5"
             assertj = "4.0.0-M1"
+            spock-core = "1.3-groovy-2.4"
 
             [libraries]
             # Kotlin
@@ -352,7 +369,6 @@ class TestProjectBuilder(
             junit-bom-coordinates = { module = "org.junit:junit-bom", version = "5.13.4" }
             mockito-bom-coordinates = { module = "org.mockito:mockito-bom", version = "5.18.0" }
             testContainers-bom-coordinates = { module = "org.testcontainers:testcontainers-bom", version = "1.21.3" }
-            spock-bom-coordinates = { module = "org.spockframework:spock-bom", version = "2.4-M6-groovy-4.0" }
             
             # Testing
             junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
@@ -361,7 +377,7 @@ class TestProjectBuilder(
             mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
             mockito-core = { module = "org.mockito:mockito-core" }
             mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter" }
-            spock-core = { module = "org.spockframework:spock-core" }
+            spock-core = { module = "org.spockframework:spock-core", version.ref = "spock-core" }
             assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
             """.trimIndent()
 
