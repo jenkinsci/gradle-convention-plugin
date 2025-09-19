@@ -1,6 +1,7 @@
 # Contributing to Jenkins Gradle Convention Plugin
 
-Thank you for your interest in contributing! Your help makes this project better for everyone.
+Thank you for your interest in contributing! Your help makes this project better
+for everyone.
 
 ---
 
@@ -12,9 +13,9 @@ Thank you for your interest in contributing! Your help makes this project better
    git checkout -b my-feature
    ```
 3. **Install prerequisites**:
-   - [JDK 17+](https://adoptium.net/)
-   - [Gradle 9.x](https://gradle.org/releases/)
-   - [Kotlin 2.1+](https://kotlinlang.org/)
+    - [JDK 17+](https://adoptium.net/)
+    - [Gradle 9.x](https://gradle.org/releases/)
+    - [Kotlin 2.1+](https://kotlinlang.org/)
 4. **Build and test locally**:
    ```sh
    ./gradlew build
@@ -24,11 +25,13 @@ Thank you for your interest in contributing! Your help makes this project better
 
 ## Development Guidelines
 
-- **Code style**: Follow Kotlin and Java idioms. Use `./gradlew spotlessApply` to auto-format.
+- **Code style**: Follow Kotlin and Java idioms. Use `./gradlew spotlessApply`
+  to auto-format.
 - **Keep builds reproducible**: Use exact dependency versions.
 - **Document public APIs**: KDoc for Kotlin, Javadoc for Java.
 - **Add or update tests** for new features or bugfixes.
-- **Avoid breaking changes** unless absolutely necessary. If so, clearly document them.
+- **Avoid breaking changes** unless absolutely necessary. If so, clearly
+  document them.
 
 ---
 
@@ -56,19 +59,19 @@ Thank you for your interest in contributing! Your help makes this project better
 
 - Use the [Bug Report](./.github/ISSUE_TEMPLATE/bug_report.md) template.
 - Include:
-  - Steps to reproduce
-  - Actual and expected behavior
-  - Environment info (Gradle, Java, OS, plugin versions)
-  - Relevant logs or stack traces
+    - Steps to reproduce
+    - Actual and expected behavior
+    - Environment info (Gradle, Java, OS, plugin versions)
+    - Relevant logs or stack traces
 
 ---
 
 ## Suggesting Features or Improvements
 
 - Open a new issue or discussion with:
-  - Problem statement
-  - Proposed solution/feature
-  - Example use cases
+    - Problem statement
+    - Proposed solution/feature
+    - Example use cases
 
 ---
 

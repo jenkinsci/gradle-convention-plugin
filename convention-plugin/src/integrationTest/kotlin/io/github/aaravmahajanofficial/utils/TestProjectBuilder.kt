@@ -17,14 +17,14 @@
 
 package io.github.aaravmahajanofficial.utils
 
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.tooling.BuildException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-import org.gradle.tooling.BuildException
 
 class TestProjectBuilder(
     val projectDir: Path,
@@ -207,7 +207,7 @@ class TestProjectBuilder(
         includeBuild: Boolean = true,
         includeTest: Boolean = true,
         includeLint: Boolean = true,
-        includeDev: Boolean = true
+        includeDev: Boolean = true,
     ): TestProjectBuilder {
 
         val scripts = buildList {
@@ -248,7 +248,7 @@ class TestProjectBuilder(
 
     fun withResourceFile(
         path: String = "src/main/resources/application.properties",
-        content: String = "foobar"
+        content: String = "foobar",
     ): TestProjectBuilder {
         val resourceFile = projectDir.resolve(path)
         Files.createDirectories(resourceFile.parent)

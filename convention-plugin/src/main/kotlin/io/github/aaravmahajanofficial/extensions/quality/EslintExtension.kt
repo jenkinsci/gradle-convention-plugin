@@ -25,15 +25,15 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class EslintExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-        providers: ProviderFactory,
-    ) {
-        public val enabled: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(providers, ESLINT_ENABLED, String::toBoolean).orElse(false),
-            )
-        public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
-        public val configFile: RegularFileProperty = objects.fileProperty()
-    }
+@Inject
+constructor(
+    objects: ObjectFactory,
+    providers: ProviderFactory,
+) {
+    public val enabled: Property<Boolean> =
+        objects.property<Boolean>().convention(
+            gradleProperty(providers, ESLINT_ENABLED, String::toBoolean).orElse(false),
+        )
+    public val autofix: Property<Boolean> = objects.property<Boolean>().convention(false)
+    public val configFile: RegularFileProperty = objects.fileProperty()
+}

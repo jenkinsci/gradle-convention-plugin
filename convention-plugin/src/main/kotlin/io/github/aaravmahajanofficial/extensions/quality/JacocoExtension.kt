@@ -27,27 +27,27 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class JacocoExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-        providers: ProviderFactory,
-    ) {
-        public val enabled: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(providers, JACOCO_ENABLED, String::toBoolean).orElse(true),
-            )
-        public val minimumCodeCoverage: Property<Double> =
-            objects.property<Double>().convention(
-                DEFAULT_CODE_COVERAGE_THRESHOLD,
-            )
-        public val excludes: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
+@Inject
+constructor(
+    objects: ObjectFactory,
+    providers: ProviderFactory,
+) {
+    public val enabled: Property<Boolean> =
+        objects.property<Boolean>().convention(
+            gradleProperty(providers, JACOCO_ENABLED, String::toBoolean).orElse(true),
+        )
+    public val minimumCodeCoverage: Property<Double> =
+        objects.property<Double>().convention(
+            DEFAULT_CODE_COVERAGE_THRESHOLD,
+        )
+    public val excludes: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
 
-        // Groovy DSL setter methods
-        public fun enabled(value: Boolean): Unit = enabled.set(value)
+    // Groovy DSL setter methods
+    public fun enabled(value: Boolean): Unit = enabled.set(value)
 
-        public fun minimumCodeCoverage(value: Double): Unit = minimumCodeCoverage.set(value)
+    public fun minimumCodeCoverage(value: Double): Unit = minimumCodeCoverage.set(value)
 
-        public fun excludes(vararg values: String): Unit = excludes.set(values.toList())
+    public fun excludes(vararg values: String): Unit = excludes.set(values.toList())
 
-        public fun excludes(values: Collection<String>): Unit = excludes.set(values.toList())
-    }
+    public fun excludes(values: Collection<String>): Unit = excludes.set(values.toList())
+}

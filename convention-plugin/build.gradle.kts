@@ -18,7 +18,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     `jvm-test-suite`
     id("kotlin-conventions")
-    id("quality-conventions")
     alias(baseLibs.plugins.plugin.publish)
 }
 
@@ -92,11 +91,8 @@ testing {
                     shouldRunAfter(tasks.named("test"))
 
                     testLogging {
-                        events("passed", "skipped", "failed", "standardOut", "standardError")
+                        events("passed", "skipped", "failed")
                         exceptionFormat = TestExceptionFormat.FULL
-                        showExceptions = true
-                        showCauses = true
-                        showStackTraces = true
                     }
 
                     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)

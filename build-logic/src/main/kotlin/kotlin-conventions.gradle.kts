@@ -28,11 +28,11 @@ kotlin {
 
     explicitApi()
 
-    val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion.substringBeforeLast(".")
+    val kotlinVersion = KotlinVersion.fromVersion(libs.findVersion("kotlinLanguage").get().requiredVersion)
 
     compilerOptions {
-        apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+        apiVersion.set(kotlinVersion)
+        languageVersion.set(kotlinVersion)
         jvmTarget.set(JvmTarget.JVM_21)
 
         allWarningsAsErrors.set(true)

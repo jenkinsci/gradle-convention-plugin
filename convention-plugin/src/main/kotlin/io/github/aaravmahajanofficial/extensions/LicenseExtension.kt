@@ -25,34 +25,34 @@ import java.net.URI
 import javax.inject.Inject
 
 public open class LicenseExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-    ) {
-        public val name: Property<String> = objects.property<String>().convention("MIT License")
-        public val url: Property<URI> = objects.property<URI>()
-        public val distribution: Property<String> = objects.property<String>().convention("repo")
-        public val comments: Property<String> = objects.property<String>().convention("MIT License")
+@Inject
+constructor(
+    objects: ObjectFactory,
+) {
+    public val name: Property<String> = objects.property<String>().convention("MIT License")
+    public val url: Property<URI> = objects.property<URI>()
+    public val distribution: Property<String> = objects.property<String>().convention("repo")
+    public val comments: Property<String> = objects.property<String>().convention("MIT License")
 
-        // Groovy DSL setter methods
-        public fun name(value: String): Unit = name.set(value)
+    // Groovy DSL setter methods
+    public fun name(value: String): Unit = name.set(value)
 
-        public fun url(value: URI): Unit = url.set(value)
+    public fun url(value: URI): Unit = url.set(value)
 
-        public fun distribution(value: String): Unit = distribution.set(value)
+    public fun distribution(value: String): Unit = distribution.set(value)
 
-        public fun comments(value: String): Unit = comments.set(value)
-    }
+    public fun comments(value: String): Unit = comments.set(value)
+}
 
 public open class LicensesExtension
-    @Inject
-    constructor(
-        private val objects: ObjectFactory,
-        private val licensesList: ListProperty<LicenseExtension>,
-    ) {
-        public fun license(action: Action<LicenseExtension>) {
-            val license: LicenseExtension = objects.newInstance<LicenseExtension>()
-            action.execute(license)
-            licensesList.add(license)
-        }
+@Inject
+constructor(
+    private val objects: ObjectFactory,
+    private val licensesList: ListProperty<LicenseExtension>,
+) {
+    public fun license(action: Action<LicenseExtension>) {
+        val license: LicenseExtension = objects.newInstance<LicenseExtension>()
+        action.execute(license)
+        licensesList.add(license)
     }
+}

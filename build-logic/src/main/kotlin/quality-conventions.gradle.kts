@@ -14,8 +14,8 @@
  * permissions and limitations under the License.
  */
 import com.diffplug.gradle.spotless.SpotlessExtension
+import com.diffplug.gradle.spotless.SpotlessTaskImpl
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -30,21 +30,22 @@ private val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
 
 configure<SpotlessExtension> {
 
-    val commonExcludes = listOf(
-        "build/**",
-        ".gradle/**",
-        ".idea/**",
-        "node_modules/**",
-        ".git/**",
-        "generated/**",
-        "out/**",
-        ".gradle-test-kit/**"
-    )
+    val commonExcludes =
+        listOf(
+            "**/build/**",
+            "**/.gradle/**",
+            "**/.idea/**",
+            "**/.git/**",
+            "**/generated/**",
+            "**/out/**",
+            "**/.gradle-test-kit/**",
+            "**/gradle/**",
+        )
 
     kotlin {
         target(
             "src/main/kotlin/**/*.kt",
-            "src/test/kotlin/**/*.kt"
+            "src/test/kotlin/**/*.kt",
         )
         targetExclude(commonExcludes)
         ktlint(ktlintVersion)
@@ -59,9 +60,9 @@ configure<SpotlessExtension> {
         target(
             "*.gradle.kts",
             "**/*.gradle.kts",
-            "settings.gradle.kts"
+            "settings.gradle.kts",
         )
-        targetExclude(commonExcludes + "gradle/**")
+        targetExclude(commonExcludes)
         ktlint(ktlintVersion)
         trimTrailingWhitespace()
         endWithNewline()
@@ -72,9 +73,15 @@ configure<SpotlessExtension> {
     }
     format("misc") {
         target(
-            "**/*.md", "**/*.txt", "**/*.gitignore", "**/*.gitattributes",
-            "**/*.properties", "**/*.yml", "**/*.yaml",
-            "**/*.editorconfig", "**/*.xml"
+            "**/*.md",
+            "**/*.txt",
+            "**/*.gitignore",
+            "**/*.gitattributes",
+            "**/*.properties",
+            "**/*.yml",
+            "**/*.yaml",
+            "**/*.editorconfig",
+            "**/*.xml",
         )
         targetExclude(commonExcludes)
         trimTrailingWhitespace()
@@ -82,12 +89,19 @@ configure<SpotlessExtension> {
     }
 }
 
+tasks.withType<SpotlessTaskImpl>().configureEach {
+    notCompatibleWithConfigurationCache("Spotless serialization issue")
+}
+
 configure<DetektExtension> {
     toolVersion = libs.findVersion("detekt").get().requiredVersion
     parallel = true
     buildUponDefaultConfig = true
     config.setFrom(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))
-    baseline = rootProject.layout.projectDirectory.file("config/detekt/detekt-baseline.xml").asFile
+    baseline =
+        rootProject.layout.projectDirectory
+            .file("config/detekt/detekt-baseline.xml")
+            .asFile
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {

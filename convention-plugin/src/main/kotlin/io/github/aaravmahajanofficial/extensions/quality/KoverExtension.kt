@@ -25,15 +25,15 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class KoverExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-        providers: ProviderFactory,
-    ) {
-        public val enabled: Property<Boolean> =
-            objects.property<Boolean>().convention(
-                gradleProperty(providers, KOVER_ENABLED, String::toBoolean).orElse(true),
-            )
-        public val coverageThreshold: Property<Int> =
-            objects.property<Int>().convention(DEFAULT_KOVER_THRESHOLD)
-    }
+@Inject
+constructor(
+    objects: ObjectFactory,
+    providers: ProviderFactory,
+) {
+    public val enabled: Property<Boolean> =
+        objects.property<Boolean>().convention(
+            gradleProperty(providers, KOVER_ENABLED, String::toBoolean).orElse(true),
+        )
+    public val coverageThreshold: Property<Int> =
+        objects.property<Int>().convention(DEFAULT_KOVER_THRESHOLD)
+}

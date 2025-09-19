@@ -18,11 +18,7 @@ package io.github.aaravmahajanofficial.internal.quality
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
-import io.github.aaravmahajanofficial.utils.hasGroovySources
-import io.github.aaravmahajanofficial.utils.hasJavaSources
-import io.github.aaravmahajanofficial.utils.hasKotlinSources
-import io.github.aaravmahajanofficial.utils.variantResolution
-import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import io.github.aaravmahajanofficial.utils.*
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.kotlin.dsl.configure
@@ -46,14 +42,14 @@ internal fun Project.configureSpotless(
 
     val commonExcludes =
         listOf(
-            "build/**",
-            ".gradle/**",
-            ".idea/**",
-            "node_modules/**",
-            ".git/**",
-            "generated/**",
-            "out/**",
-            ".gradle-test-kit/**",
+            "**/build/**",
+            "**/.gradle/**",
+            "**/.idea/**",
+            "**/.git/**",
+            "**/generated/**",
+            "**/out/**",
+            "**/.gradle-test-kit/**",
+            "**/gradle/**",
         )
 
     configure<SpotlessExtension> {
@@ -79,7 +75,7 @@ internal fun Project.configureSpotless(
                     "**/*.gradle.kts",
                     "settings.gradle.kts",
                 )
-                t.targetExclude(commonExcludes + "gradle/**")
+                t.targetExclude(commonExcludes)
                 t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
@@ -88,7 +84,7 @@ internal fun Project.configureSpotless(
                     t.licenseHeaderFile(
                         headerFile,
                         "(plugins|pluginManagement|import|buildscript|" +
-                            "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
                     )
                 }
             }
@@ -100,7 +96,7 @@ internal fun Project.configureSpotless(
                     "src/test/java/**/*.java",
                     "src/main/resources/**/*.java",
                 )
-                t.targetExclude(commonExcludes + "gradle/**")
+                t.targetExclude(commonExcludes)
 
                 t.palantirJavaFormat(palantirJavaVersion)
                 t.importOrder()
@@ -121,7 +117,7 @@ internal fun Project.configureSpotless(
                     "src/test/groovy/**/*.groovy",
                     "src/main/resources/**/*.groovy",
                 )
-                t.targetExclude(commonExcludes + "gradle**")
+                t.targetExclude(commonExcludes)
 
                 t.greclipse()
                 t.trimTrailingWhitespace()
@@ -137,7 +133,7 @@ internal fun Project.configureSpotless(
                     "**/*.gradle",
                     "settings.gradle",
                 )
-                t.targetExclude(commonExcludes + "gradle/**")
+                t.targetExclude(commonExcludes)
 
                 t.greclipse()
                 t.trimTrailingWhitespace()
@@ -147,7 +143,7 @@ internal fun Project.configureSpotless(
                     t.licenseHeaderFile(
                         headerFile,
                         "(plugins|pluginManagement|import|buildscript|" +
-                            "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
                     )
                 }
             }

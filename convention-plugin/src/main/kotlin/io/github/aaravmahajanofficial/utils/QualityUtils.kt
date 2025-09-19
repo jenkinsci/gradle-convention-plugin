@@ -26,11 +26,16 @@ internal fun Project.hasJavaSources(): Boolean = fileTree("src").matching { it.i
 
 internal fun Project.hasKotlinSources(): Boolean = fileTree("src").matching { it.include("**/*.kt") }.files.isNotEmpty()
 
-internal fun Project.hasGroovySources(): Boolean = fileTree("src").matching { it.include("**/*.groovy") }.files.isNotEmpty()
+internal fun Project.hasGroovySources(): Boolean =
+    fileTree("src")
+        .matching {
+            it.include("**/*.groovy")
+        }.files
+        .isNotEmpty()
 
 internal fun Project.isFrontendProject(): Boolean =
     listOf("package.json", "yarn.lock", "pnpm-lock.yaml").any { file(it).exists() } ||
-        listOf("src/main/js", "src/main/ts", "src/main/webapp").any { file(it).isDirectory }
+            listOf("src/main/js", "src/main/ts", "src/main/webapp").any { file(it).isDirectory }
 
 internal fun Project.resolveConfigFile(
     toolName: String,

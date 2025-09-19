@@ -106,7 +106,7 @@ class FrontendSetupIntegrationTest {
 
     private fun runDryRunWithScripts(
         targetTask: String,
-        expectedFrontendTask: String
+        expectedFrontendTask: String,
     ) {
         builder = TestProjectBuilder
             .create()
