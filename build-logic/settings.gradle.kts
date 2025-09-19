@@ -20,9 +20,12 @@ dependencyResolutionManagement {
         gradlePluginPortal()
     }
     versionCatalogs {
-        create("baseLibs", Action {
-            from(files("../version-catalog/libs.versions.toml"))
-        })
+        create(
+            "baseLibs",
+            Action {
+                from(files("../version-catalog/libs.versions.toml"))
+            },
+        )
     }
 }
 

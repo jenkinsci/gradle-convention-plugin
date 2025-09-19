@@ -21,9 +21,9 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class GradleVersionExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-    ) {
-        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
-    }
+@Inject
+constructor(
+    objects: ObjectFactory,
+) {
+    public val enabled: Property<Boolean> = objects.property<Boolean>().convention(true)
+}

@@ -30,6 +30,8 @@ java {
     }
 }
 
+val kotlinVersion = KotlinVersion.fromVersion(baseLibs.versions.kotlinLanguage.get())
+
 kotlin {
     jvmToolchain {
         languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
@@ -37,11 +39,9 @@ kotlin {
 
     explicitApi()
 
-    val kotlinVersion = baseLibs.plugins.kotlin.jvm.get().version.requiredVersion.substringBeforeLast(".")
-
     compilerOptions {
-        apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+        apiVersion.set(kotlinVersion)
+        languageVersion.set(kotlinVersion)
         jvmTarget = JvmTarget.JVM_21
 
         allWarningsAsErrors.set(true)

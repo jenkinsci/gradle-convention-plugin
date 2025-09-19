@@ -30,6 +30,7 @@ public class KotlinConfig(
     private val project: Project,
 ) {
     private val libs = project.libsCatalog()
+    private val kotlinVersion = KotlinVersion.fromVersion(libs.findVersion("kotlinLanguage").get().requiredVersion)
 
     public fun configure() {
         project.plugins.withId("org.jetbrains.kotlin.jvm") {
@@ -37,17 +38,10 @@ public class KotlinConfig(
                 jvmToolchain(JAVA_VERSION)
             }
 
-            val kotlinVersion =
-                libs
-                    .findVersion("kotlin")
-                    .get()
-                    .requiredVersion
-                    .substringBeforeLast(".")
-
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
-                    languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+                    languageVersion.set(kotlinVersion)
+                    apiVersion.set(kotlinVersion)
                     jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)

@@ -27,53 +27,53 @@ import java.net.URI
 import javax.inject.Inject
 
 public open class DeveloperExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-    ) {
-        public val id: Property<String> = objects.property<String>()
-        public val name: Property<String> = objects.property<String>()
-        public val email: Property<String> = objects.property<String>()
-        public val website: Property<URI> = objects.property<URI>()
-        public val organization: Property<String> = objects.property<String>().convention("Jenkins Community")
-        public val organizationUrl: Property<URI> =
-            objects
-                .property<URI>()
-                .convention(URI.create("https://github.com/jenkinsci"))
-        public val roles: SetProperty<String> =
-            objects.setProperty<String>().convention(setOf("developer", "contributor"))
-        public val timezone: Property<String> = objects.property<String>().convention("UTC")
+@Inject
+constructor(
+    objects: ObjectFactory,
+) {
+    public val id: Property<String> = objects.property<String>()
+    public val name: Property<String> = objects.property<String>()
+    public val email: Property<String> = objects.property<String>()
+    public val website: Property<URI> = objects.property<URI>()
+    public val organization: Property<String> = objects.property<String>().convention("Jenkins Community")
+    public val organizationUrl: Property<URI> =
+        objects
+            .property<URI>()
+            .convention(URI.create("https://github.com/jenkinsci"))
+    public val roles: SetProperty<String> =
+        objects.setProperty<String>().convention(setOf("developer", "contributor"))
+    public val timezone: Property<String> = objects.property<String>().convention("UTC")
 
-        // Groovy DSL setter methods
-        public fun id(value: String): Unit = id.set(value)
+    // Groovy DSL setter methods
+    public fun id(value: String): Unit = id.set(value)
 
-        public fun name(value: String): Unit = name.set(value)
+    public fun name(value: String): Unit = name.set(value)
 
-        public fun email(value: String): Unit = email.set(value)
+    public fun email(value: String): Unit = email.set(value)
 
-        public fun website(value: URI): Unit = website.set(value)
+    public fun website(value: URI): Unit = website.set(value)
 
-        public fun organization(value: String): Unit = organization.set(value)
+    public fun organization(value: String): Unit = organization.set(value)
 
-        public fun organizationUrl(value: URI): Unit = organizationUrl.set(value)
+    public fun organizationUrl(value: URI): Unit = organizationUrl.set(value)
 
-        public fun timeZone(value: String): Unit = timezone.set(value)
+    public fun timeZone(value: String): Unit = timezone.set(value)
 
-        public fun roles(vararg values: String): Unit = roles.set(values.toSet())
+    public fun roles(vararg values: String): Unit = roles.set(values.toSet())
 
-        public fun roles(values: Collection<String>): Unit = roles.set(values.toSet())
-    }
+    public fun roles(values: Collection<String>): Unit = roles.set(values.toSet())
+}
 
 public open class DevelopersExtension
-    @Inject
-    constructor(
-        objects: ObjectFactory,
-        private val developersList: ListProperty<DeveloperExtension>,
-    ) {
-        internal val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
+@Inject
+constructor(
+    objects: ObjectFactory,
+    private val developersList: ListProperty<DeveloperExtension>,
+) {
+    internal val developer: DeveloperExtension = objects.newInstance<DeveloperExtension>()
 
-        public fun developer(action: Action<DeveloperExtension>) {
-            action.execute(developer)
-            developersList.add(developer)
-        }
+    public fun developer(action: Action<DeveloperExtension>) {
+        action.execute(developer)
+        developersList.add(developer)
     }
+}

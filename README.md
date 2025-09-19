@@ -20,7 +20,7 @@ Built on top of the well-established [gradle-jpi-plugin](https://github.com/jenk
 extends JPI with extra conventions, integrated quality tools, and CI-friendly defaults—so you can focus on your plugin’s
 logic, not your build scripts.
 
-> **&check; Stop copy-pasting boilerplate:**  
+> **&check; Stop copy-pasting boilerplate:**
 > Get reproducible, high-quality, CI-ready Jenkins plugins out of the box!
 
 ---
@@ -147,8 +147,8 @@ jenkinsConvention {
 }
 ```
 
-> [!IMPORTANT]  
-> This is the **minimal working configuration**.  
+> [!IMPORTANT]
+> This is the **minimal working configuration**.
 > All later examples (BOMs, quality, etc.) assume you already have this block in place.
 
 ---
@@ -157,7 +157,7 @@ jenkinsConvention {
 
 ### Customizing BOMs
 
-By default, common BOMs (like Jackson) are applied automatically.  
+By default, common BOMs (like Jackson) are applied automatically.
 You can disable or add your own:
 
 ```kotlin
@@ -180,7 +180,7 @@ jenkinsConvention {
 
 ### Customizing Quality Tools
 
-The plugin integrates Spotless, OWASP Dependency Check, Detekt, and more.  
+The plugin integrates Spotless, OWASP Dependency Check, Detekt, and more.
 You can enforce stricter rules or relax defaults:
 
 ```kotlin
@@ -215,7 +215,7 @@ jenkinsConvention {
 
 - **Requires:** Kotlin DSL or Groovy DSL
 
---- 
+---
 
 ## Project Structure
 
@@ -231,7 +231,9 @@ jenkinsConvention {
 Want to help improve this plugin?
 
 - Fork and open an issue or submit a pull request for any bugs/improvements.
-- Review [CONTRIBUTING.md](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/CONTRIBUTING.md) for guidelines.
+- Review
+  [CONTRIBUTING.md](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/CONTRIBUTING.md)
+  for guidelines.
 
 ---
 

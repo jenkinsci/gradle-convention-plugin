@@ -15,5 +15,6 @@
  */
 plugins {
     base
+    id("quality-conventions")
     alias(baseLibs.plugins.maven.gradle.publish) apply false
 }

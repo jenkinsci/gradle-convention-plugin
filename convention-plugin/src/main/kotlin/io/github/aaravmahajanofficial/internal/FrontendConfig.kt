@@ -82,7 +82,7 @@ public class FrontendConfig(
             PackageManager.NPM -> configureNpmTasks()
             PackageManager.YARN,
             PackageManager.YARN_COREPACK,
-            -> configureYarnTasks()
+                -> configureYarnTasks()
         }
     }
 

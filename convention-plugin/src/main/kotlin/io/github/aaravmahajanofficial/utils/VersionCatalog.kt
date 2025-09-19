@@ -41,4 +41,5 @@ internal fun libraryFromCatalog(
     alias: String,
 ): Provider<MinimalExternalModuleDependency> = libs.findLibrary(alias).get()
 
-internal fun Project.libsCatalog(): VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named(VERSION_CATALOG)
+internal fun Project.libsCatalog(): VersionCatalog =
+    extensions.getByType<VersionCatalogsExtension>().named(VERSION_CATALOG)

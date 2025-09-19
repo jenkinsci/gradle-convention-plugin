@@ -27,7 +27,7 @@ public object GradleVersionUtils {
         if (currentVersion < requiredVersion) {
             throw GradleException(
                 "Jenkins Gradle Convention Plugin requires Gradle ${PluginMetadata.MIN_GRADLE_VERSION} or higher. " +
-                    "Current version is ${currentVersion.version}. Please upgrade your Gradle version.",
+                        "Current version is ${currentVersion.version}. Please upgrade your Gradle version.",
             )
         }
     }
