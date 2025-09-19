@@ -126,6 +126,7 @@ public open class PluginExtension
         public val licensesExtension: LicensesExtension = objects.newInstance<LicensesExtension>(pluginLicenses)
         public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
         public val quality: QualityExtension = objects.newInstance<QualityExtension>()
+        public val frontend: FrontendExtension = objects.newInstance<FrontendExtension>()
 
         public fun developers(action: Action<DevelopersExtension>) {
             pluginDevelopers.set(emptyList())
@@ -143,5 +144,9 @@ public open class PluginExtension
 
         public fun quality(action: Action<QualityExtension>) {
             action.execute(quality)
+        }
+
+        public fun frontend(action: Action<FrontendExtension>) {
+            action.execute(frontend)
         }
     }

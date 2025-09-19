@@ -57,9 +57,6 @@ public class TestingConfig(
                     TestLogEvent.FAILED,
                 )
 
-                logging.showExceptions = true
-                logging.showCauses = true
-                logging.showStackTraces = true
                 logging.exceptionFormat = TestExceptionFormat.FULL
             }
 
