@@ -18,7 +18,11 @@ package io.github.aaravmahajanofficial.internal.quality
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
-import io.github.aaravmahajanofficial.utils.*
+import io.github.aaravmahajanofficial.utils.hasGroovySources
+import io.github.aaravmahajanofficial.utils.hasJavaSources
+import io.github.aaravmahajanofficial.utils.hasKotlinSources
+import io.github.aaravmahajanofficial.utils.variantResolution
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.kotlin.dsl.configure

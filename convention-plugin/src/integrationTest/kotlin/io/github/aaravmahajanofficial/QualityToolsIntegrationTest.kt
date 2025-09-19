@@ -21,11 +21,11 @@ import io.github.aaravmahajanofficial.utils.TestProjectBuilder
 import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
-import javax.xml.parsers.DocumentBuilderFactory
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import javax.xml.parsers.DocumentBuilderFactory
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Quality Tools Integration Tests")

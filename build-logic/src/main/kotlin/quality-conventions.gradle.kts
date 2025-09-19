@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 import com.diffplug.gradle.spotless.SpotlessExtension
-import com.diffplug.gradle.spotless.SpotlessTaskImpl
+import com.diffplug.gradle.spotless.SpotlessTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -89,7 +89,7 @@ configure<SpotlessExtension> {
     }
 }
 
-tasks.withType<SpotlessTaskImpl>().configureEach {
+tasks.withType<SpotlessTask>().configureEach {
     notCompatibleWithConfigurationCache("Spotless serialization issue")
 }
 
