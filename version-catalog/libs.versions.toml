@@ -55,6 +55,7 @@ maven-gradle-publish = "0.34.0"
 
 # Miscellaneous
 jgit = "7.4.0.202509020913-r"
+node = "24.8.0"
 
 [libraries]
 # Kotlin and Gradle

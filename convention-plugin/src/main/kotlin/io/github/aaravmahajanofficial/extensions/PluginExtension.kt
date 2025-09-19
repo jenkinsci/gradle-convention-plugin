@@ -126,7 +126,7 @@ constructor(
     public val licensesExtension: LicensesExtension = objects.newInstance<LicensesExtension>(pluginLicenses)
     public val bom: BomExtension = objects.newInstance<BomExtension>(libs)
     public val quality: QualityExtension = objects.newInstance<QualityExtension>()
-    public val frontend: FrontendExtension = objects.newInstance<FrontendExtension>()
+    public val frontend: FrontendExtension = objects.newInstance<FrontendExtension>(libs)
 
     public fun developers(action: Action<DevelopersExtension>) {
         pluginDevelopers.set(emptyList())

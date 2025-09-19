@@ -21,6 +21,8 @@ import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.SKIP_TESTS
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.TEST_FAILURE_IGNORE
 import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
@@ -36,13 +38,15 @@ constructor(
     objects: ObjectFactory,
     layout: ProjectLayout,
     providers: ProviderFactory,
+    libs: VersionCatalog,
 ) {
     public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
 
     public val download: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val nodeVersion: Property<String> = objects.property<String>().convention("24.8.0")
-    public val npmVersion: Property<String> = objects.property<String>()
-    public val yarnVersion: Property<String> = objects.property<String>()
+    public val nodeVersion: Property<String> =
+        objects.property<String>().convention(versionFromCatalogOrFail(libs, "node"))
+    public val npmVersion: Property<String> = objects.property<String>().convention("")
+    public val yarnVersion: Property<String> = objects.property<String>().convention("")
 
     public val packageManager: Property<PackageManager> =
         objects.property<PackageManager>().convention(PackageManager.NPM)
