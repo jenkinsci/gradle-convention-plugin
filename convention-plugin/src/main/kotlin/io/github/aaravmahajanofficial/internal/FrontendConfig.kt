@@ -24,11 +24,13 @@ import com.github.gradle.node.yarn.task.YarnTask
 import io.github.aaravmahajanofficial.extensions.FrontendExtension
 import io.github.aaravmahajanofficial.extensions.PackageManager
 import io.github.aaravmahajanofficial.utils.isFrontendProject
+import org.apache.commons.lang3.CharSet
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
+import org.json.JSONObject
 
 public class FrontendConfig(
     private val project: Project,
@@ -217,11 +219,15 @@ public class FrontendConfig(
 
     private fun hasScriptDefined(scriptName: String): Boolean {
         val packageJson = project.file("package.json")
-        if (!packageJson.exists()) {
-            return false
-        }
+        if (!packageJson.exists()) return false
 
-        val content = packageJson.readText()
-        return content.contains("\"$scriptName\"")
+        return try {
+            val content = packageJson.readText(Charsets.UTF_8)
+            val json = JSONObject(content)
+            val scripts = json.optJSONObject("scripts")
+            scripts?.has(scriptName) == true
+        } catch (_: Exception) {
+            false
+        }
     }
 }

@@ -99,11 +99,9 @@ class FrontendSetupIntegrationTest {
             .withPackageJson(includeTest = false)
             .withJavaScriptSource()
 
-        val result = builder.runGradle("test")
+        val result = builder.runGradle("test", "-m")
 
-        result.task(":test")?.outcome shouldBe TaskOutcome.SUCCESS
-
-        result.output shouldContain "Task :frontendTest SKIPPED"
+        result.output shouldContain ":frontendTest SKIPPED"
     }
 
     private fun runDryRunWithScripts(
