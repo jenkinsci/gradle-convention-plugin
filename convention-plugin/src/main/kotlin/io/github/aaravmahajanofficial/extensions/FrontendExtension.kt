@@ -16,10 +16,16 @@
 package io.github.aaravmahajanofficial.extensions
 
 import com.github.gradle.node.npm.proxy.ProxySettings
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.NPM_LOG_LEVEL
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.SKIP_LINT
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.SKIP_TESTS
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.TEST_FAILURE_IGNORE
+import io.github.aaravmahajanofficial.utils.gradleProperty
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.property
 import java.net.URI
 import javax.inject.Inject
@@ -29,6 +35,7 @@ public open class FrontendExtension
 constructor(
     objects: ObjectFactory,
     layout: ProjectLayout,
+    providers: ProviderFactory,
 ) {
     public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
 
@@ -44,6 +51,30 @@ constructor(
         objects.property<URI>().convention(URI.create("https://repo.jenkins-ci.org/nodejs-dist"))
 
     public val npmInstallCommand: Property<String> = objects.property<String>().convention("install")
+
+    public val skipTests: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            SKIP_TESTS, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val skipLint: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            SKIP_LINT, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val testFailureIgnore: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            TEST_FAILURE_IGNORE, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val logLevel: Property<String> =
+        objects.property<String>().convention(gradleProperty(providers, NPM_LOG_LEVEL).orElse(""))
 
     public val workDir: DirectoryProperty =
         objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/nodejs"))

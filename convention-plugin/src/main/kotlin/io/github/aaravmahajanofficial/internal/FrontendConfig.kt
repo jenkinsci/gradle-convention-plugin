@@ -50,7 +50,7 @@ public class FrontendConfig(
         project.configure<NodeExtension> {
             nodeProjectDir.set(extension.nodeProjectDir)
 
-            if (extension.packageManager.equals(PackageManager.YARN_COREPACK)) {
+            if (extension.packageManager.get() == PackageManager.YARN_COREPACK) {
                 download.set(false)
             } else {
                 download.set(extension.download)
@@ -86,6 +86,17 @@ public class FrontendConfig(
         }
     }
 
+    private fun npmArgsFor(script: String): List<String> =
+        buildList {
+            extension.logLevel.get()
+                .takeIf { it.isNotBlank() }?.let {
+                    add("--loglevel")
+                    add(it)
+                }
+            add("run")
+            add(script)
+        }
+
     private fun configureNpmTasks() {
         val npmInstall = project.tasks.named<NpmInstallTask>("npmInstall")
 
@@ -94,7 +105,7 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Build frontend assets"
-                args.set(listOf("run", extension.buildScript.get()))
+                args.set(npmArgsFor(extension.buildScript.get()))
 
                 configureTaskInputsOutputs(this)
             }
@@ -104,9 +115,10 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Run frontend tests"
-                args.set(listOf("run", extension.testScript.get()))
+                args.set(npmArgsFor(extension.testScript.get()))
+                ignoreExitValue.set(extension.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) }
+                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
             }
 
         val frontendLint =
@@ -114,16 +126,16 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Lint frontend code"
-                args.set(listOf("run", extension.lintScript.get()))
+                args.set(npmArgsFor(extension.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) }
+                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
             }
 
         project.tasks.register<NpmTask>("frontendDev") {
             dependsOn(npmInstall)
             group = "Frontend"
             description = "Start development server"
-            args.set(listOf("run", extension.devScript.get()))
+            args.set(npmArgsFor(extension.devScript.get()))
 
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
@@ -150,8 +162,9 @@ public class FrontendConfig(
                 group = "Frontend"
                 description = "Run frontend tests"
                 args.set(listOf("run", extension.testScript.get()))
+                ignoreExitValue.set(extension.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) }
+                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
             }
 
         val frontendLint =
@@ -161,7 +174,7 @@ public class FrontendConfig(
                 description = "Lint frontend code"
                 args.set(listOf("run", extension.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) }
+                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
             }
 
         project.tasks.register<YarnTask>("frontendDev") {
