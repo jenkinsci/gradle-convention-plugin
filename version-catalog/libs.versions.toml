@@ -16,7 +16,7 @@ spring-bom = "6.2.11"
 netty-bom = "4.2.6.Final"
 slf4j-bom = "2.0.17"
 jetty-bom = "12.1.1"
-guava-bom = "33.4.8-jre"
+guava-bom = "33.5.0-jre"
 apache-log4j-bom = "2.25.1"
 vertx-bom = "5.0.4"
 
