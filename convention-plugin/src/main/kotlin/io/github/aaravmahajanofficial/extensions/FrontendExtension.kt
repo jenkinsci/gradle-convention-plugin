@@ -33,77 +33,88 @@ import java.net.URI
 import javax.inject.Inject
 
 public open class FrontendExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    layout: ProjectLayout,
-    providers: ProviderFactory,
-    libs: VersionCatalog,
-) {
-    public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        layout: ProjectLayout,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
 
-    public val download: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val nodeVersion: Property<String> =
-        objects.property<String>().convention(versionFromCatalogOrFail(libs, "node"))
-    public val npmVersion: Property<String> = objects.property<String>().convention("")
-    public val yarnVersion: Property<String> = objects.property<String>().convention("")
+        public val download: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val nodeVersion: Property<String> =
+            objects.property<String>().convention(versionFromCatalogOrFail(libs, "node"))
+        public val npmVersion: Property<String> = objects.property<String>().convention("")
+        public val yarnVersion: Property<String> = objects.property<String>().convention("")
 
-    public val packageManager: Property<PackageManager> =
-        objects.property<PackageManager>().convention(PackageManager.NPM)
+        public val packageManager: Property<PackageManager> =
+            objects.property<PackageManager>().convention(PackageManager.NPM)
 
-    public val nodeDownloadRoot: Property<URI> =
-        objects.property<URI>().convention(URI.create("https://repo.jenkins-ci.org/nodejs-dist"))
+        public val nodeDownloadRoot: Property<URI> =
+            objects.property<URI>().convention(URI.create("https://repo.jenkins-ci.org/nodejs-dist"))
 
-    public val npmInstallCommand: Property<String> = objects.property<String>().convention("install")
+        public val npmInstallCommand: Property<String> = objects.property<String>().convention("install")
 
-    public val skipTests: Property<Boolean> = objects.property<Boolean>().convention(
-        gradleProperty(
-            providers,
-            SKIP_TESTS, String::toBoolean,
-        ).orElse(false),
-    )
+        public val skipTests: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    SKIP_TESTS,
+                    String::toBoolean,
+                ).orElse(false),
+            )
 
-    public val skipLint: Property<Boolean> = objects.property<Boolean>().convention(
-        gradleProperty(
-            providers,
-            SKIP_LINT, String::toBoolean,
-        ).orElse(false),
-    )
+        public val skipLint: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    SKIP_LINT,
+                    String::toBoolean,
+                ).orElse(false),
+            )
 
-    public val testFailureIgnore: Property<Boolean> = objects.property<Boolean>().convention(
-        gradleProperty(
-            providers,
-            TEST_FAILURE_IGNORE, String::toBoolean,
-        ).orElse(false),
-    )
+        public val testFailureIgnore: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(
+                    providers,
+                    TEST_FAILURE_IGNORE,
+                    String::toBoolean,
+                ).orElse(false),
+            )
 
-    public val logLevel: Property<String> =
-        objects.property<String>().convention(gradleProperty(providers, NPM_LOG_LEVEL).orElse(""))
+        public val logLevel: Property<String> =
+            objects.property<String>().convention(gradleProperty(providers, NPM_LOG_LEVEL).orElse(""))
 
-    public val workDir: DirectoryProperty =
-        objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/nodejs"))
+        public val workDir: DirectoryProperty =
+            objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/nodejs"))
 
-    public val npmWorkDir: DirectoryProperty =
-        objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/npm"))
+        public val npmWorkDir: DirectoryProperty =
+            objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/npm"))
 
-    public val yarnWorkDir: DirectoryProperty =
-        objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/yarn"))
+        public val yarnWorkDir: DirectoryProperty =
+            objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/yarn"))
 
-    public val nodeProjectDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory)
+        public val nodeProjectDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory)
 
-    public val distDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory.dir("dir"))
+        public val distDir: DirectoryProperty =
+            objects.directoryProperty().convention(
+                layout.projectDirectory.dir("dir"),
+            )
 
-    public val resourcesTargetDir: DirectoryProperty =
-        objects.directoryProperty().convention(layout.buildDirectory.dir("resources/main/static"))
+        public val resourcesTargetDir: DirectoryProperty =
+            objects
+                .directoryProperty()
+                .convention(layout.buildDirectory.dir("resources/main/static"))
 
-    public val nodeProxySettings: Property<ProxySettings> =
-        objects.property<ProxySettings>().convention(ProxySettings.SMART)
+        public val nodeProxySettings: Property<ProxySettings> =
+            objects.property<ProxySettings>().convention(ProxySettings.SMART)
 
-    public val buildScript: Property<String> = objects.property<String>().convention("build")
-    public val testScript: Property<String> = objects.property<String>().convention("test")
-    public val lintScript: Property<String> = objects.property<String>().convention("lint")
-    public val devScript: Property<String> = objects.property<String>().convention("dev")
-}
+        public val buildScript: Property<String> = objects.property<String>().convention("build")
+        public val testScript: Property<String> = objects.property<String>().convention("test")
+        public val lintScript: Property<String> = objects.property<String>().convention("lint")
+        public val devScript: Property<String> = objects.property<String>().convention("dev")
+    }
 
 public enum class PackageManager {
     NPM,

@@ -17,6 +17,7 @@ package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
 import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
+import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -28,19 +29,19 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @DisplayName("Frontend Setup Integration Tests")
 class FrontendSetupIntegrationTest {
-
     lateinit var builder: TestProjectBuilder
 
     @Test
     @DisplayName("should register frontend tasks when frontend project is detected")
     fun `register frontend tasks`() {
-        builder = TestProjectBuilder
-            .create()
-            .withVersionCatalog()
-            .withSettingsGradle()
-            .withBuildGradle(basicPluginConfiguration())
-            .withPackageJson()
-            .withJavaScriptSource()
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicPluginConfiguration())
+                .withPackageJson()
+                .withJavaScriptSource()
 
         val result = builder.runGradle("tasks", "--all")
 
@@ -54,11 +55,12 @@ class FrontendSetupIntegrationTest {
     @Test
     @DisplayName("should not register frontend tasks when frontend assets or package managers found")
     fun `do not register frontend tasks when not a frontend project`() {
-        builder = TestProjectBuilder
-            .create()
-            .withVersionCatalog()
-            .withSettingsGradle()
-            .withBuildGradle(basicPluginConfiguration())
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicPluginConfiguration())
 
         val result = builder.runGradle("tasks", "--all")
 
@@ -90,36 +92,59 @@ class FrontendSetupIntegrationTest {
     @Test
     @DisplayName("frontendTest is skipped when no test script")
     fun `frontendTest skipped when script missing`() {
-        builder = TestProjectBuilder
-            .create()
-            .withVersionCatalog()
-            .withSettingsGradle()
-            .withBuildGradle(basicPluginConfiguration())
-            .withSettingsGradle()
-            .withPackageJson(includeTest = false)
-            .withJavaScriptSource()
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicPluginConfiguration())
+                .withSettingsGradle()
+                .withPackageJson(includeTest = false)
+                .withJavaScriptSource()
 
         val result = builder.runGradle("test", "-m")
 
         result.output shouldContain ":frontendTest SKIPPED"
     }
 
+    @Test
+    @DisplayName("jest-junit reports")
+    fun `jest-junit reports must be created at desired location`() {
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicPluginConfiguration())
+                .withPackageJson()
+                .withJavaScriptSource()
+                .withJavascriptTestSource()
+
+        val result = builder.runGradle("frontendTest")
+        println(result.output)
+
+        result.task(":frontendTest")?.outcome shouldBe TaskOutcome.SUCCESS
+
+        val xmlReport = builder.projectDir.resolve("build/test-results/frontendTest/jest-junit.xml")
+        xmlReport.shouldExist()
+    }
+
     private fun runDryRunWithScripts(
         targetTask: String,
         expectedFrontendTask: String,
     ) {
-        builder = TestProjectBuilder
-            .create()
-            .withVersionCatalog()
-            .withSettingsGradle()
-            .withBuildGradle(basicPluginConfiguration())
-            .withPackageJson()
-            .withResourceFile()
-            .withJavaScriptSource()
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(basicPluginConfiguration())
+                .withPackageJson()
+                .withResourceFile()
+                .withJavaScriptSource()
 
         val result = builder.runGradle(targetTask, "-m")
 
         result.output shouldContain ":$expectedFrontendTask SKIPPED"
     }
-
 }

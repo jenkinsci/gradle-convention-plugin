@@ -17,6 +17,7 @@
 
 package io.github.aaravmahajanofficial.utils
 
+import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.tooling.BuildException
@@ -75,7 +76,8 @@ class TestProjectBuilder(
 
         val javaContent =
             content
-                ?: """
+                ?:
+                    """
                     package $packageName;
 
                     /**
@@ -108,7 +110,8 @@ class TestProjectBuilder(
 
         val kotlinContent =
             content
-                ?: """
+                ?:
+                    """
                     package $packageName
 
                     class $className {
@@ -209,22 +212,29 @@ class TestProjectBuilder(
         includeLint: Boolean = true,
         includeDev: Boolean = true,
     ): TestProjectBuilder {
-
-        val scripts = buildList {
-            if (includeBuild) add("\"build\": \"echo build\"")
-            if (includeTest) add("\"test\": \"echo test\"")
-            if (includeLint) add("\"lint\": \"echo lint\"")
-            if (includeDev) add("\"dev\": \"echo dev\"")
-        }.joinToString(",")
+        val scripts =
+            buildList {
+                if (includeBuild) add("\"build\": \"echo build\"")
+                if (includeTest) add("\"test\": \"jest --ci --reporters=default --reporters=jest-junit\"")
+                if (includeLint) add("\"lint\": \"echo lint\"")
+                if (includeDev) add("\"dev\": \"echo dev\"")
+            }.joinToString(",")
 
         val packageJsonContent =
             """
-                {
-                    "name": "test-plugin-frontend",
-                    "version": "1.0.0",
-                    "scripts": { $scripts },
-                    "devDependencies": {}
+            {
+                "name": "test-plugin-frontend",
+                "version": "1.0.0",
+                "scripts": { $scripts },
+                "jest-junit": {
+                    "outputDirectory": "build/test-results",
+                    "outputName": "jest-junit.xml"
                 }
+                "devDependencies": {
+                    "jest": "^29.0.0",
+                    "jest-junit": "^15.0.0"
+                }
+            }
             """.trimIndent()
 
         projectDir.resolve("package.json").writeText(packageJsonContent)
@@ -243,6 +253,21 @@ class TestProjectBuilder(
             """.trimIndent()
 
         jsDir.writeText(jsContent)
+        return this
+    }
+
+    fun withJavascriptTestSource(path: String = "src/test/js/main.test.js"): TestProjectBuilder {
+        val jsTestDir = projectDir.resolve(path)
+        Files.createDirectories(jsTestDir.parent)
+
+        val jsTestContent =
+            """
+            test('should pass', () => {
+                expect(true).toBe(true);
+            });
+            """.trimIndent()
+
+        jsTestDir.writeText(jsTestContent)
         return this
     }
 
@@ -306,6 +331,14 @@ class TestProjectBuilder(
     companion object {
         fun create(): TestProjectBuilder {
             val tempDir = Files.createTempDirectory("gradle-test-")
+            Git.init().setDirectory(tempDir.toFile()).call().apply {
+                commit()
+                    .setMessage("Init tests")
+                    .setSign(false)
+                    .setAllowEmpty(true)
+                    .call()
+            }
+
             return TestProjectBuilder(tempDir)
         }
 
