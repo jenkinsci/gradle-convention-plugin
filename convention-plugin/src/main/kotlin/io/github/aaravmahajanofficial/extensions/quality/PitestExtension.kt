@@ -31,27 +31,27 @@ import org.gradle.kotlin.dsl.setProperty
 import javax.inject.Inject
 
 public open class PitestExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, PITEST_ENABLED, String::toBoolean).orElse(false),
-        )
-    public val threads: Property<Int> = objects.property<Int>().convention(DEFAULT_THREADS)
-    public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))
-    public val excludedClasses: ListProperty<String> =
-        objects.listProperty<String>().convention(listOf("*Test*"))
-    public val mutationThreshold: Property<Int> =
-        objects.property<Int>().convention(
-            gradleProperty(providers, PITEST_MUTATION_THRESHOLD, String::toInt)
-                .orElse(DEFAULT_MUTATION_THRESHOLD),
-        )
-    public val outputFormats: ListProperty<String> =
-        objects.listProperty<String>().convention(
-            listOf("XML", "HTML"),
-        )
-    public val mutators: SetProperty<String> = objects.setProperty<String>().convention(setOf("DEFAULT"))
-}
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, PITEST_ENABLED, String::toBoolean).orElse(false),
+            )
+        public val threads: Property<Int> = objects.property<Int>().convention(DEFAULT_THREADS)
+        public val targetClasses: ListProperty<String> = objects.listProperty<String>().convention(listOf("*"))
+        public val excludedClasses: ListProperty<String> =
+            objects.listProperty<String>().convention(listOf("*Test*"))
+        public val mutationThreshold: Property<Int> =
+            objects.property<Int>().convention(
+                gradleProperty(providers, PITEST_MUTATION_THRESHOLD, String::toInt)
+                    .orElse(DEFAULT_MUTATION_THRESHOLD),
+            )
+        public val outputFormats: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf("XML", "HTML"),
+            )
+        public val mutators: SetProperty<String> = objects.setProperty<String>().convention(setOf("DEFAULT"))
+    }

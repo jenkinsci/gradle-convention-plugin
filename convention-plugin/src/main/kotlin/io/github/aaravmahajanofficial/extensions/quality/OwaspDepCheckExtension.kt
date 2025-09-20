@@ -30,38 +30,38 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class OwaspDepCheckExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-    layout: ProjectLayout,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, OWASP_ENABLED, String::toBoolean).orElse(false),
-        )
-    public val failOnCvss: Property<Float> =
-        objects.property<Float>().convention(DEFAULT_OWASP_THRESHOLD)
-    public val formats: ListProperty<String> =
-        objects.listProperty<String>().convention(
-            setOf("XML", "HTML", "SARIF"),
-        )
-    public val dataDirectory: DirectoryProperty =
-        objects.directoryProperty().convention(
-            layout.projectDirectory.dir(".gradle/dependency-check-data"),
-        )
-    public val outputDirectory: DirectoryProperty =
-        objects.directoryProperty().convention(
-            layout.buildDirectory.dir("reports/dependency-check"),
-        )
-    public val suppressionFiles: ListProperty<RegularFile> =
-        objects
-            .listProperty<RegularFile>()
-            .convention(
-                emptyList(),
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        layout: ProjectLayout,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, OWASP_ENABLED, String::toBoolean).orElse(false),
             )
-    public val scanConfigurations: ListProperty<String> =
-        objects.listProperty<String>().convention(
-            listOf("runtimeClasspath", "compileClasspath"),
-        )
-}
+        public val failOnCvss: Property<Float> =
+            objects.property<Float>().convention(DEFAULT_OWASP_THRESHOLD)
+        public val formats: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                setOf("XML", "HTML", "SARIF"),
+            )
+        public val dataDirectory: DirectoryProperty =
+            objects.directoryProperty().convention(
+                layout.projectDirectory.dir(".gradle/dependency-check-data"),
+            )
+        public val outputDirectory: DirectoryProperty =
+            objects.directoryProperty().convention(
+                layout.buildDirectory.dir("reports/dependency-check"),
+            )
+        public val suppressionFiles: ListProperty<RegularFile> =
+            objects
+                .listProperty<RegularFile>()
+                .convention(
+                    emptyList(),
+                )
+        public val scanConfigurations: ListProperty<String> =
+            objects.listProperty<String>().convention(
+                listOf("runtimeClasspath", "compileClasspath"),
+            )
+    }

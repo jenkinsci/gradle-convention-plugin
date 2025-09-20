@@ -27,24 +27,24 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class PmdExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects
-            .property<Boolean>()
-            .convention(
-                gradleProperty(providers, PMD_ENABLED, String::toBoolean)
-                    .orElse(true),
-            )
-    public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val source: Property<FileCollection> =
-        objects
-            .property<FileCollection>()
-            .convention(objects.fileCollection())
-    public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
-    public val exclude: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
-}
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects
+                .property<Boolean>()
+                .convention(
+                    gradleProperty(providers, PMD_ENABLED, String::toBoolean)
+                        .orElse(true),
+                )
+        public val consoleOutput: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val source: Property<FileCollection> =
+            objects
+                .property<FileCollection>()
+                .convention(objects.fileCollection())
+        public val include: ListProperty<String> = objects.listProperty<String>().convention(listOf("**/*.java"))
+        public val exclude: ListProperty<String> = objects.listProperty<String>().convention(emptyList())
+    }

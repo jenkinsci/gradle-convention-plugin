@@ -24,16 +24,16 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class SpotlessExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, SPOTLESS_ENABLED, String::toBoolean).orElse(true),
-        )
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, SPOTLESS_ENABLED, String::toBoolean).orElse(true),
+            )
 
-    // Groovy DSL setter methods
-    public fun enabled(value: Boolean): Unit = enabled.set(value)
-}
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
+    }

@@ -28,22 +28,22 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class JUnitBomExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-    libs: VersionCatalog,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, JUNIT_BOM, String::toBoolean).orElse(true),
-        )
-    internal val coordinates: Provider<MinimalExternalModuleDependency> =
-        libraryFromCatalog(libs, "junit-bom-coordinates")
-    public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+        libs: VersionCatalog,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, JUNIT_BOM, String::toBoolean).orElse(true),
+            )
+        internal val coordinates: Provider<MinimalExternalModuleDependency> =
+            libraryFromCatalog(libs, "junit-bom-coordinates")
+        public val testOnly: Property<Boolean> = objects.property<Boolean>().convention(true)
 
-    // Groovy DSL setter methods
-    public fun enabled(value: Boolean): Unit = enabled.set(value)
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
 
-    public fun testOnly(value: Boolean): Unit = testOnly.set(value)
-}
+        public fun testOnly(value: Boolean): Unit = testOnly.set(value)
+    }

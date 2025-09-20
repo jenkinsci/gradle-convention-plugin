@@ -24,51 +24,51 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 public open class BomExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    libs: VersionCatalog,
-) {
-    public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
-    public val jackson: JacksonBomExtension = objects.newInstance(libs)
-    public val spring: SpringBomExtension = objects.newInstance(libs)
-    public val netty: NettyBomExtension = objects.newInstance(libs)
-    public val slf4j: SLF4JBomExtension = objects.newInstance(libs)
-    public val jetty: JettyBomExtension = objects.newInstance(libs)
-    public val guava: GuavaBomExtension = objects.newInstance(libs)
-    public val log4j: Log4JBomExtension = objects.newInstance(libs)
-    public val vertx: VertxBomExtension = objects.newInstance(libs)
-    public val junit: JUnitBomExtension = objects.newInstance(libs)
-    public val mockito: MockitoBomExtension = objects.newInstance(libs)
-    public val testContainers: TestContainersBomExtension = objects.newInstance(libs)
-    public val customBoms: NamedDomainObjectContainer<CustomBomExtension> =
-        objects.domainObjectContainer(CustomBomExtension::class.java)
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        libs: VersionCatalog,
+    ) {
+        public val jenkins: JenkinsBomExtension = objects.newInstance(libs)
+        public val jackson: JacksonBomExtension = objects.newInstance(libs)
+        public val spring: SpringBomExtension = objects.newInstance(libs)
+        public val netty: NettyBomExtension = objects.newInstance(libs)
+        public val slf4j: SLF4JBomExtension = objects.newInstance(libs)
+        public val jetty: JettyBomExtension = objects.newInstance(libs)
+        public val guava: GuavaBomExtension = objects.newInstance(libs)
+        public val log4j: Log4JBomExtension = objects.newInstance(libs)
+        public val vertx: VertxBomExtension = objects.newInstance(libs)
+        public val junit: JUnitBomExtension = objects.newInstance(libs)
+        public val mockito: MockitoBomExtension = objects.newInstance(libs)
+        public val testContainers: TestContainersBomExtension = objects.newInstance(libs)
+        public val customBoms: NamedDomainObjectContainer<CustomBomExtension> =
+            objects.domainObjectContainer(CustomBomExtension::class.java)
 
-    public fun jenkins(action: Action<JenkinsBomExtension>): Unit = action.execute(jenkins)
+        public fun jenkins(action: Action<JenkinsBomExtension>): Unit = action.execute(jenkins)
 
-    public fun jackson(action: Action<JacksonBomExtension>): Unit = action.execute(jackson)
+        public fun jackson(action: Action<JacksonBomExtension>): Unit = action.execute(jackson)
 
-    public fun spring(action: Action<SpringBomExtension>): Unit = action.execute(spring)
+        public fun spring(action: Action<SpringBomExtension>): Unit = action.execute(spring)
 
-    public fun netty(action: Action<NettyBomExtension>): Unit = action.execute(netty)
+        public fun netty(action: Action<NettyBomExtension>): Unit = action.execute(netty)
 
-    public fun slf4j(action: Action<SLF4JBomExtension>): Unit = action.execute(slf4j)
+        public fun slf4j(action: Action<SLF4JBomExtension>): Unit = action.execute(slf4j)
 
-    public fun jetty(action: Action<JettyBomExtension>): Unit = action.execute(jetty)
+        public fun jetty(action: Action<JettyBomExtension>): Unit = action.execute(jetty)
 
-    public fun guava(action: Action<GuavaBomExtension>): Unit = action.execute(guava)
+        public fun guava(action: Action<GuavaBomExtension>): Unit = action.execute(guava)
 
-    public fun log4j(action: Action<Log4JBomExtension>): Unit = action.execute(log4j)
+        public fun log4j(action: Action<Log4JBomExtension>): Unit = action.execute(log4j)
 
-    public fun vertx(action: Action<VertxBomExtension>): Unit = action.execute(vertx)
+        public fun vertx(action: Action<VertxBomExtension>): Unit = action.execute(vertx)
 
-    public fun junit(action: Action<JUnitBomExtension>): Unit = action.execute(junit)
+        public fun junit(action: Action<JUnitBomExtension>): Unit = action.execute(junit)
 
-    public fun mockito(action: Action<MockitoBomExtension>): Unit = action.execute(mockito)
+        public fun mockito(action: Action<MockitoBomExtension>): Unit = action.execute(mockito)
 
-    public fun testContainers(action: Action<TestContainersBomExtension>): Unit = action.execute(testContainers)
+        public fun testContainers(action: Action<TestContainersBomExtension>): Unit = action.execute(testContainers)
 
-    public fun customBoms(action: Action<NamedDomainObjectContainer<CustomBomExtension>>) {
-        action.execute(customBoms)
+        public fun customBoms(action: Action<NamedDomainObjectContainer<CustomBomExtension>>) {
+            action.execute(customBoms)
+        }
     }
-}

@@ -24,13 +24,13 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class DokkaExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, DOKKA_ENABLED, String::toBoolean).orElse(true),
-        )
-}
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, DOKKA_ENABLED, String::toBoolean).orElse(true),
+            )
+    }
