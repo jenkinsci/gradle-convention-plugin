@@ -31,7 +31,7 @@ logic, not your build scripts.
 
 **Modern Language Standards Enforcement**
 
-- Java 21 via toolchains (future-proof)
+- Java 21 via toolchains
 - Kotlin explicit API mode for better maintainability
 - Groovy 4+ conventions for all source sets
 - Cross-language compatibility and best practices
@@ -146,10 +146,6 @@ jenkinsConvention {
     jenkinsVersion = "2.525"
 }
 ```
-
-> [!IMPORTANT]
-> This is the **minimal working configuration**.
-> All later examples (BOMs, quality, etc.) assume you already have this block in place.
 
 ---
 
