@@ -23,7 +23,7 @@ vertx-bom = "5.0.4"
 
 # Testing BOMs
 junit-bom = "5.13.4"
-mockito-bom = "5.19.0"
+mockito-bom = "5.20.0"
 testContainers-bom = "1.21.3"
 
 # Quality
