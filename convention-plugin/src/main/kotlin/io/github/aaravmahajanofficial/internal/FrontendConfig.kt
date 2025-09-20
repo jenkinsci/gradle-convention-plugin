@@ -25,6 +25,7 @@ import io.github.aaravmahajanofficial.extensions.FrontendExtension
 import io.github.aaravmahajanofficial.extensions.PackageManager
 import io.github.aaravmahajanofficial.utils.isFrontendProject
 import org.gradle.api.Project
+import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.named
@@ -50,7 +51,7 @@ public class FrontendConfig(
         project.configure<NodeExtension> {
             nodeProjectDir.set(extension.nodeProjectDir)
 
-            if (extension.packageManager.equals(PackageManager.YARN_COREPACK)) {
+            if (extension.packageManager.get() == PackageManager.YARN_COREPACK) {
                 download.set(false)
             } else {
                 download.set(extension.download)
@@ -86,6 +87,17 @@ public class FrontendConfig(
         }
     }
 
+    private fun npmArgsFor(script: String): List<String> =
+        buildList {
+            extension.logLevel.get()
+                .takeIf { it.isNotBlank() }?.let {
+                    add("--loglevel")
+                    add(it)
+                }
+            add("run")
+            add(script)
+        }
+
     private fun configureNpmTasks() {
         val npmInstall = project.tasks.named<NpmInstallTask>("npmInstall")
 
@@ -94,7 +106,7 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Build frontend assets"
-                args.set(listOf("run", extension.buildScript.get()))
+                args.set(npmArgsFor(extension.buildScript.get()))
 
                 configureTaskInputsOutputs(this)
             }
@@ -104,9 +116,10 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Run frontend tests"
-                args.set(listOf("run", extension.testScript.get()))
+                args.set(npmArgsFor(extension.testScript.get()))
+                ignoreExitValue.set(extension.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) }
+                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
             }
 
         val frontendLint =
@@ -114,21 +127,21 @@ public class FrontendConfig(
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Lint frontend code"
-                args.set(listOf("run", extension.lintScript.get()))
+                args.set(npmArgsFor(extension.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) }
+                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
             }
 
         project.tasks.register<NpmTask>("frontendDev") {
             dependsOn(npmInstall)
             group = "Frontend"
             description = "Start development server"
-            args.set(listOf("run", extension.devScript.get()))
+            args.set(npmArgsFor(extension.devScript.get()))
 
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(frontendBuild, frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureYarnTasks() {
@@ -150,8 +163,9 @@ public class FrontendConfig(
                 group = "Frontend"
                 description = "Run frontend tests"
                 args.set(listOf("run", extension.testScript.get()))
+                ignoreExitValue.set(extension.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) }
+                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
             }
 
         val frontendLint =
@@ -161,7 +175,7 @@ public class FrontendConfig(
                 description = "Lint frontend code"
                 args.set(listOf("run", extension.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) }
+                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
             }
 
         project.tasks.register<YarnTask>("frontendDev") {
@@ -173,7 +187,7 @@ public class FrontendConfig(
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(frontendBuild, frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureTaskInputsOutputs(task: Any) {
@@ -187,7 +201,7 @@ public class FrontendConfig(
                     project.file("package-lock.json"),
                 )
 
-                task.outputs.dir(project.layout.buildDirectory.dir("resources/static"))
+                task.outputs.dir(extension.distDir)
             }
 
             is YarnTask -> {
@@ -199,17 +213,26 @@ public class FrontendConfig(
                     project.file("yarn.lock"),
                 )
 
-                task.outputs.dir(project.layout.buildDirectory.dir("resources/static"))
+                task.outputs.dir(extension.distDir)
             }
         }
     }
 
+    private fun registerAssetSync(buildTask: TaskProvider<*>): TaskProvider<Sync> =
+        project.tasks.register<Sync>("syncFrontendAssets") {
+            group = "Frontend"
+            description = "Sync built frontend assets into resources for packaging"
+            dependsOn(buildTask)
+            from(extension.distDir)
+            into(extension.resourcesTargetDir)
+        }
+
     private fun integrationWithGradleLifecycle(
-        buildTask: TaskProvider<*>,
+        syncAssetsTask: TaskProvider<Sync>,
         testTask: TaskProvider<*>,
         lintTask: TaskProvider<*>,
     ) {
-        project.tasks.named("processResources").configure { it.dependsOn(buildTask) }
+        project.tasks.named("processResources").configure { it.dependsOn(syncAssetsTask) }
 
         project.tasks.named("test").configure { it.dependsOn(testTask) }
 

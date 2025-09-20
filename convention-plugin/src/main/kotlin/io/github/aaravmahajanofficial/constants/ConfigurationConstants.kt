@@ -60,4 +60,12 @@ public object ConfigurationConstants {
         public const val CODENARC_ENABLED: String = "$QUALITY_PREFIX.codenarc.enabled"
         public const val CPD_ENABLED: String = "$QUALITY_PREFIX.cpd.enabled"
     }
+
+    public object Frontend {
+        private const val FRONTEND_PREFIX = "frontend"
+        public const val SKIP_TESTS: String = "$FRONTEND_PREFIX.skip.tests"
+        public const val SKIP_LINT: String = "$FRONTEND_PREFIX.skip.lint"
+        public const val TEST_FAILURE_IGNORE: String = "$FRONTEND_PREFIX.test.failure.ignore"
+        public const val NPM_LOG_LEVEL: String = "$FRONTEND_PREFIX.npm.log.level"
+    }
 }

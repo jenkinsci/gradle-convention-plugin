@@ -57,30 +57,23 @@ configure<SpotlessExtension> {
         )
     }
     kotlinGradle {
-        target(
-            "*.gradle.kts",
-            "**/*.gradle.kts",
-            "settings.gradle.kts",
-        )
+        target("**/*.gradle.kts")
         targetExclude(commonExcludes)
         ktlint(ktlintVersion)
         trimTrailingWhitespace()
         endWithNewline()
         licenseHeaderFile(
             licensePath,
-            "(plugins|pluginManagement|import|buildscript|dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
+            "(plugins|pluginManagement|import|buildscript|" +
+                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
         )
     }
     format("misc") {
         target(
             "**/*.md",
-            "**/*.txt",
-            "**/*.gitignore",
-            "**/*.gitattributes",
             "**/*.properties",
             "**/*.yml",
             "**/*.yaml",
-            "**/*.editorconfig",
             "**/*.xml",
         )
         targetExclude(commonExcludes)

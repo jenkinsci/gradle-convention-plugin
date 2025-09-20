@@ -16,10 +16,18 @@
 package io.github.aaravmahajanofficial.extensions
 
 import com.github.gradle.node.npm.proxy.ProxySettings
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.NPM_LOG_LEVEL
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.SKIP_LINT
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.SKIP_TESTS
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Frontend.TEST_FAILURE_IGNORE
+import io.github.aaravmahajanofficial.utils.gradleProperty
+import io.github.aaravmahajanofficial.utils.versionFromCatalogOrFail
+import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.property
 import java.net.URI
 import javax.inject.Inject
@@ -29,13 +37,16 @@ public open class FrontendExtension
 constructor(
     objects: ObjectFactory,
     layout: ProjectLayout,
+    providers: ProviderFactory,
+    libs: VersionCatalog,
 ) {
     public val enabled: Property<Boolean> = objects.property<Boolean>().convention(false)
 
     public val download: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val nodeVersion: Property<String> = objects.property<String>().convention("24.8.0")
-    public val npmVersion: Property<String> = objects.property<String>()
-    public val yarnVersion: Property<String> = objects.property<String>()
+    public val nodeVersion: Property<String> =
+        objects.property<String>().convention(versionFromCatalogOrFail(libs, "node"))
+    public val npmVersion: Property<String> = objects.property<String>().convention("")
+    public val yarnVersion: Property<String> = objects.property<String>().convention("")
 
     public val packageManager: Property<PackageManager> =
         objects.property<PackageManager>().convention(PackageManager.NPM)
@@ -44,6 +55,30 @@ constructor(
         objects.property<URI>().convention(URI.create("https://repo.jenkins-ci.org/nodejs-dist"))
 
     public val npmInstallCommand: Property<String> = objects.property<String>().convention("install")
+
+    public val skipTests: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            SKIP_TESTS, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val skipLint: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            SKIP_LINT, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val testFailureIgnore: Property<Boolean> = objects.property<Boolean>().convention(
+        gradleProperty(
+            providers,
+            TEST_FAILURE_IGNORE, String::toBoolean,
+        ).orElse(false),
+    )
+
+    public val logLevel: Property<String> =
+        objects.property<String>().convention(gradleProperty(providers, NPM_LOG_LEVEL).orElse(""))
 
     public val workDir: DirectoryProperty =
         objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/nodejs"))
@@ -55,6 +90,11 @@ constructor(
         objects.directoryProperty().convention(layout.projectDirectory.dir(".gradle/yarn"))
 
     public val nodeProjectDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory)
+
+    public val distDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory.dir("dir"))
+
+    public val resourcesTargetDir: DirectoryProperty =
+        objects.directoryProperty().convention(layout.buildDirectory.dir("resources/main/static"))
 
     public val nodeProxySettings: Property<ProxySettings> =
         objects.property<ProxySettings>().convention(ProxySettings.SMART)
