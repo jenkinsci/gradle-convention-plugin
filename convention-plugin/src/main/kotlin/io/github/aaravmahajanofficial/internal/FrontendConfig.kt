@@ -25,6 +25,7 @@ import io.github.aaravmahajanofficial.extensions.FrontendExtension
 import io.github.aaravmahajanofficial.extensions.PackageManager
 import io.github.aaravmahajanofficial.utils.isFrontendProject
 import org.gradle.api.Project
+import org.gradle.api.tasks.Sync
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.named
@@ -140,7 +141,7 @@ public class FrontendConfig(
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(frontendBuild, frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureYarnTasks() {
@@ -186,7 +187,7 @@ public class FrontendConfig(
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(frontendBuild, frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureTaskInputsOutputs(task: Any) {
@@ -200,7 +201,7 @@ public class FrontendConfig(
                     project.file("package-lock.json"),
                 )
 
-                task.outputs.dir(project.layout.buildDirectory.dir("resources/static"))
+                task.outputs.dir(extension.distDir)
             }
 
             is YarnTask -> {
@@ -212,17 +213,26 @@ public class FrontendConfig(
                     project.file("yarn.lock"),
                 )
 
-                task.outputs.dir(project.layout.buildDirectory.dir("resources/static"))
+                task.outputs.dir(extension.distDir)
             }
         }
     }
 
+    private fun registerAssetSync(buildTask: TaskProvider<*>): TaskProvider<Sync> =
+        project.tasks.register<Sync>("syncFrontendAssets") {
+            group = "Frontend"
+            description = "Sync built frontend assets into resources for packaging"
+            dependsOn(buildTask)
+            from(extension.distDir)
+            into(extension.resourcesTargetDir)
+        }
+
     private fun integrationWithGradleLifecycle(
-        buildTask: TaskProvider<*>,
+        syncAssetsTask: TaskProvider<Sync>,
         testTask: TaskProvider<*>,
         lintTask: TaskProvider<*>,
     ) {
-        project.tasks.named("processResources").configure { it.dependsOn(buildTask) }
+        project.tasks.named("processResources").configure { it.dependsOn(syncAssetsTask) }
 
         project.tasks.named("test").configure { it.dependsOn(testTask) }
 

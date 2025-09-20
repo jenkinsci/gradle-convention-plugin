@@ -91,6 +91,11 @@ constructor(
 
     public val nodeProjectDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory)
 
+    public val distDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory.dir("dir"))
+
+    public val resourcesTargetDir: DirectoryProperty =
+        objects.directoryProperty().convention(layout.buildDirectory.dir("resources/main/static"))
+
     public val nodeProxySettings: Property<ProxySettings> =
         objects.property<ProxySettings>().convention(ProxySettings.SMART)
 

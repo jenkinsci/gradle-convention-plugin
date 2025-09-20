@@ -22,17 +22,16 @@ plugins {
 }
 
 private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
+private val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
 
 kotlin {
     jvmToolchain(21)
 
     explicitApi()
 
-    val kotlinVersion = KotlinVersion.fromVersion(libs.findVersion("kotlinLanguage").get().requiredVersion)
-
     compilerOptions {
-        apiVersion.set(kotlinVersion)
-        languageVersion.set(kotlinVersion)
+        apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
+        languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
         jvmTarget.set(JvmTarget.JVM_21)
 
         allWarningsAsErrors.set(true)

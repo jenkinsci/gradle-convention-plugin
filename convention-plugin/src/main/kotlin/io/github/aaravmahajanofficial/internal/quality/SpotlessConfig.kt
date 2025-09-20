@@ -74,11 +74,7 @@ internal fun Project.configureSpotless(
                 }
             }
             kotlinGradle { t ->
-                t.target(
-                    "*.gradle.kts",
-                    "**/*.gradle.kts",
-                    "settings.gradle.kts",
-                )
+                t.target("**/*.gradle.kts")
                 t.targetExclude(commonExcludes)
                 t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
@@ -132,11 +128,7 @@ internal fun Project.configureSpotless(
                 }
             }
             groovyGradle { t ->
-                t.target(
-                    "*.gradle",
-                    "**/*.gradle",
-                    "settings.gradle",
-                )
+                t.target("**/*.gradle")
                 t.targetExclude(commonExcludes)
 
                 t.greclipse()
@@ -155,14 +147,10 @@ internal fun Project.configureSpotless(
         format("misc") { t ->
             t.target(
                 "**/*.md",
-                "**/*.txt",
-                "**/*.gitignore",
-                "**/*.gitattributes",
                 "**/*.properties",
                 "**/*.yml",
                 "**/*.yaml",
                 "**/*.json",
-                "**/*.editorconfig",
                 "**/*.xml",
                 "**/*.sh",
                 "**/Dockerfile*",

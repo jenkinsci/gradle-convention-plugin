@@ -321,6 +321,7 @@ class TestProjectBuilder(
             """
             [versions]
             kotlin = "2.2.0"
+            kotlinLanguage = "2.2"
             jenkins-core = "2.520"
             jenkins-gradle-jpi2 = "0.55.0"
             jenkins-bom = "5015.vb_52d36583443"
@@ -344,6 +345,7 @@ class TestProjectBuilder(
             mockk = "1.14.5"
             assertj = "4.0.0-M1"
             spock-core = "1.3-groovy-2.4"
+            node = "24.8.0"
 
             [libraries]
             # Kotlin
