@@ -15,8 +15,9 @@
  */
 package io.github.aaravmahajanofficial.constants
 
+import java.net.URI
+
 public object UrlConstants {
     public const val JENKINS_INCREMENTALS_REPO_URL: String = "https://repo.jenkins-ci.org/incrementals"
-    public const val JENKINS_RELEASES_REPO_URL: String = "https://repo.jenkins-ci.org/releases"
-    public const val JENKINS_PUBLIC_REPO_URL: String = "https://repo.jenkins-ci.org/public"
+    public val JENKINS_PUBLIC_REPO_URL: URI = URI.create("https://repo.jenkins-ci.org/public")
 }
