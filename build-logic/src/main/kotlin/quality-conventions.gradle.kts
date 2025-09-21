@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 import com.diffplug.gradle.spotless.SpotlessExtension
-import com.diffplug.gradle.spotless.SpotlessTask
+import com.diffplug.spotless.LineEnding
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -37,15 +37,12 @@ configure<SpotlessExtension> {
     val commonExcludes =
         listOf(
             "**/build/**",
+            "**/build-*/**",
             "**/.gradle/**",
             "**/.idea/**",
             "**/.git/**",
             "**/generated/**",
-            "**/out/**",
             "**/.gradle-test-kit/**",
-            "**/gradle/**",
-            "**/.kotlin/**",
-            "**/bin/**",
         )
 
     kotlin {
@@ -55,6 +52,7 @@ configure<SpotlessExtension> {
         trimTrailingWhitespace()
         endWithNewline()
         licenseHeaderFile(headerFile)
+        lineEndings = LineEnding.UNIX
     }
     kotlinGradle {
         target("**/*.gradle.kts")
@@ -63,6 +61,7 @@ configure<SpotlessExtension> {
         trimTrailingWhitespace()
         endWithNewline()
         licenseHeaderFile(headerFile, delimiter)
+        lineEndings = LineEnding.UNIX
     }
     format("misc") {
         target(
@@ -71,16 +70,14 @@ configure<SpotlessExtension> {
             "**/*.yml",
             "**/*.yaml",
             "**/*.xml",
+            "**/.gitignore",
             "**/*.txt",
         )
         targetExclude(commonExcludes)
         trimTrailingWhitespace()
         endWithNewline()
+        lineEndings = LineEnding.UNIX
     }
-}
-
-tasks.withType<SpotlessTask>().configureEach {
-    notCompatibleWithConfigurationCache("Spotless serialization issue")
 }
 
 private val detektConfig = rootProject.layout.projectDirectory.file("config/detekt/detekt.yml")
