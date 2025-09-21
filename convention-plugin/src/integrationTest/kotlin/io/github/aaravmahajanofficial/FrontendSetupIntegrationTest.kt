@@ -108,8 +108,8 @@ class FrontendSetupIntegrationTest {
     }
 
     @Test
-    @DisplayName("jest-junit reports")
-    fun `jest-junit reports must be created at desired location`() {
+    @DisplayName("should generate jest-junit report at the expected location")
+    fun `should generate jest-junit report at expected location`() {
         builder =
             TestProjectBuilder
                 .create()
@@ -125,7 +125,7 @@ class FrontendSetupIntegrationTest {
 
         result.task(":frontendTest")?.outcome shouldBe TaskOutcome.SUCCESS
 
-        val xmlReport = builder.projectDir.resolve("build/test-results/frontendTest/jest-junit.xml")
+        val xmlReport = builder.projectDir.resolve("build/test-results/jest-junit.xml")
         xmlReport.shouldExist()
     }
 

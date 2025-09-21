@@ -25,7 +25,7 @@ import io.github.aaravmahajanofficial.extensions.FrontendExtension
 import io.github.aaravmahajanofficial.extensions.PackageManager
 import io.github.aaravmahajanofficial.utils.isFrontendProject
 import org.gradle.api.Project
-import org.gradle.api.tasks.Sync
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.named
@@ -51,29 +51,29 @@ public class FrontendConfig(
         project.configure<NodeExtension> {
             nodeProjectDir.set(extension.nodeProjectDir)
 
+            download.set(extension.download)
+            version.set(extension.nodeVersion)
+
+            if (extension.npmVersion.isPresent && extension.npmVersion.get().isNotBlank()) {
+                npmVersion.set(extension.npmVersion)
+            }
+
+            if (extension.yarnVersion.isPresent && extension.yarnVersion.get().isNotBlank()) {
+                yarnVersion.set(extension.yarnVersion)
+            }
+
+            distBaseUrl.set(extension.nodeDownloadRoot.map { it.toString() })
+            allowInsecureProtocol.set(false)
+
+            npmInstallCommand.set(extension.npmInstallCommand)
+
+            workDir.set(extension.workDir)
+            npmWorkDir.set(extension.npmWorkDir)
+            yarnWorkDir.set(extension.yarnWorkDir)
+            nodeProxySettings.set(extension.nodeProxySettings)
+
             if (extension.packageManager.get() == PackageManager.YARN_COREPACK) {
                 download.set(false)
-            } else {
-                download.set(extension.download)
-                version.set(extension.nodeVersion)
-
-                if (extension.npmVersion.isPresent && extension.npmVersion.get().isNotBlank()) {
-                    npmVersion.set(extension.npmVersion)
-                }
-
-                if (extension.yarnVersion.isPresent && extension.yarnVersion.get().isNotBlank()) {
-                    yarnVersion.set(extension.yarnVersion)
-                }
-
-                distBaseUrl.set(extension.nodeDownloadRoot.map { it.toString() })
-                allowInsecureProtocol.set(false)
-
-                npmInstallCommand.set(extension.npmInstallCommand)
-
-                workDir.set(extension.workDir)
-                npmWorkDir.set(extension.npmWorkDir)
-                yarnWorkDir.set(extension.yarnWorkDir)
-                nodeProxySettings.set(extension.nodeProxySettings)
             }
         }
     }
@@ -111,6 +111,8 @@ public class FrontendConfig(
                 args.set(npmArgsFor(extension.buildScript.get()))
 
                 configureTaskInputsOutputs(this)
+
+                onlyIf { hasScriptDefined(extension.buildScript.get()) }
             }
 
         val frontendTest =
@@ -143,7 +145,7 @@ public class FrontendConfig(
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetCopy(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureYarnTasks() {
@@ -157,6 +159,8 @@ public class FrontendConfig(
                 args.set(listOf("run", extension.buildScript.get()))
 
                 configureTaskInputsOutputs(this)
+
+                onlyIf { hasScriptDefined(extension.buildScript.get()) }
             }
 
         val frontendTest =
@@ -189,7 +193,7 @@ public class FrontendConfig(
             onlyIf { hasScriptDefined(extension.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(registerAssetSync(frontendBuild), frontendTest, frontendLint)
+        integrationWithGradleLifecycle(registerAssetCopy(frontendBuild), frontendTest, frontendLint)
     }
 
     private fun configureTaskInputsOutputs(task: Any) {
@@ -199,32 +203,36 @@ public class FrontendConfig(
                 project.fileTree("src/main/ts"),
                 project.fileTree("src/main/webapp"),
                 project.file("package.json"),
+                project.file("webpack.config.js"),
+                project.file("tsconfig.json"),
+                project.file("babel.config.js"),
+                project.file(".env"),
             )
 
         when (task) {
             is NpmTask -> {
                 task.inputs.files(inputFiles + project.file("package-lock.json"))
-                task.outputs.dir(extension.distDir)
+                task.outputs.dir(extension.destDir)
             }
 
             is YarnTask -> {
                 task.inputs.files(inputFiles + project.file("yarn.lock"))
-                task.outputs.dir(extension.distDir)
+                task.outputs.dir(extension.destDir)
             }
         }
     }
 
-    private fun registerAssetSync(buildTask: TaskProvider<*>): TaskProvider<Sync> =
-        project.tasks.register<Sync>("syncFrontendAssets") {
+    private fun registerAssetCopy(buildTask: TaskProvider<*>): TaskProvider<Copy> =
+        project.tasks.register<Copy>("syncFrontendAssets") {
             group = "Frontend"
-            description = "Sync built frontend assets into resources for packaging"
+            description = "Copy built frontend assets into resources for packaging"
             dependsOn(buildTask)
-            from(extension.distDir)
-            into(extension.resourcesTargetDir)
+            from(extension.destDir)
+            into(project.layout.projectDirectory.dir("src/main/webapp/frontend"))
         }
 
     private fun integrationWithGradleLifecycle(
-        syncAssetsTask: TaskProvider<Sync>,
+        syncAssetsTask: TaskProvider<Copy>,
         testTask: TaskProvider<*>,
         lintTask: TaskProvider<*>,
     ) {

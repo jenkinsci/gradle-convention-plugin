@@ -97,15 +97,10 @@ public open class FrontendExtension
 
         public val nodeProjectDir: DirectoryProperty = objects.directoryProperty().convention(layout.projectDirectory)
 
-        public val distDir: DirectoryProperty =
+        public val destDir: DirectoryProperty =
             objects.directoryProperty().convention(
-                layout.projectDirectory.dir("dir"),
+                layout.buildDirectory.dir("frontend"),
             )
-
-        public val resourcesTargetDir: DirectoryProperty =
-            objects
-                .directoryProperty()
-                .convention(layout.buildDirectory.dir("resources/main/static"))
 
         public val nodeProxySettings: Property<ProxySettings> =
             objects.property<ProxySettings>().convention(ProxySettings.SMART)

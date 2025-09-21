@@ -17,6 +17,7 @@ package io.github.aaravmahajanofficial.internal.quality
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
+import com.diffplug.spotless.LineEnding
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.hasGroovySources
 import io.github.aaravmahajanofficial.utils.hasJavaSources
@@ -50,16 +51,13 @@ internal fun Project.configureSpotless(
     val commonExcludes =
         listOf(
             "**/build/**",
+            "**/build-*/**",
             "**/.gradle/**",
             "**/.idea/**",
             "**/.git/**",
             "**/generated/**",
-            "**/out/**",
             "**/.gradle-test-kit/**",
-            "**/gradle/**",
             "**/node_modules/**",
-            "**/.kotlin/**",
-            "**/bin/**",
         )
 
     configure<SpotlessExtension> {
@@ -70,6 +68,7 @@ internal fun Project.configureSpotless(
                 t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+                t.lineEndings = LineEnding.UNIX
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile)
@@ -81,6 +80,7 @@ internal fun Project.configureSpotless(
                 t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+                t.lineEndings = LineEnding.UNIX
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile, delimiter)
@@ -99,6 +99,7 @@ internal fun Project.configureSpotless(
                 t.removeWildcardImports()
                 t.endWithNewline()
                 t.toggleOffOn()
+                t.lineEndings = LineEnding.UNIX
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile)
@@ -113,6 +114,7 @@ internal fun Project.configureSpotless(
                 t.greclipse()
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+                t.lineEndings = LineEnding.UNIX
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile)
@@ -125,6 +127,7 @@ internal fun Project.configureSpotless(
                 t.greclipse()
                 t.trimTrailingWhitespace()
                 t.endWithNewline()
+                t.lineEndings = LineEnding.UNIX
 
                 if (headerFile.exists()) {
                     t.licenseHeaderFile(headerFile, delimiter)
@@ -141,6 +144,7 @@ internal fun Project.configureSpotless(
                 "**/*.xml",
                 "**/*.sh",
                 "**/*.txt",
+                "**/.gitignore",
                 "**/Dockerfile*",
                 "**/*.dockerignore",
                 "Jenkinsfile",
@@ -148,6 +152,7 @@ internal fun Project.configureSpotless(
             t.targetExclude(commonExcludes)
             t.trimTrailingWhitespace()
             t.endWithNewline()
+            t.lineEndings = LineEnding.UNIX
         }
     }
 

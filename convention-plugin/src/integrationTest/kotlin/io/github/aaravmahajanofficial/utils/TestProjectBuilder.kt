@@ -229,10 +229,10 @@ class TestProjectBuilder(
                 "jest-junit": {
                     "outputDirectory": "build/test-results",
                     "outputName": "jest-junit.xml"
-                }
+                },
                 "devDependencies": {
-                    "jest": "^29.0.0",
-                    "jest-junit": "^15.0.0"
+                    "jest": "^30.0.0",
+                    "jest-junit": "^16.0.0"
                 }
             }
             """.trimIndent()
