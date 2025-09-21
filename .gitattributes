@@ -1,0 +1,4 @@
+# See: https://docs.github.com/en/get-started/git-basics/configuring-git-to-handle-line-endings
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
