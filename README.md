@@ -1,7 +1,7 @@
 # Jenkins Gradle Convention Plugin
 
 <div align="center">
-  <img src="docs/img/logo.png" alt="Banner Logo" width="600px">
+  <img src="docs/images/logo.png" alt="Banner Logo" width="600px">
 </div>
 
 ## Overview

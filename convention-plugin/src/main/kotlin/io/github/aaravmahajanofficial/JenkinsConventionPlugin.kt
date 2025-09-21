@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.constants.PluginMetadata
+import io.github.aaravmahajanofficial.constants.UrlConstants.JENKINS_PUBLIC_REPO_URL
 import io.github.aaravmahajanofficial.extensions.PluginExtension
 import io.github.aaravmahajanofficial.internal.BomManager
 import io.github.aaravmahajanofficial.internal.FrontendConfig
@@ -45,7 +46,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                 mavenCentral()
                 maven {
                     it.name = "jenkinsPublic"
-                    it.url = uri("https://repo.jenkins-ci.org/public/")
+                    it.url = JENKINS_PUBLIC_REPO_URL
                 }
             }
 
