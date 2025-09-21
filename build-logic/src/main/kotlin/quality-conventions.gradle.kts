@@ -13,6 +13,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
@@ -25,8 +26,12 @@ plugins {
 
 private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
 
-private val licensePath = rootProject.layout.projectDirectory.file("config/license-header.txt")
+private val headerFile = rootProject.layout.projectDirectory.file("config/license-header.txt")
+private val editorConfig = rootProject.layout.projectDirectory.file(".editorconfig")
 private val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
+private val delimiter =
+    "^\\s*(plugins|pluginManagement|import|buildscript|" +
+        "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)\\b"
 
 configure<SpotlessExtension> {
 
@@ -40,33 +45,25 @@ configure<SpotlessExtension> {
             "**/out/**",
             "**/.gradle-test-kit/**",
             "**/gradle/**",
+            "**/.kotlin/**",
+            "**/bin/**",
         )
 
     kotlin {
-        target(
-            "src/main/kotlin/**/*.kt",
-            "src/test/kotlin/**/*.kt",
-        )
+        target("**/*.kt")
         targetExclude(commonExcludes)
-        ktlint(ktlintVersion)
+        ktlint(ktlintVersion).setEditorConfigPath(editorConfig)
         trimTrailingWhitespace()
         endWithNewline()
-        licenseHeaderFile(
-            licensePath,
-            "(package |@file:|import )",
-        )
+        licenseHeaderFile(headerFile)
     }
     kotlinGradle {
         target("**/*.gradle.kts")
         targetExclude(commonExcludes)
-        ktlint(ktlintVersion)
+        ktlint(ktlintVersion).setEditorConfigPath(editorConfig)
         trimTrailingWhitespace()
         endWithNewline()
-        licenseHeaderFile(
-            licensePath,
-            "(plugins|pluginManagement|import|buildscript|" +
-                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
-        )
+        licenseHeaderFile(headerFile, delimiter)
     }
     format("misc") {
         target(
@@ -75,6 +72,7 @@ configure<SpotlessExtension> {
             "**/*.yml",
             "**/*.yaml",
             "**/*.xml",
+            "**/*.txt",
         )
         targetExclude(commonExcludes)
         trimTrailingWhitespace()
@@ -86,15 +84,18 @@ tasks.withType<SpotlessTask>().configureEach {
     notCompatibleWithConfigurationCache("Spotless serialization issue")
 }
 
+private val detektConfig = rootProject.layout.projectDirectory.file("config/detekt/detekt.yml")
+private val detektBaseline =
+    rootProject.layout.projectDirectory
+        .file("config/detekt/detekt-baseline.xml")
+        .asFile
+
 configure<DetektExtension> {
     toolVersion = libs.findVersion("detekt").get().requiredVersion
     parallel = true
     buildUponDefaultConfig = true
-    config.setFrom(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))
-    baseline =
-        rootProject.layout.projectDirectory
-            .file("config/detekt/detekt-baseline.xml")
-            .asFile
+    config.setFrom(detektConfig)
+    baseline = detektBaseline
 }
 
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
@@ -102,8 +103,11 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     autoCorrect = false
 
     reports {
-        html.required.set(true)
         xml.required.set(true)
+        html.required.set(true)
+        sarif.required.set(true)
+        txt.required.set(false)
+        md.required.set(false)
     }
 }
 

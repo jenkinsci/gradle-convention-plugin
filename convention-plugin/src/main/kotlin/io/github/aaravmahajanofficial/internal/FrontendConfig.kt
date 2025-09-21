@@ -83,14 +83,16 @@ public class FrontendConfig(
             PackageManager.NPM -> configureNpmTasks()
             PackageManager.YARN,
             PackageManager.YARN_COREPACK,
-                -> configureYarnTasks()
+            -> configureYarnTasks()
         }
     }
 
     private fun npmArgsFor(script: String): List<String> =
         buildList {
-            extension.logLevel.get()
-                .takeIf { it.isNotBlank() }?.let {
+            extension.logLevel
+                .get()
+                .takeIf { it.isNotBlank() }
+                ?.let {
                     add("--loglevel")
                     add(it)
                 }
@@ -191,28 +193,22 @@ public class FrontendConfig(
     }
 
     private fun configureTaskInputsOutputs(task: Any) {
+        val inputFiles =
+            listOf(
+                project.fileTree("src/main/js"),
+                project.fileTree("src/main/ts"),
+                project.fileTree("src/main/webapp"),
+                project.file("package.json"),
+            )
+
         when (task) {
             is NpmTask -> {
-                task.inputs.files(
-                    project.fileTree("src/main/js"),
-                    project.fileTree("src/main/ts"),
-                    project.fileTree("src/main/webapp"),
-                    project.file("package.json"),
-                    project.file("package-lock.json"),
-                )
-
+                task.inputs.files(inputFiles + project.file("package-lock.json"))
                 task.outputs.dir(extension.distDir)
             }
 
             is YarnTask -> {
-                task.inputs.files(
-                    project.fileTree("src/main/js"),
-                    project.fileTree("src/main/ts"),
-                    project.fileTree("src/main/webapp"),
-                    project.file("package.json"),
-                    project.file("yarn.lock"),
-                )
-
+                task.inputs.files(inputFiles + project.file("yarn.lock"))
                 task.outputs.dir(extension.distDir)
             }
         }

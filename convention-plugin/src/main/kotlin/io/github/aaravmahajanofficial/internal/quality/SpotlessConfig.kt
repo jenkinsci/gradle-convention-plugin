@@ -43,6 +43,9 @@ internal fun Project.configureSpotless(
             .asFile
     val ktlintVersion = versionFromCatalogOrFail(libs, "ktlint")
     val palantirJavaVersion = versionFromCatalogOrFail(libs, "palantir-java")
+    val delimiter =
+        "^\\s*(plugins|pluginManagement|import|buildscript|" +
+            "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)\\b"
 
     val commonExcludes =
         listOf(
@@ -54,16 +57,15 @@ internal fun Project.configureSpotless(
             "**/out/**",
             "**/.gradle-test-kit/**",
             "**/gradle/**",
+            "**/node_modules/**",
+            "**/.kotlin/**",
+            "**/bin/**",
         )
 
     configure<SpotlessExtension> {
         if (hasKotlinSources()) {
             kotlin { t ->
-                t.target(
-                    "src/main/kotlin/**/*.kt",
-                    "src/test/kotlin/**/*.kt",
-                    "src/main/resources/**/*.kt",
-                )
+                t.target("**/*.kt")
                 t.targetExclude(commonExcludes)
                 t.ktlint(ktlintVersion)
                 t.trimTrailingWhitespace()
@@ -81,27 +83,20 @@ internal fun Project.configureSpotless(
                 t.endWithNewline()
 
                 if (headerFile.exists()) {
-                    t.licenseHeaderFile(
-                        headerFile,
-                        "(plugins|pluginManagement|import|buildscript|" +
-                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
-                    )
+                    t.licenseHeaderFile(headerFile, delimiter)
                 }
             }
         }
         if (hasJavaSources()) {
             java { t ->
-                t.target(
-                    "src/main/java/**/*.java",
-                    "src/test/java/**/*.java",
-                    "src/main/resources/**/*.java",
-                )
+                t.target("**/*.java")
                 t.targetExclude(commonExcludes)
 
                 t.palantirJavaFormat(palantirJavaVersion)
                 t.importOrder()
                 t.removeUnusedImports()
                 t.trimTrailingWhitespace()
+                t.removeWildcardImports()
                 t.endWithNewline()
                 t.toggleOffOn()
 
@@ -112,11 +107,7 @@ internal fun Project.configureSpotless(
         }
         if (hasGroovySources()) {
             groovy { t ->
-                t.target(
-                    "src/main/groovy/**/*.groovy",
-                    "src/test/groovy/**/*.groovy",
-                    "src/main/resources/**/*.groovy",
-                )
+                t.target("**/*.groovy")
                 t.targetExclude(commonExcludes)
 
                 t.greclipse()
@@ -136,11 +127,7 @@ internal fun Project.configureSpotless(
                 t.endWithNewline()
 
                 if (headerFile.exists()) {
-                    t.licenseHeaderFile(
-                        headerFile,
-                        "(plugins|pluginManagement|import|buildscript|" +
-                                "dependencyResolutionManagement|enableFeaturePreview|include|rootProject)",
-                    )
+                    t.licenseHeaderFile(headerFile, delimiter)
                 }
             }
         }
@@ -153,6 +140,7 @@ internal fun Project.configureSpotless(
                 "**/*.json",
                 "**/*.xml",
                 "**/*.sh",
+                "**/*.txt",
                 "**/Dockerfile*",
                 "**/*.dockerignore",
                 "Jenkinsfile",

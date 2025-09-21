@@ -35,7 +35,7 @@ internal fun Project.hasGroovySources(): Boolean =
 
 internal fun Project.isFrontendProject(): Boolean =
     listOf("package.json", "yarn.lock", "pnpm-lock.yaml").any { file(it).exists() } ||
-            listOf("src/main/js", "src/main/ts", "src/main/webapp").any { file(it).isDirectory }
+        listOf("src/main/js", "src/main/ts", "src/main/webapp").any { file(it).isDirectory }
 
 internal fun Project.resolveConfigFile(
     toolName: String,

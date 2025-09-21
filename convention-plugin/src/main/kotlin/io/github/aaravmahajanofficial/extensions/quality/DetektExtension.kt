@@ -25,17 +25,17 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class DetektExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, DETEKT_ENABLED, String::toBoolean).orElse(true),
-        )
-    public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
-    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val source: Property<FileCollection> =
-        objects.property<FileCollection>().convention(objects.fileCollection())
-}
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, DETEKT_ENABLED, String::toBoolean).orElse(true),
+            )
+        public val autoCorrect: Property<Boolean> = objects.property<Boolean>().convention(false)
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
+    }

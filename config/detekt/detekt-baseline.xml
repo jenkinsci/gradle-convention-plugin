@@ -1,11 +1,9 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-    <ManuallySuppressedIssues/>
-    <CurrentIssues>
-        <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
-        <ID>LongMethod:SpotlessConfig.kt$internal fun Project.configureSpotless( quality: QualityExtension, libs:
-            VersionCatalog, )
-        </ID>
-        <ID>TooManyFunctions:PluginExtension.kt$PluginExtension</ID>
-    </CurrentIssues>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:BomManager.kt$BomManager$private fun DependencyHandler.configureCommonBoms()</ID>
+    <ID>LongMethod:SpotlessConfig.kt$internal fun Project.configureSpotless( quality: QualityExtension, libs: VersionCatalog, )</ID>
+    <ID>TooManyFunctions:PluginExtension.kt$PluginExtension</ID>
+  </CurrentIssues>
 </SmellBaseline>

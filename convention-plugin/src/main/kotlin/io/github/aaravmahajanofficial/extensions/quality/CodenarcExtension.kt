@@ -25,23 +25,23 @@ import org.gradle.kotlin.dsl.property
 import javax.inject.Inject
 
 public open class CodenarcExtension
-@Inject
-constructor(
-    objects: ObjectFactory,
-    providers: ProviderFactory,
-) {
-    public val enabled: Property<Boolean> =
-        objects.property<Boolean>().convention(
-            gradleProperty(providers, CODENARC_ENABLED, String::toBoolean).orElse(true),
-        )
-    public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
-    public val source: Property<FileCollection> =
-        objects.property<FileCollection>().convention(objects.fileCollection())
+    @Inject
+    constructor(
+        objects: ObjectFactory,
+        providers: ProviderFactory,
+    ) {
+        public val enabled: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, CODENARC_ENABLED, String::toBoolean).orElse(true),
+            )
+        public val failOnViolation: Property<Boolean> = objects.property<Boolean>().convention(true)
+        public val source: Property<FileCollection> =
+            objects.property<FileCollection>().convention(objects.fileCollection())
 
-    // Groovy DSL setter methods
-    public fun enabled(value: Boolean): Unit = enabled.set(value)
+        // Groovy DSL setter methods
+        public fun enabled(value: Boolean): Unit = enabled.set(value)
 
-    public fun failOnViolation(value: Boolean): Unit = failOnViolation.set(value)
+        public fun failOnViolation(value: Boolean): Unit = failOnViolation.set(value)
 
-    public fun source(path: FileCollection): Unit = source.set(path)
-}
+        public fun source(path: FileCollection): Unit = source.set(path)
+    }

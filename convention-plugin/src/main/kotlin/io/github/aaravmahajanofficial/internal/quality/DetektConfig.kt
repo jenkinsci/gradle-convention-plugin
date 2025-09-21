@@ -35,14 +35,17 @@ internal fun Project.configureDetekt(
 
     pluginManager.apply(DetektPlugin::class.java)
 
+    val detektConfig = resolveConfigFile("detekt", "detekt.yml")
+    val detektBaseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
+
     configure<DetektExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "detekt")
         autoCorrect = quality.detekt.autoCorrect.get()
         buildUponDefaultConfig = true
         isIgnoreFailures = !quality.detekt.failOnViolation.get()
         source.setFrom(files("src/main/kotlin", "src/test/kotlin").plus(quality.detekt.source.get()))
-        config.setFrom(resolveConfigFile("detekt", "detekt.yml"))
-        baseline = resolveConfigFile("detekt", "detekt-baseline.xml").asFile
+        config.setFrom(detektConfig)
+        baseline = detektBaseline
         parallel = true
     }
     tasks.withType<Detekt>().configureEach { detekt ->
@@ -50,6 +53,8 @@ internal fun Project.configureDetekt(
             it.xml.required.set(true)
             it.html.required.set(true)
             it.sarif.required.set(true)
+            it.txt.required.set(false)
+            it.md.required.set(false)
         }
     }
     tasks.named("check").configure { t ->
