@@ -30,7 +30,8 @@ public class RestrictImportsConfig(
         if (extension.banJUnit4.get()) {
             project.extensions.configure(RestrictImportsExtension::class.java) { restrictImports ->
                 restrictImports.reason.set("Please use JUnit 5 (JUnit Jupiter) instead of JUnit 4")
-                restrictImports.bannedImports.set(listOf("org.junit", "org.junit.*"))
+                restrictImports.bannedImports.set(listOf("org.junit.**"))
+                restrictImports.allowedImports.set(listOf("org.junit.jupiter.**"))
             }
         }
 

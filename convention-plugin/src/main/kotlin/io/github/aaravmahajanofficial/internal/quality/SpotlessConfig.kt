@@ -147,7 +147,7 @@ internal fun Project.configureSpotless(
                 "**/.gitignore",
                 "**/Dockerfile*",
                 "**/*.dockerignore",
-                "Jenkinsfile",
+                "**Jenkinsfile",
             )
             t.targetExclude(commonExcludes)
             t.trimTrailingWhitespace()
