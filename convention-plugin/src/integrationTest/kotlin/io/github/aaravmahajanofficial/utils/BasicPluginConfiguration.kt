@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial.utils
 
 fun basicPluginConfiguration(
+    content: String = "",
     bomBlock: String = "",
     qualityBlock: String = "",
     dependenciesBlock: String = "",
@@ -26,12 +27,23 @@ fun basicPluginConfiguration(
         id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "0.0.0-SNAPSHOT"
     }
 
-    jenkinsConvention {
-        artifactId = "test-plugin"
-        ${bomBlock.ifBlank { "" }}
-        ${qualityBlock.ifBlank { "" }}
+    ${
+        content.ifBlank {
+            """
+            jenkinsConvention {
+                artifactId = "test-plugin"
+                ${bomBlock.ifBlank { "" }}
+                ${qualityBlock.ifBlank { "" }}
+            }
+
+            """.trimIndent()
+        }
     }
 
     ${dependenciesBlock.ifBlank { "" }}
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 
     """.trimIndent()

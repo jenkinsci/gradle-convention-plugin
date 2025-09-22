@@ -21,6 +21,7 @@ import io.github.aaravmahajanofficial.extensions.PluginExtension
 import io.github.aaravmahajanofficial.internal.BomManager
 import io.github.aaravmahajanofficial.internal.FrontendConfig
 import io.github.aaravmahajanofficial.internal.JpiPluginConfig
+import io.github.aaravmahajanofficial.internal.RestrictImportsConfig
 import io.github.aaravmahajanofficial.internal.TestingConfig
 import io.github.aaravmahajanofficial.internal.language.GroovyConfig
 import io.github.aaravmahajanofficial.internal.language.JavaConfig
@@ -66,6 +67,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     BomManager(project, pluginExtension.bom).configure()
                     TestingConfig(project).configure()
                     QualityManager(project, pluginExtension.quality).apply()
+                    RestrictImportsConfig(project, pluginExtension).configure()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }

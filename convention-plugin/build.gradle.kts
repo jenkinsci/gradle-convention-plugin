@@ -39,6 +39,7 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
     }
     implementation(baseLibs.jgit.gradle.plugin)
+    implementation(baseLibs.restrictImports.plugin)
 }
 
 gradlePlugin {

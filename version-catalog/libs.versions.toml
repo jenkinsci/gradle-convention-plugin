@@ -56,6 +56,7 @@ maven-gradle-publish = "0.34.0"
 # Miscellaneous
 jgit = "7.4.0.202509020913-r"
 node = "24.8.0"
+restrictImports = "3.0.0"
 
 [libraries]
 # Kotlin and Gradle
@@ -112,11 +113,11 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 
 # Miscellaneous
 jgit-gradle-plugin = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
+restrictImports-plugin = { module = "de.skuzzle.restrictimports:de.skuzzle.restrictimports.gradle.plugin", version.ref = "restrictImports"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-owaspDependencyCheck = { id = "org.owasp.dependencycheck", version.ref = "owaspCheck" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
