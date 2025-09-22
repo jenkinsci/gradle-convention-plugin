@@ -1,31 +1,27 @@
 # Jenkins Gradle Convention Plugin
 
-<div align="center">
-  <img src="docs/images/logo.png" alt="Banner Logo" width="600px">
-</div>
+<p align="center">
+  <img src="docs/img/logo.png" alt="Banner Logo" width="600">
+</p>
 
-## Overview
-
-[![CI](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
-[![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Gradle%20Plugin%20Portal&labelColor=%2330363c&color=%237b53fb)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?&labelColor=%2330363c)](https://opensource.org/licenses/Apache-2.0)
-[![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-4A154B?&logo=slack&logoColor=white&&labelColor=%2330363c)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
-
-The **Jenkins Gradle Convention Plugin** is a Kotlin-first, 🐘 [Gradle](https://github.com/gradle/gradle) convention
-plugin that acts as the Maven Parent POM equivalent for Jenkins plugin development with Gradle. It provides a unified,
-opinionated foundation for building, testing, and publishing Jenkins plugins—standardizing best practices, automating
-quality checks, and eliminating boilerplate.
-
-Built on top of the well-established [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin), this plugin
-extends JPI with extra conventions, integrated quality tools, and CI-friendly defaults—so you can focus on your plugin’s
-logic, not your build scripts.
-
-> **&check; Stop copy-pasting boilerplate:**
-> Get reproducible, high-quality, CI-ready Jenkins plugins out of the box!
+[![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d&color=06ba63)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
+[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Plugin%20Portal&style=for-the-badge&labelColor=285E61&color=2D8B8B)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
+[![License](https://img.shields.io/badge/License-Apache_2.0-1155ba.svg?style=for-the-badge&labelColor=013178&logo=apache)](https://opensource.org/licenses/Apache-2.0)
+[![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-7c3085?style=for-the-badge&logo=slack&logoColor=white&&labelColor=4A154B)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
 
 ---
 
-## Core Features
+The **Jenkins Gradle Convention Plugin** is a Kotlin-first, Gradle convention
+plugin that acts as the Maven Parent POM equivalent for Jenkins plugin development with Gradle. It provides a unified foundation for 
+building, testing, and publishing Jenkins plugins by standardizing best practices, automating
+quality checks, and eliminating boilerplate.
+
+Built on top of the well-established [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin), this plugin
+extends JPI with extra conventions, integrated quality tools, and CI-friendly defaults, allowing developers to focus on plugin logic rather than build scripts.
+
+---
+
+## Features
 
 ### Language & Build Conventions
 
@@ -247,21 +243,13 @@ Want to help improve this plugin?
 
 ## Acknowledgements
 
-This project began
-during [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) with guidance
-from
-mentors [Oleg Nenashev](https://github.com/oleg-nenashev), [Steve Hill](https://github.com/sghill) & [Rahul Somasunderam](https://github.com/rahulsom)
-and support from the [Kotlin Foundation](https://kotlinfoundation.org/), and continues to be actively maintained.
+This project started as part of my [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) work, under the guidance 
+of mentors [Oleg Nenashev](https://github.com/oleg-nenashev), [Steve Hill](https://github.com/sghill), and [Rahul Somasunderam](https://github.com/rahulsom), in collaboration with Kotlin Foundation, Gradle and Netflix.
 
 ---
 
 ## License
 
-This project is licensed under
-the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE).
+© 2025 Aarav Mahajan. All rights reserved.
 
-&copy; 2025 Aarav Mahajan
-
----
-
-[⬆ Back to Top](#jenkins-gradle-convention-plugin)
+This project is licensed under the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE). See the LICENSE file for details.
