@@ -179,6 +179,27 @@ class TestProjectBuilder(
         return this
     }
 
+    fun withJUnit4TestSource(): TestProjectBuilder {
+        val testDir = projectDir.resolve("src/test/java/com/example")
+        Files.createDirectories(testDir)
+
+        val content =
+            """
+            package com.example;
+
+            import org.junit.Test;
+
+            public class JUnit4Test {
+                @Test
+                public void foo() {}
+            }
+
+            """.trimIndent()
+
+        testDir.resolve("JUnit4Test.java").writeText(content)
+        return this
+    }
+
     fun withJellyFile(path: String = "src/main/resources/index.jelly"): TestProjectBuilder {
         val jellyDir = projectDir.resolve(path)
         Files.createDirectories(jellyDir.parent)

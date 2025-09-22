@@ -138,6 +138,64 @@ class PluginApplicationIntegrationTest {
         result.output shouldNotContain "pmd"
     }
 
+    @Test
+    @DisplayName("should ban junit4 imports")
+    fun `junit4 imports should be banned`() {
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    basicPluginConfiguration(
+                        dependenciesBlock =
+                            """
+                            dependencies {
+                                testImplementation("junit:junit:4.13.2")
+                                testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.13.4")
+                            }
+                            """.trimIndent(),
+                    ),
+                ).withJavaSource()
+                .withJUnit4TestSource()
+
+        val result = builder.runGradleAndFail("check", "-Pquality.enabled=false")
+
+        result.output shouldContain "Please use JUnit 5 (JUnit Jupiter) instead of JUnit 4"
+    }
+
+    @Test
+    @DisplayName("allows JUnit 4 imports when not banned")
+    fun `allows junit4 imports`() {
+        builder =
+            TestProjectBuilder
+                .create()
+                .withVersionCatalog()
+                .withSettingsGradle()
+                .withBuildGradle(
+                    basicPluginConfiguration(
+                        content =
+                            """
+                            jenkinsConvention {
+                                banJUnit4 = false
+                            }
+                            """.trimIndent(),
+                        dependenciesBlock =
+                            """
+                            dependencies {
+                                testImplementation("junit:junit:4.13.2")
+                                testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.13.4")
+                            }
+                            """.trimIndent(),
+                    ),
+                ).withJavaSource()
+                .withJUnit4TestSource()
+
+        val result = builder.runGradle("check", "-Pquality.enabled=false")
+
+        result.task(":check")?.outcome shouldBe TaskOutcome.SUCCESS
+    }
+
 //    @Test
 //    @DisplayName("should handle multi-module project structure")
 //    fun `handle multi module project structure`() {

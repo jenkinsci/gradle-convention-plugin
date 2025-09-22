@@ -91,6 +91,8 @@ public open class PluginExtension
                     ),
                 )
 
+        public val banJUnit4: Property<Boolean> = objects.property<Boolean>().convention(true)
+
         // Groovy DSL setter methods
         public fun jenkinsVersions(value: String): Unit = jenkinsVersion.set(value)
 
