@@ -1,25 +1,61 @@
 # Jenkins Gradle Convention Plugin
 
-<p align="center">
-  <img src="docs/img/logo.png" alt="Banner Logo" width="600">
-</p>
-
-[![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d&color=06ba63)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 [![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Plugin%20Portal&style=for-the-badge&labelColor=285E61&color=2D8B8B)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
 [![License](https://img.shields.io/badge/License-Apache_2.0-1155ba.svg?style=for-the-badge&labelColor=013178&logo=apache)](https://opensource.org/licenses/Apache-2.0)
 [![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-7c3085?style=for-the-badge&logo=slack&logoColor=white&&labelColor=4A154B)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
 
----
+<p align="center">
+  <img src="docs/img/logo.png" alt="Banner Logo" width="600">
+</p>
 
-The **Jenkins Gradle Convention Plugin** is a Kotlin-first, Gradle convention
-plugin that acts as the Maven Parent POM equivalent for Jenkins plugin development with Gradle. It provides a unified foundation for 
-building, testing, and publishing Jenkins plugins by standardizing best practices, automating
-quality checks, and eliminating boilerplate.
+The **Jenkins Gradle Convention Plugin** is a Kotlin-first Gradle convention plugin that eliminates boilerplate and standardizes Jenkins plugin development using Gradle. It provides automated quality checks, CI-friendly defaults, and a unified foundation for building, testing, and publishing Jenkins plugins.
 
-Built on top of the well-established [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin), this plugin
-extends JPI with extra conventions, integrated quality tools, and CI-friendly defaults, allowing developers to focus on plugin logic rather than build scripts.
+Built on the proven [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin) with enhanced conventions and integrated tooling, so developers can focus on plugin logic rather than build configuration.
 
----
+## Getting Started
+
+### Step 1: Define the plugin in the projects `libs.versions.toml` file
+
+```toml
+[versions]
+jenkinsConvention = "<LATEST_VERSION>"
+
+[plugins]
+jenkinsConvention = { id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin", version.ref = "jenkinsConvention" }
+```
+
+### Step 2: Configure the Version Catalog
+
+In the root `settings.gradle.kts`, add the plugin’s version catalog:
+
+```kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        create("baseLibs") {
+            from("io.github.aaravmahajanofficial:version-catalog:<LATEST_VERSION>")
+        }
+    }
+}
+```
+
+### Step 3: Basic Build Script
+
+```kotlin
+plugins {
+    alias(libs.plugins.jenkinsConvention)
+}
+
+jenkinsConvention {
+    // Only override the defaults that need to be customized for your plugin.
+
+    // Set the Jenkins version (default: as per version catalog).
+    jenkinsVersion = "2.525"
+}
+```
 
 ## Features
 
@@ -97,54 +133,6 @@ hell_](https://en.wikipedia.org/wiki/Dependency_hell).
 - Multi-module support: Consistent conventions across large projects
 - Kotlin DSL optimized: First-class Kotlin build script support
 
----
-
-## Quick Start
-
-### Step 1: Define the plugin in the projects `libs.versions.toml` file
-
-```toml
-[versions]
-jenkinsConvention = "<LATEST_VERSION>"
-
-[plugins]
-jenkinsConvention = { id = "io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin", version.ref = "jenkinsConvention" }
-```
-
-### Step 2: Configure the Version Catalog
-
-In the root `settings.gradle.kts`, add the plugin’s version catalog:
-
-```kts
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-    versionCatalogs {
-        create("baseLibs") {
-            from("io.github.aaravmahajanofficial:version-catalog:<LATEST_VERSION>")
-        }
-    }
-}
-```
-
-### Step 3: Basic Build Script
-
-```kotlin
-plugins {
-    alias(libs.plugins.jenkinsConvention)
-}
-
-jenkinsConvention {
-    // Only override the defaults that need to be customized for your plugin.
-
-    // Set the Jenkins version (default: as per version catalog).
-    jenkinsVersion = "2.525"
-}
-```
-
----
-
 ## Usage Examples
 
 ### Customizing BOMs
@@ -192,8 +180,6 @@ jenkinsConvention {
 }
 ```
 
----
-
 ## Compatibility
 
 | Component   | Supported Versions                                               |
@@ -216,8 +202,6 @@ jenkinsConvention {
 - **`build-logic`**: Reusable convention and quality plugins
 - **`version-catalogs`**: Centralized dependency versions (libs.versions.toml)
 
----
-
 ## Contributing
 
 Want to help improve this plugin?
@@ -226,8 +210,6 @@ Want to help improve this plugin?
 - Review
   [CONTRIBUTING.md](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/CONTRIBUTING.md)
   for guidelines.
-
----
 
 ## Additional Resources
 
@@ -239,14 +221,10 @@ Want to help improve this plugin?
 - **Community/Support**: Join the `#jenkins-plugin-toolchain` channel on
   the [Gradle Community Slack](https://community.gradle.org/contributing/community-slack/).
 
----
-
 ## Acknowledgements
 
-This project started as part of my [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) work, under the guidance 
+This project started as part of my [Google Summer of Code 2025](https://summerofcode.withgoogle.com/programs/2025/projects/3ujOIGDx) work, under the guidance
 of mentors [Oleg Nenashev](https://github.com/oleg-nenashev), [Steve Hill](https://github.com/sghill), and [Rahul Somasunderam](https://github.com/rahulsom), in collaboration with Kotlin Foundation, Gradle and Netflix.
-
----
 
 ## License
 
