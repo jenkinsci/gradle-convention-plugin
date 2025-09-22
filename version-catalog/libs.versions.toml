@@ -113,7 +113,7 @@ assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 
 # Miscellaneous
 jgit-gradle-plugin = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
-restrictImports-plugin = { module = "de.skuzzle.restrictimports:de.skuzzle.restrictimports.gradle.plugin", version.ref = "restrictImports"}
+restrictImports-plugin = { module = "de.skuzzle.restrictimports:de.skuzzle.restrictimports.gradle.plugin", version.ref = "restrictImports" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
