@@ -22,6 +22,7 @@ import io.github.aaravmahajanofficial.internal.BomManager
 import io.github.aaravmahajanofficial.internal.FrontendConfig
 import io.github.aaravmahajanofficial.internal.JpiPluginConfig
 import io.github.aaravmahajanofficial.internal.RestrictImportsConfig
+import io.github.aaravmahajanofficial.internal.TestJarConfig
 import io.github.aaravmahajanofficial.internal.TestingConfig
 import io.github.aaravmahajanofficial.internal.language.GroovyConfig
 import io.github.aaravmahajanofficial.internal.language.JavaConfig
@@ -49,6 +50,9 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     it.name = "jenkinsPublic"
                     it.url = JENKINS_PUBLIC_REPO_URL
                 }
+                maven {
+                    it.url = uri("https://repo.eclipse.org/content/groups/releases/")
+                }
             }
 
             val libs = libsCatalog()
@@ -68,6 +72,7 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     TestingConfig(project).configure()
                     QualityManager(project, pluginExtension.quality).apply()
                     RestrictImportsConfig(project, pluginExtension).configure()
+                    TestJarConfig(project, pluginExtension).configure()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }

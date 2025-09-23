@@ -16,6 +16,7 @@
 package io.github.aaravmahajanofficial.extensions
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Plugin.NO_TEST_JAR
 import io.github.aaravmahajanofficial.extensions.bom.BomExtension
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.gradleProperty
@@ -93,6 +94,11 @@ public open class PluginExtension
 
         public val banJUnit4: Property<Boolean> = objects.property<Boolean>().convention(true)
 
+        public val publishTestJar: Property<Boolean> =
+            objects.property<Boolean>().convention(
+                gradleProperty(providers, NO_TEST_JAR, String::toBoolean).map { noTestJar -> !noTestJar }.orElse(false),
+            )
+
         // Groovy DSL setter methods
         public fun jenkinsVersions(value: String): Unit = jenkinsVersion.set(value)
 
@@ -115,6 +121,8 @@ public open class PluginExtension
         public fun testJvmArguments(vararg values: String): Unit = testJvmArguments.set(values.toList())
 
         public fun testJvmArguments(values: Collection<String>): Unit = testJvmArguments.set(values.toList())
+
+        public fun publishTestJar(value: Boolean): Unit = publishTestJar.set(value)
 
         internal val pluginDevelopers: ListProperty<DeveloperExtension> =
             objects.listProperty<DeveloperExtension>()
