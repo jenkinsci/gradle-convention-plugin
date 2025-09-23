@@ -3,6 +3,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 [![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Plugin%20Portal&style=for-the-badge&labelColor=285E61&color=2D8B8B)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
 [![License](https://img.shields.io/badge/License-Apache_2.0-1155ba.svg?style=for-the-badge&labelColor=013178&logo=apache)](https://opensource.org/licenses/Apache-2.0)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196?style=for-the-badge&logo=conventionalcommits&logoColor=white&labelColor=c6366f)](https://conventionalcommits.org)
 [![Slack](https://img.shields.io/badge/Slack-%23jenkins--plugin--toolchain-7c3085?style=for-the-badge&logo=slack&logoColor=white&&labelColor=4A154B)](https://gradle-community.slack.com/archives/C08S0GKMB5G)
 
 <p align="center">
