@@ -8,7 +8,6 @@ plugin-publish = "2.0.0"
 
 # Jenkins
 jenkins-core = "2.529"
-jenkins-stapler = "2010.va_89c7958c1c5"
 jenkins-gradle-jpi2 = "0.55.1"
 
 # Ecosystem BOMs
@@ -66,7 +65,6 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 
 # Jenkins
 jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jenkins-core" }
-jenkins-stapler = { module = "org.kohsuke.stapler:stapler", version.ref = "jenkins-stapler" }
 jenkins-gradle-jpi2 = { module = "org.jenkins-ci.jpi2:org.jenkins-ci.jpi2.gradle.plugin", version.ref = "jenkins-gradle-jpi2" }
 
 # BOMs
@@ -86,7 +84,6 @@ testContainers-bom-coordinates = { module = "org.testcontainers:testcontainers-b
 # Quality
 spotless-gradle-plugin = { module = "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin", version.ref = "spotless" }
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
-ktlint-gradle-plugin = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 spotbugs-gradle-plugin = { module = "com.github.spotbugs:com.github.spotbugs.gradle.plugin", version.ref = "spotbugs" }
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 pit-gradle-plugin = { module = "info.solidsoft.gradle.pitest:gradle-pitest-plugin", version.ref = "pit" }
