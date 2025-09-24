@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.utils
 
-fun basicPluginConfiguration(
+fun mockBuildScript(
     content: String = "",
     bomBlock: String = "",
     qualityBlock: String = "",
@@ -23,7 +23,7 @@ fun basicPluginConfiguration(
 ): String =
     """
     plugins {
-        "kotlin(\"jvm\") version \"2.2.0\""
+        kotlin("jvm") version "2.2.20"
         id("io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin") version "0.0.0-SNAPSHOT"
     }
 

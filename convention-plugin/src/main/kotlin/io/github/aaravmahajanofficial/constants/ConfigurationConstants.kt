@@ -18,8 +18,8 @@ package io.github.aaravmahajanofficial.constants
 public object ConfigurationConstants {
     public object Plugin {
         public const val JENKINS_VERSION: String = "jenkinsVersion"
-        public const val TEST_JVM_ARGS: String = "test-jvm-args"
-        public const val NO_TEST_JAR: String = "no-test-jar"
+        public const val TEST_JVM_ARGS: String = "test.jvmargs"
+        public const val PUBLISH_TEST_JAR: String = "publish.testJar"
     }
 
     public object Bom {
