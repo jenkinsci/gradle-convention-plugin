@@ -96,7 +96,6 @@ internal fun Project.configureSpotless(
                 t.importOrder()
                 t.removeUnusedImports()
                 t.trimTrailingWhitespace()
-                t.removeWildcardImports()
                 t.endWithNewline()
                 t.toggleOffOn()
                 t.lineEndings = LineEnding.UNIX
