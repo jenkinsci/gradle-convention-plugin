@@ -1,4 +1,4 @@
-# Jenkins Gradle Convention Plugin
+# `Jenkins Gradle Convention Plugin`
 
 [![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 [![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Plugin%20Portal&style=for-the-badge&labelColor=285E61&color=2D8B8B)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)
@@ -10,7 +10,7 @@
   <img src="docs/img/logo.png" alt="Banner Logo" width="600">
 </p>
 
-The **Jenkins Gradle Convention Plugin** is a Kotlin-first Gradle convention plugin that eliminates boilerplate and standardizes Jenkins plugin development using Gradle. It provides automated quality checks, CI-friendly defaults, and a unified foundation for building, testing, and publishing Jenkins plugins.
+**Jenkins Gradle Convention Plugin** is a Kotlin-first Gradle convention plugin that eliminates boilerplate and standardizes Jenkins plugin development using Gradle. It provides automated quality checks, CI-friendly defaults, and a unified foundation for building, testing, and publishing Jenkins plugins.
 
 Built on the proven [gradle-jpi-plugin](https://github.com/jenkinsci/gradle-jpi-plugin) with enhanced conventions and integrated tooling, so developers can focus on plugin logic rather than build configuration.
 
