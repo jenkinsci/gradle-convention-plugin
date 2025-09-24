@@ -16,7 +16,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
+import io.github.aaravmahajanofficial.utils.mockBuildScript
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -39,7 +39,7 @@ class FrontendSetupIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withPackageJson()
                 .withJavaScriptSource()
 
@@ -60,7 +60,7 @@ class FrontendSetupIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
 
         val result = builder.runGradle("tasks", "--all")
 
@@ -97,7 +97,7 @@ class FrontendSetupIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withSettingsGradle()
                 .withPackageJson(includeTest = false)
                 .withJavaScriptSource()
@@ -115,7 +115,7 @@ class FrontendSetupIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withPackageJson()
                 .withJavaScriptSource()
                 .withJavascriptTestSource()
@@ -138,7 +138,7 @@ class FrontendSetupIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withPackageJson()
                 .withResourceFile()
                 .withJavaScriptSource()

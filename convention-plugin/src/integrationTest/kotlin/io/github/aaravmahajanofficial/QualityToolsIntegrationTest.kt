@@ -18,7 +18,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
+import io.github.aaravmahajanofficial.utils.mockBuildScript
 import io.kotest.matchers.paths.shouldExist
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.TaskOutcome
@@ -40,7 +40,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradleAndFail("checkstyleMain")
@@ -65,7 +65,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
                 .withConfigFile(
                     toolName = "checkstyle",
@@ -102,7 +102,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource(
                     content =
                         """
@@ -144,7 +144,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource(
                     content =
                         """
@@ -194,7 +194,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource(
                     content =
                         """
@@ -237,7 +237,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource(
                     className = "JavaTestClass",
                     content =
@@ -373,7 +373,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withKotlinSource(
                     content =
                         """
@@ -412,7 +412,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withKotlinSource(
                     content =
                         """
@@ -453,7 +453,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withKotlinSource(
                     content =
                         """
@@ -495,7 +495,7 @@ class QualityToolsIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withKotlinSource(
                     content =
                         """

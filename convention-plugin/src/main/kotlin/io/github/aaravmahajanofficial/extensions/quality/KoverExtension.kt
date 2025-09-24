@@ -32,7 +32,7 @@ public open class KoverExtension
     ) {
         public val enabled: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(providers, KOVER_ENABLED, String::toBoolean).orElse(true),
+                gradleProperty(providers, KOVER_ENABLED, String::toBoolean).orElse(false),
             )
         public val coverageThreshold: Property<Int> =
             objects.property<Int>().convention(DEFAULT_KOVER_THRESHOLD)

@@ -18,7 +18,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
+import io.github.aaravmahajanofficial.utils.mockBuildScript
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -40,7 +40,7 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("help")
@@ -58,7 +58,7 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("tasks", "--group=build")
@@ -77,7 +77,7 @@ class PluginApplicationIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
 
         val result = builder.runGradle("help")
 
@@ -97,7 +97,7 @@ class PluginApplicationIntegrationTest {
                     mapOf(
                         "jenkinsVersion" to "2.520",
                     ),
-                ).withBuildGradle(basicPluginConfiguration())
+                ).withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("jenkinsConventionPluginInfo")
@@ -115,7 +115,7 @@ class PluginApplicationIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         qualityBlock =
                             """
                             quality {
@@ -147,7 +147,7 @@ class PluginApplicationIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         dependenciesBlock =
                             """
                             dependencies {
@@ -173,7 +173,7 @@ class PluginApplicationIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         content =
                             """
                             jenkinsConvention {

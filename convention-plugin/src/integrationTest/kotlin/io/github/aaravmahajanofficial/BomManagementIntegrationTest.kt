@@ -18,7 +18,7 @@
 package io.github.aaravmahajanofficial
 
 import io.github.aaravmahajanofficial.utils.TestProjectBuilder
-import io.github.aaravmahajanofficial.utils.basicPluginConfiguration
+import io.github.aaravmahajanofficial.utils.mockBuildScript
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -40,7 +40,7 @@ class BomManagementIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")
@@ -84,7 +84,7 @@ class BomManagementIntegrationTest {
                 .create()
                 .withVersionCatalog()
                 .withSettingsGradle()
-                .withBuildGradle(basicPluginConfiguration())
+                .withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=testRuntimeClasspath")
@@ -105,7 +105,7 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         bomBlock =
                             """
                             bom {
@@ -138,7 +138,7 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         bomBlock =
                             """
                             bom {
@@ -167,7 +167,7 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         bomBlock =
                             """
                             bom {
@@ -196,7 +196,7 @@ class BomManagementIntegrationTest {
                 .withVersionCatalog()
                 .withSettingsGradle()
                 .withBuildGradle(
-                    basicPluginConfiguration(
+                    mockBuildScript(
                         dependenciesBlock =
                             """
                             dependencies {
@@ -229,7 +229,7 @@ class BomManagementIntegrationTest {
                         "bom.jackson.enabled" to "false",
                         "bom.spring.enabled" to "false",
                     ),
-                ).withBuildGradle(basicPluginConfiguration())
+                ).withBuildGradle(mockBuildScript())
                 .withJavaSource()
 
         val result = builder.runGradle("dependencies", "--configuration=runtimeClasspath")

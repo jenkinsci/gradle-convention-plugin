@@ -16,7 +16,7 @@
 package io.github.aaravmahajanofficial.extensions
 
 import io.github.aaravmahajanofficial.constants.ConfigurationConstants
-import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Plugin.NO_TEST_JAR
+import io.github.aaravmahajanofficial.constants.ConfigurationConstants.Plugin.PUBLISH_TEST_JAR
 import io.github.aaravmahajanofficial.extensions.bom.BomExtension
 import io.github.aaravmahajanofficial.extensions.quality.QualityExtension
 import io.github.aaravmahajanofficial.utils.gradleProperty
@@ -96,11 +96,11 @@ public open class PluginExtension
 
         public val publishTestJar: Property<Boolean> =
             objects.property<Boolean>().convention(
-                gradleProperty(providers, NO_TEST_JAR, String::toBoolean).map { noTestJar -> !noTestJar }.orElse(false),
+                gradleProperty(providers, PUBLISH_TEST_JAR, String::toBoolean).orElse(false),
             )
 
         // Groovy DSL setter methods
-        public fun jenkinsVersions(value: String): Unit = jenkinsVersion.set(value)
+        public fun jenkinsVersion(value: String): Unit = jenkinsVersion.set(value)
 
         public fun artifactId(value: String): Unit = artifactId.set(value)
 
