@@ -28,10 +28,10 @@ import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.tasks.JacocoReport
 
 internal fun Project.configureJacoco(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.jacoco.enabled.get()) return
+    if (!ext.jacoco.enabled.get()) return
 
     project.pluginManager.apply(JacocoPlugin::class.java)
 
@@ -53,7 +53,7 @@ internal fun Project.configureJacoco(
             t.csv.required.set(false)
         }
 
-        val allExcludes = quality.jacoco.excludes.get()
+        val allExcludes = ext.jacoco.excludes.get()
         val classDirectories =
             project
                 .fileTree(
@@ -79,12 +79,12 @@ internal fun Project.configureJacoco(
                         "**/*Descriptor.class",
                         "**/jelly/**",
                         "**/tags/**",
-                    ).plus(quality.jacoco.excludes.get())
+                    ).plus(ext.jacoco.excludes.get())
                 rule.limit {
                     it.counter = "LINE"
                     it.value = "COVEREDRATIO"
                     it.minimum =
-                        quality.jacoco.minimumCodeCoverage
+                        ext.jacoco.minimumCodeCoverage
                             .get()
                             .toBigDecimal()
                 }

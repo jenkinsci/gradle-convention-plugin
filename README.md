@@ -231,4 +231,4 @@ of mentors [Oleg Nenashev](https://github.com/oleg-nenashev), [Steve Hill](https
 
 © 2025 Aarav Mahajan. All rights reserved.
 
-This project is licensed under the [Apache License 2.0](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE). See the LICENSE file for details.
+This project is licensed under the Apache License 2.0. See the [LICENSE](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/blob/main/LICENSE) file for details.

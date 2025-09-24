@@ -27,17 +27,17 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 internal fun Project.configureCpd(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.cpd.enabled.get()) return
+    if (!ext.cpd.enabled.get()) return
 
     project.pluginManager.apply(CpdPlugin::class.java)
 
     project.configure<CpdExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "pmd")
-        isIgnoreFailures = !quality.cpd.failOnViolation.get()
-        minimumTokenCount = quality.cpd.minimumTokenCount.get()
+        isIgnoreFailures = !ext.cpd.failOnViolation.get()
+        minimumTokenCount = ext.cpd.minimumTokenCount.get()
     }
     project.tasks.withType<Cpd>().configureEach { task ->
         task.group = LifecycleBasePlugin.VERIFICATION_GROUP
@@ -48,7 +48,7 @@ internal fun Project.configureCpd(
                 .files(
                     "src/main/java",
                     "src/main/groovy",
-                ).plus(quality.cpd.source.get())
+                ).plus(ext.cpd.source.get())
                 .asFileTree
                 .matching {
                     it.include("**/*.java", "**/*.groovy")

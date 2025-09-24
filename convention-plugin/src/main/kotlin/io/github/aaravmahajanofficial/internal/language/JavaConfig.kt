@@ -15,7 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
+import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
@@ -27,23 +27,23 @@ import org.gradle.kotlin.dsl.withType
 public class JavaConfig(
     private val project: Project,
 ) {
+    private val libs = project.libsCatalog()
+    private val jvmTargetVersion = libs.findVersion("jvmTarget").get().requiredVersion
+
     public fun configure() {
         project.pluginManager.apply("java")
 
         project.configure<JavaPluginExtension> {
-            toolchain.languageVersion.set(JavaLanguageVersion.of(JAVA_VERSION))
+            toolchain.languageVersion.set(JavaLanguageVersion.of(jvmTargetVersion))
             withSourcesJar()
             withJavadocJar()
         }
 
         project.tasks.withType<JavaCompile>().configureEach {
             it.options.encoding = "UTF-8"
-            it.options.release.set(JAVA_VERSION)
+            it.options.release.set(jvmTargetVersion.toInt())
             it.options.compilerArgs.addAll(
-                listOf(
-                    "-parameters",
-                    "-Xlint:all,-serial",
-                ),
+                listOf("-parameters", "-Xlint:all,-serial"),
             )
         }
 

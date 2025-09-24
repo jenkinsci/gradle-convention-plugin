@@ -34,12 +34,12 @@ import org.json.JSONObject
 
 public class FrontendConfig(
     private val project: Project,
-    private val extension: FrontendExtension,
+    private val ext: FrontendExtension,
 ) {
     public fun configure() {
-        extension.enabled.convention(project.isFrontendProject())
+        ext.enabled.convention(project.isFrontendProject())
 
-        if (!extension.enabled.get()) return
+        if (!ext.enabled.get()) return
 
         project.pluginManager.apply(NodePlugin::class.java)
 
@@ -49,47 +49,47 @@ public class FrontendConfig(
 
     private fun configureNodeExtension() {
         project.configure<NodeExtension> {
-            nodeProjectDir.set(extension.nodeProjectDir)
+            nodeProjectDir.set(ext.nodeProjectDir)
 
-            download.set(extension.download)
-            version.set(extension.nodeVersion)
+            download.set(ext.download)
+            version.set(ext.nodeVersion)
 
-            if (extension.npmVersion.isPresent && extension.npmVersion.get().isNotBlank()) {
-                npmVersion.set(extension.npmVersion)
+            if (ext.npmVersion.get().isNotBlank()) {
+                npmVersion.set(ext.npmVersion)
             }
 
-            if (extension.yarnVersion.isPresent && extension.yarnVersion.get().isNotBlank()) {
-                yarnVersion.set(extension.yarnVersion)
+            if (ext.yarnVersion.get().isNotBlank()) {
+                yarnVersion.set(ext.yarnVersion)
             }
 
-            distBaseUrl.set(extension.nodeDownloadRoot.map { it.toString() })
+            distBaseUrl.set(ext.nodeDownloadRoot.map { it.toString() })
             allowInsecureProtocol.set(false)
 
-            npmInstallCommand.set(extension.npmInstallCommand)
+            npmInstallCommand.set(ext.npmInstallCommand)
 
-            workDir.set(extension.workDir)
-            npmWorkDir.set(extension.npmWorkDir)
-            yarnWorkDir.set(extension.yarnWorkDir)
-            nodeProxySettings.set(extension.nodeProxySettings)
+            workDir.set(ext.workDir)
+            npmWorkDir.set(ext.npmWorkDir)
+            yarnWorkDir.set(ext.yarnWorkDir)
+            nodeProxySettings.set(ext.nodeProxySettings)
 
-            if (extension.packageManager.get() == PackageManager.YARN_COREPACK) {
+            if (ext.packageManager.get() == PackageManager.YARN_COREPACK) {
                 download.set(false)
             }
         }
     }
 
     private fun configureTasks() {
-        when (extension.packageManager.get()) {
-            PackageManager.NPM -> configureNpmTasks()
+        when (ext.packageManager.get()) {
+            PackageManager.NPM -> configureNpm()
             PackageManager.YARN,
             PackageManager.YARN_COREPACK,
-            -> configureYarnTasks()
+            -> configureYarn()
         }
     }
 
-    private fun npmArgsFor(script: String): List<String> =
+    private fun baseScriptArgs(script: String): List<String> =
         buildList {
-            extension.logLevel
+            ext.logLevel
                 .get()
                 .takeIf { it.isNotBlank() }
                 ?.let {
@@ -100,100 +100,98 @@ public class FrontendConfig(
             add(script)
         }
 
-    private fun configureNpmTasks() {
+    private fun configureNpm() {
         val npmInstall = project.tasks.named<NpmInstallTask>("npmInstall")
 
-        val frontendBuild =
+        val build =
             project.tasks.register<NpmTask>("frontendBuild") {
                 dependsOn(npmInstall)
                 group = "Frontend"
                 description = "Build frontend assets"
-                args.set(npmArgsFor(extension.buildScript.get()))
-
+                args.set(baseScriptArgs(ext.buildScript.get()))
                 configureTaskInputsOutputs(this)
 
-                onlyIf { hasScriptDefined(extension.buildScript.get()) }
+                onlyIf { hasScriptDefined(ext.buildScript.get()) }
             }
 
-        val frontendTest =
+        val test =
             project.tasks.register<NpmTask>("frontendTest") {
                 dependsOn(npmInstall)
                 group = "Frontend"
-                description = "Run frontend tests"
-                args.set(npmArgsFor(extension.testScript.get()))
-                ignoreExitValue.set(extension.testFailureIgnore.get())
+                description = "Run frontend tests."
+                args.set(baseScriptArgs(ext.testScript.get()))
+                ignoreExitValue.set(ext.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
+                onlyIf { hasScriptDefined(ext.testScript.get()) && !ext.skipTests.get() }
             }
 
-        val frontendLint =
+        val lint =
             project.tasks.register<NpmTask>("frontendLint") {
                 dependsOn(npmInstall)
                 group = "Frontend"
-                description = "Lint frontend code"
-                args.set(npmArgsFor(extension.lintScript.get()))
+                description = "Run frontend linter."
+                args.set(baseScriptArgs(ext.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
+                onlyIf { hasScriptDefined(ext.lintScript.get()) && !ext.skipLint.get() }
             }
 
         project.tasks.register<NpmTask>("frontendDev") {
             dependsOn(npmInstall)
             group = "Frontend"
-            description = "Start development server"
-            args.set(npmArgsFor(extension.devScript.get()))
+            description = "Start frontend development server."
+            args.set(baseScriptArgs(ext.devScript.get()))
 
-            onlyIf { hasScriptDefined(extension.devScript.get()) }
+            onlyIf { hasScriptDefined(ext.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(registerAssetCopy(frontendBuild), frontendTest, frontendLint)
+        integrationWithGradleLifecycle(build, test, lint)
     }
 
-    private fun configureYarnTasks() {
+    private fun configureYarn() {
         val yarnInstall = project.tasks.named<YarnInstallTask>("yarnInstall")
 
-        val frontendBuild =
+        val build =
             project.tasks.register<YarnTask>("frontendBuild") {
                 dependsOn(yarnInstall)
                 group = "Frontend"
-                description = "Build frontend assets"
-                args.set(listOf("run", extension.buildScript.get()))
-
+                description = "Build frontend assets."
+                args.set(baseScriptArgs(ext.buildScript.get()))
                 configureTaskInputsOutputs(this)
 
-                onlyIf { hasScriptDefined(extension.buildScript.get()) }
+                onlyIf { hasScriptDefined(ext.buildScript.get()) }
             }
 
-        val frontendTest =
+        val test =
             project.tasks.register<YarnTask>("frontendTest") {
                 dependsOn(yarnInstall)
                 group = "Frontend"
-                description = "Run frontend tests"
-                args.set(listOf("run", extension.testScript.get()))
-                ignoreExitValue.set(extension.testFailureIgnore.get())
+                description = "Run frontend tests."
+                args.set(baseScriptArgs(ext.testScript.get()))
+                ignoreExitValue.set(ext.testFailureIgnore.get())
 
-                onlyIf { hasScriptDefined(extension.testScript.get()) && !extension.skipTests.get() }
+                onlyIf { hasScriptDefined(ext.testScript.get()) && !ext.skipTests.get() }
             }
 
-        val frontendLint =
+        val lint =
             project.tasks.register<YarnTask>("frontendLint") {
                 dependsOn(yarnInstall)
                 group = "Frontend"
-                description = "Lint frontend code"
-                args.set(listOf("run", extension.lintScript.get()))
+                description = "Run frontend linter."
+                args.set(baseScriptArgs(ext.lintScript.get()))
 
-                onlyIf { hasScriptDefined(extension.lintScript.get()) && !extension.skipLint.get() }
+                onlyIf { hasScriptDefined(ext.lintScript.get()) && !ext.skipLint.get() }
             }
 
         project.tasks.register<YarnTask>("frontendDev") {
             dependsOn(yarnInstall)
             group = "Frontend"
-            description = "Start development server"
-            args.set(listOf("run", extension.devScript.get()))
+            description = "Start frontend development server."
+            args.set(baseScriptArgs(ext.devScript.get()))
 
-            onlyIf { hasScriptDefined(extension.devScript.get()) }
+            onlyIf { hasScriptDefined(ext.devScript.get()) }
         }
 
-        integrationWithGradleLifecycle(registerAssetCopy(frontendBuild), frontendTest, frontendLint)
+        integrationWithGradleLifecycle(build, test, lint)
     }
 
     private fun configureTaskInputsOutputs(task: Any) {
@@ -212,14 +210,28 @@ public class FrontendConfig(
         when (task) {
             is NpmTask -> {
                 task.inputs.files(inputFiles + project.file("package-lock.json"))
-                task.outputs.dir(extension.destDir)
+                task.outputs.dir(ext.destDir)
             }
 
             is YarnTask -> {
                 task.inputs.files(inputFiles + project.file("yarn.lock"))
-                task.outputs.dir(extension.destDir)
+                task.outputs.dir(ext.destDir)
             }
         }
+    }
+
+    private fun integrationWithGradleLifecycle(
+        buildTask: TaskProvider<*>,
+        testTask: TaskProvider<*>,
+        lintTask: TaskProvider<*>,
+    ) {
+        val copyAssetsTask = registerAssetCopy(buildTask)
+
+        project.tasks.named("processResources").configure { it.dependsOn(copyAssetsTask) }
+
+        project.tasks.named("test").configure { it.dependsOn(testTask) }
+
+        project.tasks.named("check").configure { it.dependsOn(lintTask) }
     }
 
     private fun registerAssetCopy(buildTask: TaskProvider<*>): TaskProvider<Copy> =
@@ -227,21 +239,11 @@ public class FrontendConfig(
             group = "Frontend"
             description = "Copy built frontend assets into resources for packaging"
             dependsOn(buildTask)
-            from(extension.destDir)
+            from(ext.destDir)
             into(project.layout.projectDirectory.dir("src/main/webapp/frontend"))
+
+            outputs.cacheIf { true }
         }
-
-    private fun integrationWithGradleLifecycle(
-        syncAssetsTask: TaskProvider<Copy>,
-        testTask: TaskProvider<*>,
-        lintTask: TaskProvider<*>,
-    ) {
-        project.tasks.named("processResources").configure { it.dependsOn(syncAssetsTask) }
-
-        project.tasks.named("test").configure { it.dependsOn(testTask) }
-
-        project.tasks.named("check").configure { it.dependsOn(lintTask) }
-    }
 
     private fun hasScriptDefined(scriptName: String): Boolean {
         val packageJson = project.file("package.json")

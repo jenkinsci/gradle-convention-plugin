@@ -34,7 +34,6 @@ public open class QualityExtension
         public val detekt: DetektExtension = objects.newInstance()
         public val spotless: SpotlessExtension = objects.newInstance()
         public val owaspDependencyCheck: OwaspDepCheckExtension = objects.newInstance()
-        public val versions: GradleVersionExtension = objects.newInstance()
         public val pitest: PitestExtension = objects.newInstance()
         public val kover: KoverExtension = objects.newInstance()
         public val eslint: EslintExtension = objects.newInstance()
@@ -58,8 +57,6 @@ public open class QualityExtension
         public fun owaspDepCheck(action: Action<OwaspDepCheckExtension>): Unit = action.execute(owaspDependencyCheck)
 
         public fun pitest(action: Action<PitestExtension>): Unit = action.execute(pitest)
-
-        public fun versions(action: Action<GradleVersionExtension>): Unit = action.execute(versions)
 
         public fun kover(action: Action<KoverExtension>): Unit = action.execute(kover)
 

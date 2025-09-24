@@ -22,25 +22,27 @@ plugins {
 }
 
 private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
-private val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
 
 kotlin {
-    jvmToolchain(21)
+    val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
+    val jvmTargetVersion = libs.findVersion("jvmTarget").get().requiredVersion
+
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(jvmTargetVersion))
+    }
 
     explicitApi()
 
     compilerOptions {
         apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
         languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        jvmTarget.set(JvmTarget.JVM_21)
+        jvmTarget.set(JvmTarget.fromTarget(jvmTargetVersion))
 
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")
         jvmDefault.set(JvmDefaultMode.ENABLE)
-        freeCompilerArgs.addAll(
-            "-Xjsr305=strict",
-        )
+        freeCompilerArgs.addAll(listOf("-Xjsr305=strict"))
     }
 }
 

@@ -22,12 +22,12 @@ import org.gradle.api.Project
 
 public class RestrictImportsConfig(
     private val project: Project,
-    private val extension: PluginExtension,
+    private val ext: PluginExtension,
 ) {
     public fun configure() {
         project.pluginManager.apply(RestrictImportsPlugin::class.java)
 
-        if (extension.banJUnit4.get()) {
+        if (ext.banJUnit4.get()) {
             project.extensions.configure(RestrictImportsExtension::class.java) { restrictImports ->
                 restrictImports.reason.set("Please use JUnit 5 (JUnit Jupiter) instead of JUnit 4")
                 restrictImports.bannedImports.set(listOf("org.junit.**"))

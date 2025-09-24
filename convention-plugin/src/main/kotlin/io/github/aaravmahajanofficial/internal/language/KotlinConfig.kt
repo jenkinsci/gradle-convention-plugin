@@ -15,7 +15,6 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.constants.PluginMetadata.JAVA_VERSION
 import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -31,24 +30,23 @@ public class KotlinConfig(
 ) {
     private val libs = project.libsCatalog()
     private val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
+    private val jvmTargetVersion = libs.findVersion("jvmTarget").get().requiredVersion
 
     public fun configure() {
         project.plugins.withId("org.jetbrains.kotlin.jvm") {
             project.configure<KotlinJvmProjectExtension> {
-                jvmToolchain(JAVA_VERSION)
+                jvmToolchain(jvmTargetVersion.toInt())
             }
 
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
                     apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
                     languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    jvmTarget.set(JvmTarget.fromTarget(JAVA_VERSION.toString()))
+                    jvmTarget.set(JvmTarget.fromTarget(jvmTargetVersion))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)
                     optIn.add("kotlin.RequiresOptIn")
-                    freeCompilerArgs.addAll(
-                        "-Xjsr305=strict",
-                    )
+                    freeCompilerArgs.addAll(listOf("-Xjsr305=strict"))
                 }
             }
 

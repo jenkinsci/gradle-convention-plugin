@@ -25,21 +25,21 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.kotlin.dsl.configure
 
 internal fun Project.configurePitMutation(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.pitest.enabled.get() || !hasJavaSources()) return
+    if (!ext.pitest.enabled.get() || !hasJavaSources()) return
 
     pluginManager.apply(PitestPlugin::class.java)
 
     configure<PitestPluginExtension> {
-        threads.set(quality.pitest.threads)
+        threads.set(ext.pitest.threads)
         pitestVersion.set(versionFromCatalogOrFail(libs, "pit"))
-        targetClasses.set(quality.pitest.targetClasses)
-        excludedClasses.set(quality.pitest.excludedClasses)
-        mutationThreshold.set(quality.pitest.mutationThreshold)
-        outputFormats.set(quality.pitest.outputFormats)
-        mutators.set(quality.pitest.mutators)
+        targetClasses.set(ext.pitest.targetClasses)
+        excludedClasses.set(ext.pitest.excludedClasses)
+        mutationThreshold.set(ext.pitest.mutationThreshold)
+        outputFormats.set(ext.pitest.outputFormats)
+        mutators.set(ext.pitest.mutators)
     }
 
     tasks.named("check").configure { t ->

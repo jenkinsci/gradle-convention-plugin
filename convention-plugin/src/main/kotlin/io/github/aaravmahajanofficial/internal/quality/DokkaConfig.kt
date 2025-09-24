@@ -21,8 +21,8 @@ import org.gradle.kotlin.dsl.configure
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.DokkaPlugin
 
-internal fun Project.configureDokka(quality: QualityExtension) {
-    if (!quality.dokka.enabled.get()) return
+internal fun Project.configureDokka(ext: QualityExtension) {
+    if (!ext.dokka.enabled.get()) return
 
     pluginManager.apply(DokkaPlugin::class.java)
 

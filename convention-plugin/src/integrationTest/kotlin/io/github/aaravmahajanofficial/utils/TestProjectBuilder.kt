@@ -376,6 +376,7 @@ class TestProjectBuilder(
             [versions]
             kotlin = "2.2.0"
             kotlinLanguage = "2.2"
+            jvmTarget = "21"
             jenkins-core = "2.520"
             jenkins-gradle-jpi2 = "0.55.0"
             jenkins-bom = "5015.vb_52d36583443"
@@ -384,7 +385,6 @@ class TestProjectBuilder(
             spotless = "7.2.1"
             ktlint = "1.7.1"
             owaspCheck = "12.1.3"
-            versions = "0.52.0"
             kover = "0.9.1"
             dokka = "2.1.0-Beta"
             pit = "1.15.0"

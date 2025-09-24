@@ -28,10 +28,10 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
 internal fun Project.configureDetekt(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.detekt.enabled.get() || !hasKotlinSources()) return
+    if (!ext.detekt.enabled.get() || !hasKotlinSources()) return
 
     pluginManager.apply(DetektPlugin::class.java)
 
@@ -40,10 +40,10 @@ internal fun Project.configureDetekt(
 
     configure<DetektExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "detekt")
-        autoCorrect = quality.detekt.autoCorrect.get()
+        autoCorrect = ext.detekt.autoCorrect.get()
         buildUponDefaultConfig = true
-        isIgnoreFailures = !quality.detekt.failOnViolation.get()
-        source.setFrom(files("src/main/kotlin", "src/test/kotlin").plus(quality.detekt.source.get()))
+        isIgnoreFailures = !ext.detekt.failOnViolation.get()
+        source.setFrom(files("src/main/kotlin", "src/test/kotlin").plus(ext.detekt.source.get()))
         config.setFrom(detektConfig)
         baseline = detektBaseline
         parallel = true

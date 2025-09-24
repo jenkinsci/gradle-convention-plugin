@@ -28,10 +28,10 @@ import org.gradle.kotlin.dsl.register
 
 public class TestJarConfig(
     private val project: Project,
-    private val extension: PluginExtension,
+    private val ext: PluginExtension,
 ) {
     public fun configure() {
-        if (!extension.publishTestJar.get()) return
+        if (!ext.publishTestJar.get()) return
 
         val sourceSets = project.extensions.getByType<SourceSetContainer>()
         val testSourceSet = sourceSets.getByName("test")

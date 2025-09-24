@@ -22,8 +22,8 @@ import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
-internal fun Project.configureKoverExtension(quality: QualityExtension) {
-    if (!quality.kover.enabled.get() || !hasKotlinSources()) return
+internal fun Project.configureKoverExtension(ext: QualityExtension) {
+    if (!ext.kover.enabled.get() || !hasKotlinSources()) return
 
     pluginManager.apply(KoverGradlePlugin::class.java)
 
@@ -40,7 +40,7 @@ internal fun Project.configureKoverExtension(quality: QualityExtension) {
             rep.verify { verify ->
                 verify.rule { rule ->
                     rule.bound {
-                        it.minValue.set(quality.kover.coverageThreshold)
+                        it.minValue.set(ext.kover.coverageThreshold)
                     }
                 }
             }

@@ -27,11 +27,7 @@ internal fun Project.hasJavaSources(): Boolean = fileTree("src").matching { it.i
 internal fun Project.hasKotlinSources(): Boolean = fileTree("src").matching { it.include("**/*.kt") }.files.isNotEmpty()
 
 internal fun Project.hasGroovySources(): Boolean =
-    fileTree("src")
-        .matching {
-            it.include("**/*.groovy")
-        }.files
-        .isNotEmpty()
+    fileTree("src").matching { it.include("**/*.groovy") }.files.isNotEmpty()
 
 internal fun Project.isFrontendProject(): Boolean =
     listOf("package.json", "yarn.lock", "pnpm-lock.yaml").any { file(it).exists() } ||
@@ -75,5 +71,5 @@ internal fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
-    return isStable.not()
+    return !isStable
 }

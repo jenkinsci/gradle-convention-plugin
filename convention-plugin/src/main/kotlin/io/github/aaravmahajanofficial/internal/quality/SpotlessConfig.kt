@@ -29,10 +29,10 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.kotlin.dsl.configure
 
 internal fun Project.configureSpotless(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.spotless.enabled.get()) return
+    if (!ext.spotless.enabled.get()) return
 
     pluginManager.apply(SpotlessPlugin::class.java)
 
