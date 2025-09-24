@@ -450,10 +450,6 @@ class TestProjectBuilder(
             dependencyResolutionManagement {
                 repositories {
                     mavenCentral()
-                    maven {
-                        name = "Jenkins"
-                        url = uri("https://repo.jenkins-ci.org/public/")
-                    }
                 }
                 versionCatalogs {
                     create("baseLibs") {

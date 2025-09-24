@@ -34,11 +34,8 @@ dependencies {
     implementation(baseLibs.node.gradle.plugin)
     implementation(baseLibs.dokka.gradle.plugin)
     implementation(baseLibs.cpd.gradle.plugin)
-    implementation(baseLibs.ktlint.gradle.plugin) {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-compiler-embeddable")
-    }
-    implementation(baseLibs.jgit.gradle.plugin)
     implementation(baseLibs.restrictImports.plugin)
+    compileOnly(baseLibs.jgit.gradle.plugin)
 }
 
 gradlePlugin {

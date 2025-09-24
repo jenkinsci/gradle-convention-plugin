@@ -50,9 +50,6 @@ public class JenkinsConventionPlugin : Plugin<Project> {
                     it.name = "jenkinsPublic"
                     it.url = JENKINS_PUBLIC_REPO_URL
                 }
-                maven {
-                    it.url = uri("https://repo.eclipse.org/content/groups/releases/")
-                }
             }
 
             val libs = libsCatalog()
