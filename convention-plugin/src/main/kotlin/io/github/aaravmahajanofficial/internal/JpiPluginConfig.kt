@@ -32,7 +32,7 @@ import java.util.jar.Manifest
 
 public class JpiPluginConfig(
     private val project: Project,
-    private val pluginExtension: PluginExtension,
+    private val ext: PluginExtension,
 ) {
     private val jpiExtension: JpiExtension by lazy {
         project.extensions.getByType<JpiExtension>()
@@ -49,23 +49,23 @@ public class JpiPluginConfig(
 
     private fun bridgeExtensionProperties() =
         with(jpiExtension) {
-            pluginId.convention(pluginExtension.artifactId)
-            humanReadableName.convention(pluginExtension.displayName)
-            homePage.convention(pluginExtension.homePage)
-            jenkinsVersion.convention(pluginExtension.jenkinsVersion)
+            pluginId.convention(ext.artifactId)
+            humanReadableName.convention(ext.displayName)
+            homePage.convention(ext.homePage)
+            jenkinsVersion.convention(ext.jenkinsVersion)
             minimumJenkinsCoreVersion.convention(jenkinsVersion)
             extension.convention("hpi")
             scmTag.convention("HEAD")
-            gitHub.convention(pluginExtension.gitHub)
-            sandboxed.convention(pluginExtension.sandboxed)
-            usePluginFirstClassLoader.convention(pluginExtension.usePluginFirstClassLoader)
-            maskedClassesFromCore.convention(pluginExtension.maskedClassesFromCore)
+            gitHub.convention(ext.gitHub)
+            sandboxed.convention(ext.sandboxed)
+            usePluginFirstClassLoader.convention(ext.usePluginFirstClassLoader)
+            maskedClassesFromCore.convention(ext.maskedClassesFromCore)
             incrementalsRepoUrl.convention(UrlConstants.JENKINS_INCREMENTALS_REPO_URL)
-            testJvmArguments.convention(pluginExtension.testJvmArguments)
+            testJvmArguments.convention(ext.testJvmArguments)
             configureRepositories = false
 
             pluginDevelopers.set(
-                pluginExtension.pluginDevelopers.map { developers ->
+                ext.pluginDevelopers.map { developers ->
                     developers.map { dev ->
                         project.objects.newInstance<PluginDeveloper>().apply {
                             id.set(dev.id)
@@ -87,7 +87,7 @@ public class JpiPluginConfig(
             )
 
             pluginLicenses.set(
-                pluginExtension.pluginLicenses.map { licenses ->
+                ext.pluginLicenses.map { licenses ->
                     licenses.map { lic ->
                         project.objects.newInstance<PluginLicense>().apply {
                             name.set(lic.name)
@@ -127,21 +127,21 @@ public class JpiPluginConfig(
                 val manifest =
                     Manifest().apply {
                         mainAttributes.putValue("Manifest-Version", "1.0")
-                        mainAttributes.putValue("Implementation-Title", pluginExtension.artifactId.get())
+                        mainAttributes.putValue("Implementation-Title", ext.artifactId.get())
                         mainAttributes.putValue("Implementation-Version", project.version.toString())
                         mainAttributes.putValue("Specification-Title", project.name)
                         mainAttributes.putValue("Specification-Version", project.version.toString())
-                        mainAttributes.putValue("Artifact-Id", pluginExtension.artifactId.get())
-                        mainAttributes.putValue("Hudson-Version", pluginExtension.jenkinsVersion.get())
-                        mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${pluginExtension.gitHub.get()}.git")
-                        mainAttributes.putValue("Plugin-ScmUrl", pluginExtension.gitHub.get().toString())
+                        mainAttributes.putValue("Artifact-Id", ext.artifactId.get())
+                        mainAttributes.putValue("Hudson-Version", ext.jenkinsVersion.get())
+                        mainAttributes.putValue("Plugin-ScmConnection", "scm:git:${ext.gitHub.get()}.git")
+                        mainAttributes.putValue("Plugin-ScmUrl", ext.gitHub.get().toString())
                         mainAttributes.putValue("Build-Jdk-Spec", JavaVersion.current().toString())
 
                         val fullHash = getFullHashFromJpi()
                         mainAttributes.putValue("Implementation-Build", fullHash)
                         mainAttributes.putValue("Plugin-ScmTag", fullHash)
 
-                        val license = pluginExtension.pluginLicenses.orNull?.firstOrNull()
+                        val license = ext.pluginLicenses.orNull?.firstOrNull()
                         license?.let {
                             it.name.orNull?.let { name -> mainAttributes.putValue("Plugin-License-Name", name) }
                             it.url.orNull?.let { url -> mainAttributes.putValue("Plugin-License-Url", url.toString()) }

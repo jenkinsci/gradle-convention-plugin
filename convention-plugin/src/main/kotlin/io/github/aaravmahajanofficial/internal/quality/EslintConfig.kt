@@ -23,8 +23,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
-internal fun Project.configureEsLint(quality: QualityExtension) {
-    if (!quality.eslint.enabled.get() || !isFrontendProject()) {
+internal fun Project.configureEsLint(ext: QualityExtension) {
+    if (!ext.eslint.enabled.get() || !isFrontendProject()) {
         return
     }
 
@@ -37,13 +37,13 @@ internal fun Project.configureEsLint(quality: QualityExtension) {
         dependsOn("npmInstall")
 
         val configFile =
-            quality.eslint.configFile.orNull
+            ext.eslint.configFile.orNull
                 ?.asFile
                 ?.absolutePath
 
         doFirst {
             val argsList = mutableListOf("run", "lint")
-            if (quality.eslint.autofix
+            if (ext.eslint.autofix
                     .get()
             ) {
                 argsList += "--fix"

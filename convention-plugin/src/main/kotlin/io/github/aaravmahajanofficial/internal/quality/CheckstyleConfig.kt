@@ -32,17 +32,17 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 internal fun Project.configureCheckstyle(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.checkstyle.enabled.get() || !project.hasJavaSources()) return
+    if (!ext.checkstyle.enabled.get() || !project.hasJavaSources()) return
 
     project.pluginManager.apply(CheckstylePlugin::class.java)
 
     project.configure<CheckstyleExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "checkstyle")
         configFile = resolveConfigFile("checkstyle", "checkstyle.xml").asFile
-        isIgnoreFailures = !quality.checkstyle.failOnViolation.get()
+        isIgnoreFailures = !ext.checkstyle.failOnViolation.get()
 
         val suppressionsFile = resolveConfigFile("checkstyle", "suppressions.xml").asFile
         if (suppressionsFile.exists()) {
@@ -59,9 +59,9 @@ internal fun Project.configureCheckstyle(
                 .sourceSets
                 .getByName("main")
                 .allSource
-        task.source = javaSources.plus(quality.checkstyle.source.get()).asFileTree
-        task.include(quality.checkstyle.include.get())
-        task.exclude(excludeList.plus(quality.checkstyle.exclude.get()))
+        task.source = javaSources.plus(ext.checkstyle.source.get()).asFileTree
+        task.include(ext.checkstyle.include.get())
+        task.exclude(excludeList.plus(ext.checkstyle.exclude.get()))
 
         task.reports {
             it.xml.required.set(true)

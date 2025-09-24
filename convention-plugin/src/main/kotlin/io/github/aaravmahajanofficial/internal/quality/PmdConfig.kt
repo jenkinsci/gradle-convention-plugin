@@ -30,26 +30,26 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 internal fun Project.configurePmd(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.pmd.enabled.get() || !hasJavaSources()) return
+    if (!ext.pmd.enabled.get() || !hasJavaSources()) return
 
     pluginManager.apply(PmdPlugin::class.java)
 
     configure<PmdExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "pmd")
         ruleSetFiles = files(resolveConfigFile("pmd", "pmd-ruleset.xml"))
-        isConsoleOutput = quality.pmd.consoleOutput.get()
-        isIgnoreFailures = !quality.pmd.failOnViolation.get()
+        isConsoleOutput = ext.pmd.consoleOutput.get()
+        isIgnoreFailures = !ext.pmd.failOnViolation.get()
     }
     tasks.withType<Pmd>().configureEach { task ->
         task.group = LifecycleBasePlugin.VERIFICATION_GROUP
         task.description = "Runs PMD."
 
-        task.source = files("src/main/java").plus(quality.pmd.source.get()).asFileTree
-        task.include(quality.pmd.include.get())
-        task.exclude(excludeList.plus(quality.pmd.exclude.get()))
+        task.source = files("src/main/java").plus(ext.pmd.source.get()).asFileTree
+        task.include(ext.pmd.include.get())
+        task.exclude(excludeList.plus(ext.pmd.exclude.get()))
 
         task.reports { reports ->
             reports.xml.required.set(true)

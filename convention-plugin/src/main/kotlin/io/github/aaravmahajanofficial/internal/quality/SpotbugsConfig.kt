@@ -25,15 +25,15 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 
-internal fun Project.configureSpotBugs(quality: QualityExtension) {
-    if (!quality.spotbugs.enabled.get() || !hasJavaSources()) return
+internal fun Project.configureSpotBugs(ext: QualityExtension) {
+    if (!ext.spotbugs.enabled.get() || !hasJavaSources()) return
 
     pluginManager.apply(SpotBugsPlugin::class.java)
 
     configure<SpotBugsExtension> {
-        effort.set(quality.spotbugs.effortLevel)
-        reportLevel.set(quality.spotbugs.reportLevel)
-        ignoreFailures.set(quality.spotbugs.failOnError.map { !it })
+        effort.set(ext.spotbugs.effortLevel)
+        reportLevel.set(ext.spotbugs.reportLevel)
+        ignoreFailures.set(ext.spotbugs.failOnError.map { !it })
         excludeFilter.set(resolveConfigFile("spotbugs", "excludesFilter.xml"))
         omitVisitors.addAll(
             listOf(
@@ -44,7 +44,7 @@ internal fun Project.configureSpotBugs(quality: QualityExtension) {
                 "ThrowingExceptions",
             ),
         )
-        omitVisitors.addAll(quality.spotbugs.omitVisitors)
+        omitVisitors.addAll(ext.spotbugs.omitVisitors)
     }
 
     tasks.withType<SpotBugsTask>().configureEach {

@@ -41,9 +41,4 @@ fun basicPluginConfiguration(
     }
 
     ${dependenciesBlock.ifBlank { "" }}
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
-
     """.trimIndent()

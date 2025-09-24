@@ -21,28 +21,28 @@ import org.gradle.kotlin.dsl.configure
 import org.owasp.dependencycheck.gradle.DependencyCheckPlugin
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension
 
-internal fun Project.configureOwaspDependencyCheck(quality: QualityExtension) {
-    if (!quality.owaspDependencyCheck.enabled.get()) return
+internal fun Project.configureOwaspDependencyCheck(ext: QualityExtension) {
+    if (!ext.owaspDependencyCheck.enabled.get()) return
 
     // Apply plugin immediately if not already applied
     pluginManager.apply(DependencyCheckPlugin::class.java)
 
     configure<DependencyCheckExtension> {
-        failBuildOnCVSS = quality.owaspDependencyCheck.failOnCvss.get()
-        formats = quality.owaspDependencyCheck.formats.get()
+        failBuildOnCVSS = ext.owaspDependencyCheck.failOnCvss.get()
+        formats = ext.owaspDependencyCheck.formats.get()
         suppressionFiles =
-            quality.owaspDependencyCheck.suppressionFiles
+            ext.owaspDependencyCheck.suppressionFiles
                 .get()
                 .map { it.asFile.absolutePath }
         outputDirectory =
-            quality.owaspDependencyCheck.outputDirectory
+            ext.owaspDependencyCheck.outputDirectory
                 .get()
                 .asFile.absolutePath
         data.directory =
-            quality.owaspDependencyCheck.dataDirectory
+            ext.owaspDependencyCheck.dataDirectory
                 .get()
                 .asFile.absolutePath
-        scanConfigurations = quality.owaspDependencyCheck.scanConfigurations.get()
+        scanConfigurations = ext.owaspDependencyCheck.scanConfigurations.get()
     }
 
     tasks.named("check").configure { t ->

@@ -30,9 +30,10 @@ public open class LicenseExtension
         objects: ObjectFactory,
     ) {
         public val name: Property<String> = objects.property<String>().convention("MIT License")
-        public val url: Property<URI> = objects.property<URI>()
+        public val url: Property<URI> =
+            objects.property<URI>().convention(URI.create("https://opensource.org/license/mit"))
         public val distribution: Property<String> = objects.property<String>().convention("repo")
-        public val comments: Property<String> = objects.property<String>().convention("MIT License")
+        public val comments: Property<String> = objects.property<String>().convention("Licensed under the MIT License.")
 
         // Groovy DSL setter methods
         public fun name(value: String): Unit = name.set(value)

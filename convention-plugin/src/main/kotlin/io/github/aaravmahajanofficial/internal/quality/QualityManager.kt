@@ -25,7 +25,7 @@ import org.gradle.api.Project
 
 public class QualityManager(
     private val project: Project,
-    private val quality: QualityExtension,
+    private val ext: QualityExtension,
 ) {
     private val libs = project.libsCatalog()
 
@@ -34,19 +34,18 @@ public class QualityManager(
             return
         }
 
-        project.configureSpotless(quality, libs)
-        project.configureCheckstyle(quality, libs)
-        project.configureCodenarc(quality, libs)
-        project.configureSpotBugs(quality)
-        project.configurePmd(quality, libs)
-        project.configureJacoco(quality, libs)
-        project.configureDetekt(quality, libs)
-        project.configurePitMutation(quality, libs)
-        project.configureKoverExtension(quality)
-        project.configureOwaspDependencyCheck(quality)
-        project.configureGradleVersionPlugin(quality)
-        project.configureEsLint(quality)
-        project.configureDokka(quality)
-        project.configureCpd(quality, libs)
+        project.configureSpotless(ext, libs)
+        project.configureCheckstyle(ext, libs)
+        project.configureCodenarc(ext, libs)
+        project.configureSpotBugs(ext)
+        project.configurePmd(ext, libs)
+        project.configureJacoco(ext, libs)
+        project.configureDetekt(ext, libs)
+        project.configurePitMutation(ext, libs)
+        project.configureKoverExtension(ext)
+        project.configureOwaspDependencyCheck(ext)
+        project.configureEsLint(ext)
+        project.configureDokka(ext)
+        project.configureCpd(ext, libs)
     }
 }

@@ -56,23 +56,22 @@ public class JenkinsConventionPlugin : Plugin<Project> {
             }
 
             val libs = libsCatalog()
+            val ext = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
 
-            val pluginExtension = extensions.create<PluginExtension>(PluginMetadata.EXTENSION_NAME, libs)
+            JavaConfig(this).configure()
+            GroovyConfig(this).configure()
+            KotlinConfig(this).configure()
 
-            JavaConfig(project).configure()
-            GroovyConfig(project).configure()
-            KotlinConfig(project).configure()
-
-            JpiPluginConfig(project, pluginExtension).applyAndConfigure()
-            FrontendConfig(project, pluginExtension.frontend).configure()
+            JpiPluginConfig(this, ext).applyAndConfigure()
 
             project.afterEvaluate {
                 try {
-                    BomManager(project, pluginExtension.bom).configure()
-                    TestingConfig(project).configure()
-                    QualityManager(project, pluginExtension.quality).apply()
-                    RestrictImportsConfig(project, pluginExtension).configure()
-                    TestJarConfig(project, pluginExtension).configure()
+                    BomManager(this, ext.bom).configure()
+                    TestingConfig(this, ext).configure()
+                    QualityManager(this, ext.quality).apply()
+                    RestrictImportsConfig(this, ext).configure()
+                    FrontendConfig(this, ext.frontend).configure()
+                    TestJarConfig(this, ext).configure()
                 } catch (e: IllegalStateException) {
                     error("Failed to configure Jenkins convention plugin: ${e.message}")
                 }

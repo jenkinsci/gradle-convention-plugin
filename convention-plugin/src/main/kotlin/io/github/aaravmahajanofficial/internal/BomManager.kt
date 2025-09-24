@@ -25,108 +25,63 @@ import org.gradle.kotlin.dsl.dependencies
 
 public class BomManager(
     private val project: Project,
-    private val bomExtension: BomExtension,
+    private val ext: BomExtension,
 ) {
     public fun configure() {
         project.dependencies {
-            configureCommonBoms()
-            configureCustomBoms()
+            configurePredefined()
+            configureCustom()
         }
     }
 
-    private fun DependencyHandler.configureCommonBoms() {
-        applyBomIfEnabled(
-            bomExtension.jenkins.enabled,
-            bomExtension.jenkins.coordinates,
-            bomExtension.jenkins.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.jackson.enabled,
-            bomExtension.jackson.coordinates,
-            bomExtension.jackson.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.spring.enabled,
-            bomExtension.spring.coordinates,
-            bomExtension.spring.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.jetty.enabled,
-            bomExtension.jetty.coordinates,
-            bomExtension.jetty.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.netty.enabled,
-            bomExtension.netty.coordinates,
-            bomExtension.netty.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.slf4j.enabled,
-            bomExtension.slf4j.coordinates,
-            bomExtension.slf4j.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.guava.enabled,
-            bomExtension.guava.coordinates,
-            bomExtension.guava.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.log4j.enabled,
-            bomExtension.log4j.coordinates,
-            bomExtension.log4j.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.vertx.enabled,
-            bomExtension.vertx.coordinates,
-            bomExtension.vertx.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.junit.enabled,
-            bomExtension.junit.coordinates,
-            bomExtension.junit.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.mockito.enabled,
-            bomExtension.mockito.coordinates,
-            bomExtension.mockito.testOnly,
-        )
-        applyBomIfEnabled(
-            bomExtension.testContainers.enabled,
-            bomExtension.testContainers.coordinates,
-            bomExtension.testContainers.testOnly,
-        )
+    private fun DependencyHandler.configurePredefined() {
+        listOf(
+            Triple(ext.jenkins.enabled, ext.jenkins.coordinates, ext.jenkins.testOnly),
+            Triple(ext.jackson.enabled, ext.jackson.coordinates, ext.jackson.testOnly),
+            Triple(ext.spring.enabled, ext.spring.coordinates, ext.spring.testOnly),
+            Triple(ext.jetty.enabled, ext.jetty.coordinates, ext.jetty.testOnly),
+            Triple(ext.netty.enabled, ext.netty.coordinates, ext.netty.testOnly),
+            Triple(ext.slf4j.enabled, ext.slf4j.coordinates, ext.slf4j.testOnly),
+            Triple(ext.guava.enabled, ext.guava.coordinates, ext.guava.testOnly),
+            Triple(ext.log4j.enabled, ext.log4j.coordinates, ext.log4j.testOnly),
+            Triple(ext.vertx.enabled, ext.vertx.coordinates, ext.vertx.testOnly),
+            Triple(ext.junit.enabled, ext.junit.coordinates, ext.junit.testOnly),
+            Triple(ext.mockito.enabled, ext.mockito.coordinates, ext.mockito.testOnly),
+            Triple(ext.testContainers.enabled, ext.testContainers.coordinates, ext.testContainers.testOnly),
+        ).forEach { (enabled, coordinates, testOnly) -> applyIfEnabled(enabled, coordinates, testOnly) }
     }
 
-    private fun DependencyHandler.configureCustomBoms() {
-        bomExtension.customBoms.configureEach { bom ->
+    private fun DependencyHandler.configureCustom() {
+        ext.customBoms.configureEach { bom ->
             val coordinates = bom.coordinates.orNull
             val version = bom.version.orNull
 
-            require(!coordinates.isNullOrBlank()) {
-                "Missing coordinates for BOM '${bom.name}'."
+            require(!coordinates.isNullOrBlank()) { "Missing coordinates for BOM '${bom.name}'." }
+
+            require(!version.isNullOrBlank()) { "Missing version for BOM '${bom.name}'." }
+
+            val dep = platform("$coordinates:$version")
+
+            if (!bom.testOnly.getOrElse(false)) {
+                add("implementation", dep)
             }
 
-            require(!version.isNullOrBlank()) {
-                "Missing version for BOM '${bom.name}'."
-            }
-
-            val platformDependency = platform("$coordinates:$version")
-            add("implementation", platformDependency)
-            add("testImplementation", platformDependency)
+            add("testImplementation", dep)
         }
     }
 
-    private fun DependencyHandler.applyBomIfEnabled(
+    private fun DependencyHandler.applyIfEnabled(
         enabled: Property<Boolean>,
         coordinates: Provider<MinimalExternalModuleDependency>,
         testOnly: Property<Boolean>,
     ) {
-        if (enabled.getOrElse(true)) {
-            val platformDependency = platform(coordinates.get())
-            if (!testOnly.getOrElse(false)) {
-                add("implementation", platformDependency)
-            }
-            add("testImplementation", platformDependency)
+        if (!enabled.getOrElse(true)) return
+
+        val dep = platform(coordinates.get())
+
+        if (!testOnly.getOrElse(false)) {
+            add("implementation", dep)
         }
+        add("testImplementation", dep)
     }
 }

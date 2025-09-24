@@ -15,6 +15,7 @@
  */
 package io.github.aaravmahajanofficial.internal
 
+import io.github.aaravmahajanofficial.extensions.PluginExtension
 import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
@@ -26,6 +27,7 @@ import org.gradle.kotlin.dsl.withType
 
 public class TestingConfig(
     private val project: Project,
+    private val ext: PluginExtension,
 ) {
     private val libs = project.libsCatalog()
 
@@ -56,7 +58,6 @@ public class TestingConfig(
                     TestLogEvent.SKIPPED,
                     TestLogEvent.FAILED,
                 )
-
                 logging.exceptionFormat = TestExceptionFormat.FULL
             }
 
@@ -64,12 +65,19 @@ public class TestingConfig(
 
             t.maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
 
+            val baseArgs =
+                listOf(
+                    "-Xms768M",
+                    "-Xmx768M",
+                    "-XX:+HeapDumpOnOutOfMemoryError",
+                    "-XX:+TieredCompilation",
+                    "-XX:TieredStopAtLevel=1",
+                )
+
+            val userProvidedArgs = ext.testJvmArguments
+
             t.jvmArgs(
-                "-Xms768M",
-                "-Xmx768M",
-                "-XX:+HeapDumpOnOutOfMemoryError",
-                "-XX:+TieredCompilation",
-                "-XX:TieredStopAtLevel=1",
+                baseArgs + userProvidedArgs.get(),
             )
 
             t.systemProperty("file.encoding", "UTF-8")

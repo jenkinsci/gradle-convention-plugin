@@ -29,16 +29,16 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 
 internal fun Project.configureCodenarc(
-    quality: QualityExtension,
+    ext: QualityExtension,
     libs: VersionCatalog,
 ) {
-    if (!quality.codenarc.enabled.get() || !hasGroovySources()) return
+    if (!ext.codenarc.enabled.get() || !hasGroovySources()) return
 
     pluginManager.apply(CodeNarcPlugin::class.java)
 
     configure<CodeNarcExtension> {
         toolVersion = versionFromCatalogOrFail(libs, "codenarc")
-        isIgnoreFailures = !quality.codenarc.failOnViolation.get()
+        isIgnoreFailures = !ext.codenarc.failOnViolation.get()
     }
     tasks.withType<CodeNarc>().configureEach { task ->
         task.group = LifecycleBasePlugin.VERIFICATION_GROUP
@@ -64,7 +64,7 @@ internal fun Project.configureCodenarc(
                     "src/main/groovy",
                     "src/test/groovy",
                     "src/main/resources",
-                ).plus(quality.codenarc.source.get())
+                ).plus(ext.codenarc.source.get())
                 .asFileTree
                 .matching {
                     it.include("**/*.groovy")

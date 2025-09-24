@@ -29,7 +29,6 @@ dependencies {
     implementation(baseLibs.detekt.gradle.plugin)
     implementation(baseLibs.spotbugs.gradle.plugin)
     implementation(baseLibs.owasp.depcheck.gradle.plugin)
-    implementation(baseLibs.benmanes.versions.gradle.plugin)
     implementation(baseLibs.pit.gradle.plugin)
     implementation(baseLibs.kover.gradle.plugin)
     implementation(baseLibs.node.gradle.plugin)

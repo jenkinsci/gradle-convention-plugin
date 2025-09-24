@@ -21,35 +21,32 @@ plugins {
     `kotlin-dsl`
 }
 
-val javaToolchainVersion: Provider<Int> =
-    providers.gradleProperty("java.toolchain.version").map(String::toInt).orElse(21)
-
 java {
+    val jvmTargetVersion = baseLibs.versions.jvmTarget
     toolchain {
-        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
+        languageVersion.set(jvmTargetVersion.map(JavaLanguageVersion::of))
     }
 }
 
-val kotlinVersion = baseLibs.versions.kotlinLanguage.get()
-
 kotlin {
+    val kotlinVersion = baseLibs.versions.kotlinLanguage
+    val jvmTargetVersion = baseLibs.versions.jvmTarget
+
     jvmToolchain {
-        languageVersion = javaToolchainVersion.map(JavaLanguageVersion::of)
+        languageVersion.set(jvmTargetVersion.map(JavaLanguageVersion::of))
     }
 
     explicitApi()
 
     compilerOptions {
-        apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        jvmTarget = JvmTarget.JVM_21
+        apiVersion.set(kotlinVersion.map(KotlinVersion::fromVersion))
+        languageVersion.set(kotlinVersion.map(KotlinVersion::fromVersion))
+        jvmTarget.set(jvmTargetVersion.map(JvmTarget::fromTarget))
 
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")
-        freeCompilerArgs.addAll(
-            "-Xjsr305=strict",
-        )
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 
