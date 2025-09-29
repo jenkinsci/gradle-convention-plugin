@@ -1,4 +1,4 @@
-# `Jenkins Gradle Convention Plugin`
+# Jenkins Gradle Convention Plugin
 
 [![CI](https://img.shields.io/github/actions/workflow/status/jenkinsci/gradle-convention-plugin/ci.yml?logo=github&style=for-the-badge&label=CI&labelColor=30363d)](https://github.com/aaravmahajanofficial/jenkins-gradle-convention-plugin/actions/workflows/ci.yml)
 [![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin?logo=gradle&label=Plugin%20Portal&style=for-the-badge&labelColor=285E61&color=2D8B8B)](https://plugins.gradle.org/plugin/io.github.aaravmahajanofficial.jenkins-gradle-convention-plugin)

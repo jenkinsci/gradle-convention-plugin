@@ -9,3 +9,18 @@ template: |
   $CHANGES
 
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+
+version-resolver:
+  major:
+    labels:
+      - 'type: breaking'
+  minor:
+    labels:
+      - 'type: enhancement'
+  patch:
+    labels:
+      - 'type: bug'
+      - 'type: chore'
+      - 'type: documentation'
+      - 'type: dependencies'
+      - 'type: security'
