@@ -13,15 +13,15 @@ template: |
 version-resolver:
   major:
     labels:
-      - 'type: breaking'
+      - 'breaking'
   minor:
     labels:
-      - 'type: enhancement'
+      - 'enhancement'
   patch:
     labels:
-      - 'type: bug'
-      - 'type: chore'
-      - 'type: refactor'
-      - 'type: documentation'
-      - 'type: dependencies'
-      - 'type: security'
+      - 'bug'
+      - 'chore'
+      - 'refactor'
+      - 'documentation'
+      - 'dependencies'
+      - 'security'

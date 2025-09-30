@@ -16,4 +16,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+
       - uses: gradle/actions/dependency-submission@v4

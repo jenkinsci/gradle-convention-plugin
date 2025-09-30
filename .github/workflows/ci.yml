@@ -2,24 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ '*' ]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   validation:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v5
       - uses: gradle/actions/wrapper-validation@v4
+
   build:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
+    name: Build, Test and Analyze
+    needs: validation
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
@@ -34,6 +39,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: 'gradle'
 
       - uses: gradle/actions/setup-gradle@v4
         with:
@@ -43,3 +49,7 @@ jobs:
 
       - name: Run build
         run: ./gradlew build -x integrationTest
+
+      - name: Dependency Review
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4

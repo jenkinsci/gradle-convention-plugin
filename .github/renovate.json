@@ -15,7 +15,7 @@
     ],
     "automerge": true,
     "labels": [
-        "type: dependencies"
+        "dependencies"
     ],
     "commitMessagePrefix": "chore(deps):"
 }
