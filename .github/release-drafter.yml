@@ -21,6 +21,7 @@ version-resolver:
     labels:
       - 'type: bug'
       - 'type: chore'
+      - 'type: refactor'
       - 'type: documentation'
       - 'type: dependencies'
       - 'type: security'
