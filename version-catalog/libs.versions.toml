@@ -68,7 +68,7 @@ jenkins-core = { module = "org.jenkins-ci.main:jenkins-core", version.ref = "jen
 jenkins-gradle-jpi2 = { module = "org.jenkins-ci.jpi2:org.jenkins-ci.jpi2.gradle.plugin", version.ref = "jenkins-gradle-jpi2" }
 
 # BOMs
-jenkins-bom-coordinates = { module = "io.jenkins.tools.bom:bom-2.528.x", version.ref = "jenkins-bom" }
+jenkins-bom-coordinates = { module = "io.jenkins.tools.bom:bom-2.516.x", version.ref = "jenkins-bom" }
 spring-bom-coordinates = { module = "org.springframework:spring-framework-bom", version.ref = "spring-bom" }
 jackson-bom-coordinates = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson-bom" }
 junit-bom-coordinates = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
