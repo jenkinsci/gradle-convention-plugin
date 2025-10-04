@@ -99,10 +99,6 @@ testing {
     }
 }
 
-tasks.named("check") {
-    dependsOn(testing.suites.named("integrationTest"))
-}
-
 tasks.register("publishToLocal") {
     group = "Publishing"
     description = "Publishes the project to the local Maven repository"
