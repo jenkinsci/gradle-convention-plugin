@@ -28,21 +28,24 @@ internal fun Project.configureOwaspDependencyCheck(ext: QualityExtension) {
     pluginManager.apply(DependencyCheckPlugin::class.java)
 
     configure<DependencyCheckExtension> {
-        failBuildOnCVSS = ext.owaspDependencyCheck.failOnCvss.get()
-        formats = ext.owaspDependencyCheck.formats.get()
-        suppressionFiles =
+        failBuildOnCVSS.set(ext.owaspDependencyCheck.failOnCvss)
+        formats.set(ext.owaspDependencyCheck.formats)
+        suppressionFiles.set(
             ext.owaspDependencyCheck.suppressionFiles
                 .get()
-                .map { it.asFile.absolutePath }
-        outputDirectory =
+                .map { it.asFile.absolutePath },
+        )
+        outputDirectory.set(
             ext.owaspDependencyCheck.outputDirectory
                 .get()
-                .asFile.absolutePath
-        data.directory =
+                .asFile,
+        )
+        data.directory.set(
             ext.owaspDependencyCheck.dataDirectory
                 .get()
-                .asFile.absolutePath
-        scanConfigurations = ext.owaspDependencyCheck.scanConfigurations.get()
+                .asFile.absolutePath,
+        )
+        scanConfigurations.set(ext.owaspDependencyCheck.scanConfigurations)
     }
 
     tasks.named("check").configure { t ->
