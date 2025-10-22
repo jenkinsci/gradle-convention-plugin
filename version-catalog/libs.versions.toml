@@ -19,7 +19,7 @@ slf4j-bom = "2.0.17"
 jetty-bom = "12.1.3"
 guava-bom = "33.5.0-jre"
 apache-log4j-bom = "2.25.2"
-vertx-bom = "5.0.4"
+vertx-bom = "5.0.5"
 
 # Testing BOMs
 junit-bom = "6.0.0"
