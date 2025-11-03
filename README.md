@@ -181,19 +181,6 @@ jenkinsConvention {
 }
 ```
 
-## Compatibility
-
-| Component   | Supported Versions                                               |
-|-------------|------------------------------------------------------------------|
-| **Gradle**  | 9.0 or newer                                                     |
-| **Jenkins** | Jenkins Core **2.516.2+ (LTS)** – defined via Jenkins Plugin BOM |
-| **Java**    | 21 (via toolchains, enforced)                                    |
-| **Kotlin**  | 2.2.x+                                                           |
-| **Groovy**  | 4.0+ (with BOM alignment)                                        |
-| **OS**      | Linux, macOS, Windows                                            |
-
-- **Requires:** Kotlin DSL or Groovy DSL
-
 ---
 
 ## Project Structure
