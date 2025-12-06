@@ -8,7 +8,7 @@ plugin-publish = "2.0.0"
 
 # Jenkins
 jenkins-core = "2.540"
-jenkins-gradle-jpi2 = "0.55.1"
+jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
 jenkins-bom = "5681.v79d2ddf61465"
