@@ -24,7 +24,7 @@ vertx-bom = "5.0.6"
 # Testing BOMs
 junit-bom = "6.0.1"
 mockito-bom = "5.21.0"
-testContainers-bom = "2.0.2"
+testContainers-bom = "2.0.3"
 
 # Quality
 spotbugs = "6.4.8"
