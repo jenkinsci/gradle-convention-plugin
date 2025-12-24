@@ -17,15 +17,15 @@
 
 package io.github.aaravmahajanofficial.utils
 
+import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.tooling.BuildException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-import org.gradle.tooling.BuildException
 
 class TestProjectBuilder(
     val projectDir: Path,
