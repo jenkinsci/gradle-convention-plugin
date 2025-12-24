@@ -17,15 +17,15 @@
 
 package io.github.aaravmahajanofficial.utils
 
-import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-import org.gradle.tooling.BuildException
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
+import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.tooling.BuildException
 
 class TestProjectBuilder(
     val projectDir: Path,
@@ -374,9 +374,8 @@ class TestProjectBuilder(
         private val defaultVersionCatalog =
             """
             [versions]
-            kotlin = "2.2.20"
-            kotlinLanguage = "2.2"
-            jvmTarget = "21"
+            kotlin = "2.2.21"
+            jvmTarget = "24"
             jenkins-core = "2.520"
             jenkins-gradle-jpi2 = "0.55.0"
             jenkins-bom = "5015.vb_52d36583443"

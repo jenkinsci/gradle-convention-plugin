@@ -15,8 +15,8 @@
  */
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.spotless.LineEnding
+import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.diffplug.spotless")
@@ -94,8 +94,7 @@ configure<DetektExtension> {
     baseline = detektBaseline
 }
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    jvmTarget = JvmTarget.JVM_21.target
+tasks.withType<Detekt>().configureEach {
     autoCorrect = false
 
     reports {
