@@ -13,36 +13,20 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
 }
 
 java {
-    val jvmTargetVersion = baseLibs.versions.jvmTarget
     toolchain {
-        languageVersion.set(jvmTargetVersion.map(JavaLanguageVersion::of))
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
 kotlin {
-    val kotlinVersion = baseLibs.versions.kotlinLanguage
-    val jvmTargetVersion = baseLibs.versions.jvmTarget
-
-    jvmToolchain {
-        languageVersion.set(jvmTargetVersion.map(JavaLanguageVersion::of))
-    }
-
     explicitApi()
-
     compilerOptions {
-        apiVersion.set(kotlinVersion.map(KotlinVersion::fromVersion))
-        languageVersion.set(kotlinVersion.map(KotlinVersion::fromVersion))
-        jvmTarget.set(jvmTargetVersion.map(JvmTarget::fromTarget))
-
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")

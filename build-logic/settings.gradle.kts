@@ -13,6 +13,10 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

@@ -14,8 +14,6 @@
  * permissions and limitations under the License.
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("org.jetbrains.kotlin.jvm")
@@ -23,21 +21,15 @@ plugins {
 
 private val libs = extensions.getByType<VersionCatalogsExtension>().named("baseLibs")
 
-kotlin {
-    val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
-    val jvmTargetVersion = libs.findVersion("jvmTarget").get().requiredVersion
-
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(jvmTargetVersion))
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
     }
+}
 
+kotlin {
     explicitApi()
-
     compilerOptions {
-        apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-        jvmTarget.set(JvmTarget.fromTarget(jvmTargetVersion))
-
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")

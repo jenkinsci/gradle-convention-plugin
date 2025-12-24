@@ -374,9 +374,8 @@ class TestProjectBuilder(
         private val defaultVersionCatalog =
             """
             [versions]
-            kotlin = "2.2.20"
-            kotlinLanguage = "2.2"
-            jvmTarget = "21"
+            kotlin = "2.2.21"
+            jvmTarget = "24"
             jenkins-core = "2.520"
             jenkins-gradle-jpi2 = "0.55.0"
             jenkins-bom = "5015.vb_52d36583443"

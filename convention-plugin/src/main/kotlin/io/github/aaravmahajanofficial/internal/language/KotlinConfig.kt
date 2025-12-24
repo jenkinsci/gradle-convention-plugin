@@ -15,34 +15,37 @@
  */
 package io.github.aaravmahajanofficial.internal.language
 
-import io.github.aaravmahajanofficial.utils.libsCatalog
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 public class KotlinConfig(
     private val project: Project,
 ) {
-    private val libs = project.libsCatalog()
-    private val kotlinVersion = libs.findVersion("kotlinLanguage").get().requiredVersion
-    private val jvmTargetVersion = libs.findVersion("jvmTarget").get().requiredVersion
-
     public fun configure() {
         project.plugins.withId("org.jetbrains.kotlin.jvm") {
-            project.configure<KotlinJvmProjectExtension> {
-                jvmToolchain(jvmTargetVersion.toInt())
+            val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val jvmVersionStr =
+                libs
+                    .findVersion("jvmTarget")
+                    .orElseThrow {
+                        IllegalStateException("Missing 'jvmTarget' version in catalog")
+                    }.requiredVersion
+
+            project.extensions.configure<KotlinJvmProjectExtension> {
+                jvmToolchain {
+                    it.languageVersion.set(JavaLanguageVersion.of(jvmVersionStr))
+                }
             }
 
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
-                    apiVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    languageVersion.set(KotlinVersion.fromVersion(kotlinVersion))
-                    jvmTarget.set(JvmTarget.fromTarget(jvmTargetVersion))
                     allWarningsAsErrors.set(true)
                     progressiveMode.set(true)
                     optIn.add("kotlin.RequiresOptIn")
