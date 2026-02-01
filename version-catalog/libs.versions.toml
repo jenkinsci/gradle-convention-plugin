@@ -10,7 +10,7 @@ jenkins-core = "2.544"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
-jenkins-bom = "5857.vb_f3dd0731f44"
+jenkins-bom = "5983.v443959746f1f"
 jackson-bom = "2.20.1"
 spring-bom = "7.0.2"
 netty-bom = "4.2.9.Final"
@@ -43,8 +43,8 @@ cpd = "3.5"
 palantir-java = "2.83.0"
 
 # Testing
-kotest = "6.0.7"
-mockk = "1.14.7"
+kotest = "6.1.2"
+mockk = "1.14.9"
 assertj = "4.0.0-M1"
 spock-core = "1.3-groovy-2.4"
 
