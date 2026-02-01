@@ -28,7 +28,7 @@ testContainers-bom = "2.0.3"
 # Quality
 spotbugs = "6.4.8"
 detekt = "1.23.8"
-spotless = "8.1.0"
+spotless = "8.2.1"
 ktlint = "1.7.1"
 owaspCheck = "12.1.9"
 kover = "0.9.4"
