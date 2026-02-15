@@ -40,7 +40,7 @@ pmd = "7.21.0"
 codenarc = "3.7.0"
 node-gradle = "7.1.0"
 cpd = "3.5"
-palantir-java = "2.86.0"
+palantir-java = "2.87.0"
 
 # Testing
 kotest = "6.1.3"
