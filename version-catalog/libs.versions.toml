@@ -2,12 +2,12 @@
 # Kotlin and Gradle
 kotlin = "2.3.10"
 jvmTarget = "24"
-jetbrains-annotations = "26.0.2-1"
+jetbrains-annotations = "26.1.0"
 plugin-publish = "2.0.0"
 
 # Jenkins
-jenkins-core = "2.550"
-jenkins-gradle-jpi2 = "0.55.2"
+jenkins-core = "2.551"
+jenkins-gradle-jpi2 = "0.56.3"
 
 # Ecosystem BOMs
 jenkins-bom = "6055.v35edb_dc8d0f9"
@@ -18,7 +18,7 @@ slf4j-bom = "2.0.17"
 jetty-bom = "12.1.6"
 guava-bom = "33.5.0-jre"
 apache-log4j-bom = "2.25.3"
-vertx-bom = "5.0.7"
+vertx-bom = "5.0.8"
 
 # Testing BOMs
 junit-bom = "6.0.3"
@@ -40,7 +40,7 @@ pmd = "7.21.0"
 codenarc = "3.7.0"
 node-gradle = "7.1.0"
 cpd = "3.5"
-palantir-java = "2.87.0"
+palantir-java = "2.88.0"
 
 # Testing
 kotest = "6.1.3"
