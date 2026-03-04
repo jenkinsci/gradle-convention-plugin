@@ -6,8 +6,8 @@ jetbrains-annotations = "26.1.0"
 plugin-publish = "2.0.0"
 
 # Jenkins
-jenkins-core = "2.551"
-jenkins-gradle-jpi2 = "0.56.3"
+jenkins-core = "2.552"
+jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
 jenkins-bom = "6055.v35edb_dc8d0f9"
@@ -22,7 +22,7 @@ vertx-bom = "5.0.8"
 
 # Testing BOMs
 junit-bom = "6.0.3"
-mockito-bom = "5.21.0"
+mockito-bom = "5.22.0"
 testContainers-bom = "2.0.3"
 
 # Quality
@@ -34,16 +34,16 @@ owaspCheck = "12.2.0"
 kover = "0.9.7"
 dokka = "2.1.0"
 pit = "1.15.0"
-checkstyle = "13.2.0"
+checkstyle = "13.3.0"
 jacoco = "0.8.14"
-pmd = "7.21.0"
+pmd = "7.22.0"
 codenarc = "3.7.0"
 node-gradle = "7.1.0"
 cpd = "3.5"
 palantir-java = "2.89.0"
 
 # Testing
-kotest = "6.1.3"
+kotest = "6.1.4"
 mockk = "1.14.9"
 assertj = "4.0.0-M1"
 spock-core = "1.3-groovy-2.4"
