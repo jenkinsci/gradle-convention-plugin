@@ -3,7 +3,7 @@
 kotlin = "2.3.10"
 jvmTarget = "24"
 jetbrains-annotations = "26.1.0"
-plugin-publish = "2.0.0"
+plugin-publish = "2.1.0"
 
 # Jenkins
 jenkins-core = "2.553"
@@ -11,11 +11,11 @@ jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
 jenkins-bom = "6077.v303e2d08985d"
-jackson-bom = "2.21.0"
+jackson-bom = "2.21.1"
 spring-bom = "7.0.5"
 netty-bom = "4.2.10.Final"
 slf4j-bom = "2.0.17"
-jetty-bom = "12.1.6"
+jetty-bom = "12.1.7"
 guava-bom = "33.5.0-jre"
 apache-log4j-bom = "2.25.3"
 vertx-bom = "5.0.8"
@@ -28,7 +28,7 @@ testContainers-bom = "2.0.3"
 # Quality
 spotbugs = "6.4.8"
 detekt = "1.23.8"
-spotless = "8.2.1"
+spotless = "8.3.0"
 ktlint = "1.7.1"
 owaspCheck = "12.2.0"
 kover = "0.9.7"
