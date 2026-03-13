@@ -12,7 +12,7 @@ jenkins-gradle-jpi2 = "0.55.2"
 # Ecosystem BOMs
 jenkins-bom = "6077.v303e2d08985d"
 jackson-bom = "2.21.1"
-spring-bom = "7.0.5"
+spring-bom = "7.0.6"
 netty-bom = "4.2.10.Final"
 slf4j-bom = "2.0.17"
 jetty-bom = "12.1.7"
