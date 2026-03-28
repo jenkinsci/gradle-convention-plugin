@@ -17,7 +17,7 @@ netty-bom = "4.2.12.Final"
 slf4j-bom = "2.0.17"
 jetty-bom = "12.1.7"
 guava-bom = "33.5.0-jre"
-apache-log4j-bom = "2.25.3"
+apache-log4j-bom = "2.25.4"
 vertx-bom = "5.0.10"
 
 # Testing BOMs
