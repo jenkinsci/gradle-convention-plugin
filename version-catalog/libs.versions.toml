@@ -6,7 +6,7 @@ jetbrains-annotations = "26.1.0"
 plugin-publish = "2.1.1"
 
 # Jenkins
-jenkins-core = "2.558"
+jenkins-core = "2.559"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
@@ -26,7 +26,7 @@ mockito-bom = "5.23.0"
 testContainers-bom = "2.0.4"
 
 # Quality
-spotbugs = "6.4.10"
+spotbugs = "6.5.0"
 detekt = "1.23.8"
 spotless = "8.4.0"
 ktlint = "1.7.1"
