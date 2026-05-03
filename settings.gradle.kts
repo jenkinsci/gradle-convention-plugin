@@ -21,7 +21,7 @@ pluginManagement {
 }
 
 plugins {
-    id("org.danilopianini.gradle-pre-commit-git-hooks") version "2.1.12"
+    id("org.danilopianini.gradle-pre-commit-git-hooks") version "2.1.16"
 }
 
 gitHooks {
