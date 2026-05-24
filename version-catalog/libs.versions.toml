@@ -6,14 +6,14 @@ jetbrains-annotations = "26.1.0"
 plugin-publish = "2.1.1"
 
 # Jenkins
-jenkins-core = "2.564"
+jenkins-core = "2.565"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
 jenkins-bom = "6453.v115ff6f496dd"
 jackson-bom = "2.21.3"
 spring-bom = "7.0.7"
-netty-bom = "4.2.13.Final"
+netty-bom = "4.2.14.Final"
 slf4j-bom = "2.0.18"
 jetty-bom = "12.1.9"
 guava-bom = "33.6.0-jre"
@@ -21,12 +21,12 @@ apache-log4j-bom = "2.26.0"
 vertx-bom = "5.0.12"
 
 # Testing BOMs
-junit-bom = "6.0.3"
+junit-bom = "6.1.0"
 mockito-bom = "5.23.0"
 testContainers-bom = "2.0.5"
 
 # Quality
-spotbugs = "6.5.4"
+spotbugs = "6.5.5"
 detekt = "1.23.8"
 spotless = "8.5.1"
 ktlint = "1.7.1"
@@ -40,7 +40,7 @@ pmd = "7.24.0"
 codenarc = "3.7.0"
 node-gradle = "7.1.0"
 cpd = "3.5"
-palantir-java = "2.90.0"
+palantir-java = "2.91.0"
 
 # Testing
 kotest = "6.1.11"
