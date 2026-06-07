@@ -1,24 +1,24 @@
 [versions]
 # Kotlin and Gradle
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 jvmTarget = "24"
 jetbrains-annotations = "26.1.0"
 plugin-publish = "2.1.1"
 
 # Jenkins
-jenkins-core = "2.566"
+jenkins-core = "2.567"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
-jenkins-bom = "6453.v115ff6f496dd"
+jenkins-bom = "6549.v96f8c826373f"
 jackson-bom = "2.22.0"
 spring-bom = "7.0.7"
-netty-bom = "4.2.14.Final"
+netty-bom = "4.2.15.Final"
 slf4j-bom = "2.0.18"
 jetty-bom = "12.1.10"
 guava-bom = "33.6.0-jre"
 apache-log4j-bom = "2.26.0"
-vertx-bom = "5.1.0"
+vertx-bom = "5.1.1"
 
 # Testing BOMs
 junit-bom = "6.1.0"
@@ -35,7 +35,7 @@ kover = "0.9.8"
 dokka = "2.2.0"
 pit = "1.19.0"
 checkstyle = "13.5.0"
-jacoco = "0.8.14"
+jacoco = "0.8.15"
 pmd = "7.25.0"
 codenarc = "3.7.0"
 node-gradle = "7.1.0"
