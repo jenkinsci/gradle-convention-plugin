@@ -35,12 +35,17 @@ public class KotlinConfig(
                 libs
                     .findVersion("jvmTarget")
                     .orElseThrow {
-                        IllegalStateException("Missing 'jvmTarget' version in catalog")
+                        IllegalStateException("Missing 'jvmTarget' version in version catalog.")
                     }.requiredVersion
+
+            val jvmVersion = jvmVersionStr.toIntOrNull()
+                ?: throw IllegalStateException (
+                      "Expected 'jvmTarget' to be a valid Java version, but found '$jvmVersionStr'."
+                )
 
             project.extensions.configure<KotlinJvmProjectExtension> {
                 jvmToolchain {
-                    it.languageVersion.set(JavaLanguageVersion.of(jvmVersionStr))
+                    it.languageVersion.set(JavaLanguageVersion.of(jvmVersion))
                 }
             }
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,4 +30,17 @@ mavenPublishing {
     configure(VersionCatalog())
     publishToMavenCentral(automaticRelease = true)
     signAllPublications()
+}
+
+
+// FORCE CONFLICT RESOLUTION TO USE OUR UPDATED TOML VERSIONS
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "org.junit" && requested.name == "junit-bom") {
+                useVersion("6.1.0")
+                because("Force updated JUnit BOM version over Jenkins constraints")
+            }
+        }
+    }
 }

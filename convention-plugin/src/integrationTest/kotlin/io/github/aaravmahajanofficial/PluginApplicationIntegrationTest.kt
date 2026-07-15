@@ -32,16 +32,20 @@ import org.junit.jupiter.api.TestInstance
 class PluginApplicationIntegrationTest {
     lateinit var builder: TestProjectBuilder
 
+    private fun createMockProjectBuilder(): TestProjectBuilder {
+        return TestProjectBuilder
+            .create()
+            .withVersionCatalog()
+            .withSettingsGradle()
+            .withBuildGradle(mockBuildScript())
+            .withJavaSource()
+
+    }
+
     @Test
     @DisplayName("should apply convention plugin to new Kotlin DSL project without errors")
     fun `apply plugin to new Kotlin DSL project`() {
-        builder =
-            TestProjectBuilder
-                .create()
-                .withVersionCatalog()
-                .withSettingsGradle()
-                .withBuildGradle(mockBuildScript())
-                .withJavaSource()
+        builder = createMockProjectBuilder()
 
         val result = builder.runGradle("help")
 
@@ -53,13 +57,7 @@ class PluginApplicationIntegrationTest {
     @Test
     @DisplayName("should apply convention plugin to existing Java project without conflicts")
     fun `apply plugin to existing Java project`() {
-        builder =
-            TestProjectBuilder
-                .create()
-                .withVersionCatalog()
-                .withSettingsGradle()
-                .withBuildGradle(mockBuildScript())
-                .withJavaSource()
+       builder = createMockProjectBuilder()
 
         val result = builder.runGradle("tasks", "--group=build")
 
