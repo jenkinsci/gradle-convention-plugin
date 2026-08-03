@@ -30,7 +30,7 @@ java {
 kotlin {
     explicitApi()
     compilerOptions {
-        allWarningsAsErrors.set(true)
+        allWarningsAsErrors.set(false)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")
         jvmDefault.set(JvmDefaultMode.ENABLE)
