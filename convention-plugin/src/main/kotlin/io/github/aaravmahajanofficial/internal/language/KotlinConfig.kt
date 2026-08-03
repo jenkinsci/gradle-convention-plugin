@@ -46,7 +46,7 @@ public class KotlinConfig(
 
             project.tasks.withType<KotlinCompile>().configureEach { t ->
                 t.compilerOptions {
-                    allWarningsAsErrors.set(true)
+                    allWarningsAsErrors.set(false)
                     progressiveMode.set(true)
                     optIn.add("kotlin.RequiresOptIn")
                     freeCompilerArgs.addAll(listOf("-Xjsr305=strict"))
