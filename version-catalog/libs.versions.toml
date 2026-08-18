@@ -10,7 +10,7 @@ jenkins-core = "2.578"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
-jenkins-bom = "6687.v4253d9799d33"
+jenkins-bom = "6916.v15ec97679743"
 jackson-bom = "2.22.2"
 spring-bom = "7.0.8"
 netty-bom = "4.2.17.Final"
