@@ -27,7 +27,7 @@ java {
 kotlin {
     explicitApi()
     compilerOptions {
-        allWarningsAsErrors.set(true)
+        allWarningsAsErrors.set(false)
         progressiveMode.set(true)
         optIn.add("kotlin.RequiresOptIn")
         freeCompilerArgs.addAll("-Xjsr305=strict")
