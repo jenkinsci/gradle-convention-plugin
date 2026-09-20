@@ -18,7 +18,7 @@ slf4j-bom = "2.0.19"
 jetty-bom = "12.1.13"
 guava-bom = "33.7.1-jre"
 apache-log4j-bom = "2.26.1"
-vertx-bom = "5.1.8"
+vertx-bom = "5.2.0"
 
 # Testing BOMs
 junit-bom = "6.1.3"
@@ -40,7 +40,7 @@ pmd = "7.27.0"
 codenarc = "4.0.0"
 node-gradle = "7.1.0"
 cpd = "3.5"
-palantir-java = "2.97.0"
+palantir-java = "2.98.0"
 
 # Testing
 kotest = "6.2.5"
