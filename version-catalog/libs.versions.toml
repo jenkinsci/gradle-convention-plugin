@@ -6,14 +6,14 @@ jetbrains-annotations = "26.1.0"
 plugin-publish = "2.2.1"
 
 # Jenkins
-jenkins-core = "2.584"
+jenkins-core = "2.585"
 jenkins-gradle-jpi2 = "0.55.2"
 
 # Ecosystem BOMs
 jenkins-bom = "6916.v15ec97679743"
 jackson-bom = "2.22.3"
 spring-bom = "7.0.9"
-netty-bom = "4.2.18.Final"
+netty-bom = "4.2.19.Final"
 slf4j-bom = "2.0.20"
 jetty-bom = "12.1.14"
 guava-bom = "33.7.2-jre"
